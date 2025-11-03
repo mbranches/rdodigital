@@ -3,6 +3,8 @@ package com.branches.shared.dto;
 import com.branches.user.domain.UserEntity;
 import com.branches.user.domain.enums.Role;
 
+import java.util.List;
+
 public record UserDto(
         Long id,
         String idExterno,
@@ -12,7 +14,8 @@ public record UserDto(
         String cargo,
         Role role,
         String fotoUrl,
-        Boolean ativo
+        Boolean ativo,
+        List<Long> tenantIds
 ) {
     public static UserDto of(UserEntity user) {
         return new UserDto(
@@ -24,7 +27,8 @@ public record UserDto(
                 user.getCargo(),
                 user.getRole(),
                 user.getFotoUrl(),
-                user.getAtivo()
+                user.getAtivo(),
+                user.getTenantIds()
         );
     }
 }

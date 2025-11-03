@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
     private final TokenAuthFilter tokenAuthFilter;
+    private final TenantFilter tenantFilter;
     private final String[] publicUrls = new String[]{
             "/api/auth/**",
             "/swagger-ui",
@@ -45,7 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(publicUrls).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
+                .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(tenantFilter, TokenAuthFilter.class)
+                .build();
 
     }
 

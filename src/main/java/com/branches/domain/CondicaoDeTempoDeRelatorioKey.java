@@ -5,11 +5,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 
+@EqualsAndHashCode
 @Setter
 @Getter
 @Embeddable

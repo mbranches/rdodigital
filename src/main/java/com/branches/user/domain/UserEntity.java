@@ -4,7 +4,7 @@ import com.branches.user.domain.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -34,8 +34,6 @@ public class UserEntity {
     private String fotoUrl;
     @Column(nullable = false)
     private Boolean ativo;
-    @ElementCollection
-    @CollectionTable(name = "user_tenant", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "tenant_id")
-    private List<Long> tenantIds;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<UserTenantId> userTenantIds;
 }

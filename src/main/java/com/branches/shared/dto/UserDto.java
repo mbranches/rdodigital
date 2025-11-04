@@ -1,6 +1,7 @@
 package com.branches.shared.dto;
 
 import com.branches.user.domain.UserEntity;
+import com.branches.user.domain.UserTenantId;
 import com.branches.user.domain.enums.Role;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public record UserDto(
                 user.getRole(),
                 user.getFotoUrl(),
                 user.getAtivo(),
-                user.getTenantIds()
+                user.getUserTenantIds().stream().map(UserTenantId::getTenantId).toList()
         );
     }
 }

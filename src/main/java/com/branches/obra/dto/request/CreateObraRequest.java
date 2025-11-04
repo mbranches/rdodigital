@@ -22,7 +22,6 @@ public record CreateObraRequest(
         String numeroContrato,
         String endereco,
         String observacoes,
-        String capaUrl,
         @NotNull(message = "O campo 'tipoMaoDeObra é obrigatório") TipoMaoDeObraDeObra tipoMaoDeObra,
         @NotNull(message = "O campo 'status' é obrigatório")
         StatusObra status,

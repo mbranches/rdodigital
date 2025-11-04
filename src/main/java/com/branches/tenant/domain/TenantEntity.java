@@ -16,6 +16,7 @@ public class TenantEntity extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Builder.Default
     @Column(nullable = false, unique = true)
     private String idExterno = UUID.randomUUID().toString();
 

@@ -23,7 +23,7 @@ public record CreateObraRequest(
         String endereco,
         String observacoes,
         String capaUrl,
-        TipoMaoDeObraDeObra tipoMaoDeObra,
+        @NotNull(message = "O campo 'tipoMaoDeObra é obrigatório") TipoMaoDeObraDeObra tipoMaoDeObra,
         @NotNull(message = "O campo 'status' é obrigatório")
         StatusObra status,
         Long grupoId

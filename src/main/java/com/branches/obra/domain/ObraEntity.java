@@ -2,6 +2,7 @@ package com.branches.obra.domain;
 
 import com.branches.domain.GrupoDeObraEntity;
 import com.branches.shared.config.envers.AuditableTenantOwned;
+import com.branches.shared.enums.TipoMaoDeObra;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,7 +60,7 @@ public class ObraEntity extends AuditableTenantOwned {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TipoMaoDeObraDeObra tipoMaoDeObra;
+    private TipoMaoDeObra tipoMaoDeObra;
     @ManyToOne
     @JoinColumn(name = "grupo_de_obra_id")
     private GrupoDeObraEntity grupo;

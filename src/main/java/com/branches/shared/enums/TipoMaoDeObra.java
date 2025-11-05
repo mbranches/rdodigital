@@ -1,4 +1,4 @@
-package com.branches.domain.enums;
+package com.branches.shared.enums;
 
 public enum TipoMaoDeObra {
     GENERICA,

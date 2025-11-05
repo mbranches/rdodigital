@@ -1,7 +1,7 @@
 package com.branches.domain;
 
 import com.branches.domain.enums.StatusRelatorio;
-import com.branches.domain.enums.TipoMaoDeObra;
+import com.branches.shared.enums.TipoMaoDeObra;
 import com.branches.shared.config.envers.AuditableTenantOwned;
 import jakarta.persistence.*;
 import lombok.*;

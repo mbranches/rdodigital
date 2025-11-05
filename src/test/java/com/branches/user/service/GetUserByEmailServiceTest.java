@@ -2,7 +2,7 @@ package com.branches.user.service;
 
 import com.branches.shared.dto.UserDto;
 import com.branches.user.domain.UserEntity;
-import com.branches.user.domain.UserTenantId;
+import com.branches.user.domain.UserTenantEntity;
 import com.branches.user.domain.UserTenantKey;
 import com.branches.user.domain.enums.Role;
 import com.branches.user.port.LoadUserPort;
@@ -48,12 +48,12 @@ class GetUserByEmailServiceTest {
                 .build();
 
         UserTenantKey userTenantKey = UserTenantKey.from(userEntity.getId(), 1L);
-        UserTenantId userTenantId = new UserTenantId();
-        userTenantId.setId(userTenantKey);
-        userTenantId.setUser(userEntity);
-        userTenantId.setTenantId(1L);
+        UserTenantEntity userTenantEntity = new UserTenantEntity();
+        userTenantEntity.setId(userTenantKey);
+        userTenantEntity.setUser(userEntity);
+        userTenantEntity.setTenantId(1L);
 
-        userEntity.setUserTenantIds(Set.of(userTenantId));
+        userEntity.setUserTenantEntities(Set.of(userTenantEntity));
     }
 
     @Test

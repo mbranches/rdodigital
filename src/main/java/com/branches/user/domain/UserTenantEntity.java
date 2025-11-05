@@ -1,5 +1,6 @@
 package com.branches.user.domain;
 
+import com.branches.user.domain.enums.PerfilUserTenant;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,8 +11,8 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "user_tenant")
-public class UserTenantId {
+@Entity
+public class UserTenantEntity {
     @EmbeddedId
     private UserTenantKey id;
 
@@ -23,6 +24,10 @@ public class UserTenantId {
     @Column(name = "tenant_id", insertable = false, updatable = false)
     private Long tenantId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PerfilUserTenant perfil;
+
     @PrePersist
     public void prePersist() {
         if (this.id != null) return;
@@ -32,7 +37,7 @@ public class UserTenantId {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof UserTenantId that)) return false;
+        if (!(o instanceof UserTenantEntity that)) return false;
         return Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(tenantId, that.tenantId);
     }
 

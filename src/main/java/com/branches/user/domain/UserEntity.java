@@ -4,6 +4,7 @@ import com.branches.user.domain.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,5 +37,19 @@ public class UserEntity {
     @Column(nullable = false)
     private Boolean ativo;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<UserTenantId> userTenantIds;
+    private Set<UserTenantEntity> userTenantEntities;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<UserObraPermitidaEntity> userObraPermitidaEntities;
+
+    public List<Long> getTenantsIds() {
+        return userTenantEntities.stream()
+                .map(UserTenantEntity::getTenantId)
+                .toList();
+    }
+
+    public List<Long> getObrasPermitidasIds() {
+        return userObraPermitidaEntities.stream()
+                .map(UserObraPermitidaEntity::getObraId)
+                .toList();
+    }
 }

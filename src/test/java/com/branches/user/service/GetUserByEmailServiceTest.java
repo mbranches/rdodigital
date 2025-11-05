@@ -45,12 +45,12 @@ class GetUserByEmailServiceTest {
                 .ativo(true)
                 .build();
 
-        userEntity.setUserObraPermitidaEntities(Set.of(new UserObraPermitidaEntity(UserObraPermitidaKey.from(1L, 1L), userEntity, 1L)));
         UserTenantKey userTenantKey = UserTenantKey.from(userEntity.getId(), 1L);
         UserTenantEntity userTenantEntity = new UserTenantEntity();
         userTenantEntity.setId(userTenantKey);
         userTenantEntity.setUser(userEntity);
         userTenantEntity.setTenantId(1L);
+        userTenantEntity.setUserObraPermitidaEntities(Set.of(new UserObraPermitidaEntity(UserObraPermitidaKey.from(userTenantEntity, 1L), userTenantEntity, 1L)));
 
         userEntity.setUserTenantEntities(Set.of(userTenantEntity));
     }

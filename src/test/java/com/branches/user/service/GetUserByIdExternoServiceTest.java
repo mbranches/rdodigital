@@ -45,14 +45,22 @@ class GetUserByIdExternoServiceTest {
                 .fotoUrl("http://foto.url/joao.jpg")
                 .ativo(true)
                 .build();
-        userEntity.setUserTenantEntities(Set.of(new UserTenantEntity(UserTenantKey.from(1L, 1L), userEntity, 1L, ADMINISTRADOR)));
-        userEntity.setUserObraPermitidaEntities(Set.of(new UserObraPermitidaEntity(UserObraPermitidaKey.from(1L, 1L), userEntity, 1L)));
+
+        UserTenantEntity userTenant = new UserTenantEntity();
+        userTenant.setId(UserTenantKey.from(userEntity.getId(), 1L));
+        userTenant.setUser(userEntity);
+        userTenant.setTenantId(1L);
+        userTenant.setPerfil(ADMINISTRADOR);
+        userTenant.setUserObraPermitidaEntities(Set.of(new UserObraPermitidaEntity(UserObraPermitidaKey.from(userTenant, 1L), userTenant, 1L)));
+
+        userEntity.setUserTenantEntities(Set.of(userTenant));
 
         UserTenantKey userTenantKey = UserTenantKey.from(userEntity.getId(), 1L);
         UserTenantEntity userTenantEntity = new UserTenantEntity();
         userTenantEntity.setId(userTenantKey);
         userTenantEntity.setUser(userEntity);
         userTenantEntity.setTenantId(1L);
+        userTenantEntity.setUserObraPermitidaEntities(Set.of(new UserObraPermitidaEntity(UserObraPermitidaKey.from(userTenantEntity, 1L), userTenantEntity, 1L)));
 
         userEntity.setUserTenantEntities(Set.of(userTenantEntity));
     }

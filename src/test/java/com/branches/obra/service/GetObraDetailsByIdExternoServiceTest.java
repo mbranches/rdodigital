@@ -82,9 +82,8 @@ class GetObraDetailsByIdExternoServiceTest {
     @Test
     void deveRetornarObraQuandoUsuarioTiverPerfilAdministrador() {
         userTenants = List.of(
-                new UserTenantDto(1L, PerfilUserTenant.ADMINISTRADOR)
+                new UserTenantDto(1L, PerfilUserTenant.ADMINISTRADOR, List.of())
         );
-        userAllowedObraIds = List.of();
 
         when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenantDto);
         when(loadObra.getObraByIdExternoAndTenantId(obraIdExterno, tenantDto.id())).thenReturn(obraEntity);
@@ -92,8 +91,7 @@ class GetObraDetailsByIdExternoServiceTest {
         GetObraDetailsByIdExternoResponse response = service.execute(
                 obraIdExterno,
                 tenantExternalId,
-                userTenants,
-                userAllowedObraIds
+                userTenants
         );
 
         assertNotNull(response);
@@ -114,9 +112,8 @@ class GetObraDetailsByIdExternoServiceTest {
     @Test
     void deveRetornarObraQuandoUsuarioTemPermissaoNaObra() {
         userTenants = List.of(
-                new UserTenantDto(1L, PerfilUserTenant.CLIENTE_OBRA)
+                new UserTenantDto(1L, PerfilUserTenant.CLIENTE_OBRA, List.of(1L, 2L, 3L))
         );
-        userAllowedObraIds = List.of(1L, 2L, 3L);
 
         when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenantDto);
         when(loadObra.getObraByIdExternoAndTenantId(obraIdExterno, tenantDto.id())).thenReturn(obraEntity);
@@ -124,8 +121,7 @@ class GetObraDetailsByIdExternoServiceTest {
         GetObraDetailsByIdExternoResponse response = service.execute(
                 obraIdExterno,
                 tenantExternalId,
-                userTenants,
-                userAllowedObraIds
+                userTenants
         );
 
         assertNotNull(response);
@@ -136,10 +132,9 @@ class GetObraDetailsByIdExternoServiceTest {
     @Test
     void deveLancarForbiddenExceptionQuandoTenantNaoEstaNaListaDoUsuario() {
         userTenants = List.of(
-                new UserTenantDto(2L, PerfilUserTenant.ADMINISTRADOR),
-                new UserTenantDto(3L, PerfilUserTenant.ADMINISTRADOR)
+                new UserTenantDto(2L, PerfilUserTenant.ADMINISTRADOR, List.of()),
+                new UserTenantDto(3L, PerfilUserTenant.ADMINISTRADOR, List.of())
         );
-        userAllowedObraIds = List.of();
 
         when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenantDto);
 
@@ -148,8 +143,7 @@ class GetObraDetailsByIdExternoServiceTest {
                 () -> service.execute(
                         obraIdExterno,
                         tenantExternalId,
-                        userTenants,
-                        userAllowedObraIds
+                        userTenants
                 )
         );
 
@@ -159,9 +153,8 @@ class GetObraDetailsByIdExternoServiceTest {
     @Test
     void deveLancarForbiddenExceptionQuandoUsuarioNaoTemPermissaoNaObra() {
         userTenants = List.of(
-                new UserTenantDto(1L, PerfilUserTenant.CLIENTE_OBRA)
+                new UserTenantDto(1L, PerfilUserTenant.CLIENTE_OBRA, List.of(2L, 3L, 4L))
         );
-        userAllowedObraIds = List.of(2L, 3L, 4L);
 
         when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenantDto);
         when(loadObra.getObraByIdExternoAndTenantId(obraIdExterno, tenantDto.id())).thenReturn(obraEntity);
@@ -171,8 +164,7 @@ class GetObraDetailsByIdExternoServiceTest {
                 () -> service.execute(
                         obraIdExterno,
                         tenantExternalId,
-                        userTenants,
-                        userAllowedObraIds
+                        userTenants
                 )
         );
 

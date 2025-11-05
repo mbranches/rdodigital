@@ -23,9 +23,8 @@ public class GetObraDetailsByIdExternoController {
                                                                      @PathVariable String obraExternalId,
                                                                      @AuthenticationPrincipal UserDetailsImpl user) {
         List<UserTenantDto> userTenants = user.getUser().tenants();
-        List<Long> userAllowedObraIds = user.getUser().obrasPermitidasIds();
 
-        GetObraDetailsByIdExternoResponse response = getObraDetailsByIdExternoService.execute(obraExternalId, tenantExternalId, userTenants, userAllowedObraIds);
+        GetObraDetailsByIdExternoResponse response = getObraDetailsByIdExternoService.execute(obraExternalId, tenantExternalId, userTenants);
 
         return ResponseEntity.ok(response);
 

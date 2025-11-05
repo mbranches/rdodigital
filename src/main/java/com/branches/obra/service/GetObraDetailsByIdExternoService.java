@@ -19,24 +19,29 @@ public class GetObraDetailsByIdExternoService {
     private final LoadObraPort loadObra;
     private final GetTenantByIdExternoService getTenantByIdExternoService;
 
-    public GetObraDetailsByIdExternoResponse execute(String idExterno, String tenantExternalId, List<UserTenantDto> userTenants, List<Long> userAllowedObraIds) {
+    public GetObraDetailsByIdExternoResponse execute(String idExterno, String tenantExternalId, List<UserTenantDto> userTenants) {
         TenantDto tenant = getTenantByIdExternoService.execute(tenantExternalId);
         Long tenantDaObraId = tenant.id();
 
-        List<Long> userTenantsIds = userTenants.stream().map(UserTenantDto::tenantId).toList();
-
-        if (!userTenantsIds.contains(tenantDaObraId)) throw new ForbiddenException();
+        UserTenantDto currentUserTenant = getCurrentUserTenant(userTenants, tenantDaObraId);
 
         ObraEntity obra = loadObra.getObraByIdExternoAndTenantId(idExterno, tenantDaObraId);
 
-        checkIfUserHasAccessToObra(userTenants, userAllowedObraIds, obra);
+        checkIfUserHasAccessToObra(currentUserTenant, obra);
 
         return GetObraDetailsByIdExternoResponse.from(obra);
     }
 
-    private void checkIfUserHasAccessToObra(List<UserTenantDto> userTenants, List<Long> userAllowedObraIds, ObraEntity obra) {
-        boolean userHasAccessToObra = userTenants.stream()
-                .anyMatch(ut -> ut.perfil().equals(PerfilUserTenant.ADMINISTRADOR) || userAllowedObraIds.contains(obra.getId()));
+    private UserTenantDto getCurrentUserTenant(List<UserTenantDto> userTenants, Long tenantDaObraId) {
+        return userTenants.stream()
+                .filter(ut -> ut.tenantId().equals(tenantDaObraId))
+                .findFirst()
+                .orElseThrow(ForbiddenException::new);
+    }
+
+    private void checkIfUserHasAccessToObra(UserTenantDto userTenant, ObraEntity obra) {
+        boolean userHasAccessToObra = userTenant.perfil().equals(PerfilUserTenant.ADMINISTRADOR)
+                || userTenant.obrasPermitidasIds().contains(obra.getId());
 
         if (!userHasAccessToObra) throw new ForbiddenException();
     }

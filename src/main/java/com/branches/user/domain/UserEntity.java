@@ -38,18 +38,10 @@ public class UserEntity {
     private Boolean ativo;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private Set<UserTenantEntity> userTenantEntities;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<UserObraPermitidaEntity> userObraPermitidaEntities;
 
     public List<Long> getTenantsIds() {
         return userTenantEntities.stream()
                 .map(UserTenantEntity::getTenantId)
-                .toList();
-    }
-
-    public List<Long> getObrasPermitidasIds() {
-        return userObraPermitidaEntities.stream()
-                .map(UserObraPermitidaEntity::getObraId)
                 .toList();
     }
 }

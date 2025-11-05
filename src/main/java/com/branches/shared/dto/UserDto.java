@@ -1,6 +1,7 @@
 package com.branches.shared.dto;
 
 import com.branches.user.domain.UserEntity;
+import com.branches.user.domain.UserObraPermitidaEntity;
 import com.branches.user.domain.UserTenantEntity;
 import com.branches.user.domain.enums.PerfilUserTenant;
 import com.branches.user.domain.enums.Role;
@@ -18,8 +19,7 @@ public record UserDto(
         String fotoUrl,
         Boolean ativo,
         List<Long> tenantsIds,
-        List<UserTenantDto> tenants,
-        List<Long> obrasPermitidasIds
+        List<UserTenantDto> tenants
 ) {
     public static UserDto of(UserEntity user) {
         return new UserDto(
@@ -33,19 +33,20 @@ public record UserDto(
                 user.getFotoUrl(),
                 user.getAtivo(),
                 user.getTenantsIds(),
-                user.getUserTenantEntities().stream().map(UserTenantDto::from).toList(),
-                user.getObrasPermitidasIds()
+                user.getUserTenantEntities().stream().map(UserTenantDto::from).toList()
         );
     }
 
     public record UserTenantDto(
             Long tenantId,
-            PerfilUserTenant perfil
+            PerfilUserTenant perfil,
+            List<Long> obrasPermitidasIds
     ) {
         public static UserTenantDto from(UserTenantEntity entity) {
             return new UserTenantDto(
                     entity.getTenantId(),
-                    entity.getPerfil()
+                    entity.getPerfil(),
+                    entity.getUserObraPermitidaEntities().stream().map(UserObraPermitidaEntity::getObraId).toList()
             );
         }
     }

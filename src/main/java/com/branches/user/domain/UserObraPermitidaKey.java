@@ -6,21 +6,26 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @EqualsAndHashCode
 @Setter
 @Getter
 @Embeddable
-public class UserObraPermitidaKey {
-    @Column(nullable = false)
+public class UserObraPermitidaKey implements Serializable {
+    @Column(name = "user_id", nullable = false)
     private Long userId;
-    @Column(nullable = false )
+    @Column(name = "obra_id", nullable = false)
     private Long obraId;
+    @Column(name = "tenant_id", nullable = false)
+    private Long tenantId;
 
-    public static UserObraPermitidaKey from(Long userId, Long obraId) {
+    public static UserObraPermitidaKey from(UserTenantEntity userTenant, Long obraId) {
         UserObraPermitidaKey key = new UserObraPermitidaKey();
 
-        key.setUserId(userId);
+        key.setUserId(userTenant.getUser().getId());
         key.setObraId(obraId);
+        key.setTenantId(userTenant.getTenantId());
 
         return key;
     }

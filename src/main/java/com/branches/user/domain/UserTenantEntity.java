@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -27,6 +28,9 @@ public class UserTenantEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PerfilUserTenant perfil;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userTenant")
+    private Set<UserObraPermitidaEntity> userObraPermitidaEntities;
 
     @PrePersist
     public void prePersist() {

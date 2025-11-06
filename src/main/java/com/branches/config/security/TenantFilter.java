@@ -24,16 +24,16 @@ public class TenantFilter extends OncePerRequestFilter {
         if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetailsImpl) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-            TenantContext.setTenantIds(userDetails.getUser().getTenantsIds());
+            UserTenantsContext.setUserTenants(userDetails.getUser().getUserTenantEntities());
 
         } else {
-            TenantContext.setTenantIds(Collections.emptyList());
+            UserTenantsContext.setUserTenants(Collections.emptyList());
         }
 
         try {
             filterChain.doFilter(request, response);
         } finally {
-            TenantContext.cleanup();
+            UserTenantsContext.cleanup();
         }
     }
 }

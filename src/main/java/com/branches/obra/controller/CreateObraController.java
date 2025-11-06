@@ -4,7 +4,6 @@ import com.branches.auth.model.UserDetailsImpl;
 import com.branches.obra.dto.request.CreateObraRequest;
 import com.branches.obra.dto.response.CreateObraResponse;
 import com.branches.obra.service.CreateObraService;
-import com.branches.config.security.TenantContext;
 import com.branches.user.domain.UserTenantEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class CreateObraController {
 
     @PostMapping("/api/tenants/{tenantIdExternal}/obras")
     public ResponseEntity<CreateObraResponse> execute(@PathVariable String tenantIdExternal, @Valid @RequestBody CreateObraRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<UserTenantEntity> userTenants = userDetails.getUser().getUserTenantEntities();;
+        List<UserTenantEntity> userTenants = userDetails.getUser().getUserTenantEntities();
 
         CreateObraResponse response = createObraService.execute(request, tenantIdExternal, userTenants);
 

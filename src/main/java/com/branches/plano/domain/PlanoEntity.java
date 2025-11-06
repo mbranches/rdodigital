@@ -24,9 +24,9 @@ public class PlanoEntity extends Auditable {
     private String descricao;
 
     @Column(nullable = false, precision = 10, scale = 4)
-    private BigDecimal preco;
+    private BigDecimal valor;
 
-    private Integer duracaoDias;
+    private Integer duracaoMeses;
 
     private Integer limiteUsuarios;
 

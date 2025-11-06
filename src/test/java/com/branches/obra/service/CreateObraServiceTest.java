@@ -53,8 +53,8 @@ class CreateObraServiceTest {
     private List<UserTenantEntity> userTenants;
     private PlanoEntity plano;
     private AssinaturaEntity assinatura;
-    private UserTenantAuthoritiesEntity authorityCreateObra;
-    private UserTenantAuthoritiesEntity authorityNoCreateObra;
+    private UserTenantAuthorities authorityCreateObra;
+    private UserTenantAuthorities authorityNoCreateObra;
 
     @BeforeEach
     void setUp() {
@@ -130,7 +130,7 @@ class CreateObraServiceTest {
                 .build();
         obraToSave.setTenantId(1L);
 
-        authorityCreateObra = UserTenantAuthoritiesEntity.builder()
+        authorityCreateObra = UserTenantAuthorities.builder()
                 .obras(
                         PermissionsDefault.builder()
                                 .canCreateAndEdit(true)
@@ -138,7 +138,7 @@ class CreateObraServiceTest {
                 )
                 .build();
 
-        authorityNoCreateObra = UserTenantAuthoritiesEntity.builder()
+        authorityNoCreateObra = UserTenantAuthorities.builder()
                 .obras(
                         PermissionsDefault.builder()
                                 .canCreateAndEdit(false)

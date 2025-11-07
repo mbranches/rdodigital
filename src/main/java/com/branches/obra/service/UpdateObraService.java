@@ -7,6 +7,7 @@ import com.branches.obra.dto.request.UpdateObraRequest;
 import com.branches.obra.repository.ObraRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
+import com.branches.usertenant.service.GetCurrentUserTenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +20,16 @@ public class UpdateObraService {
     private final ObraRepository obraRepository;
     private final GetGrupoDeObraByIdAndTenantIdService getGrupoDeObraByIdAndTenantIdService;
     private final GetObraByIdExternoAndTenantIdService getObraByIdExternoAndTenantIdService;
+    private final GetCurrentUserTenantService getCurrentUserTenantService;
 
     public void execute(UpdateObraRequest request, String obraExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
-        UserTenantEntity userTenant = getCurrentUserTenant(userTenants, tenantId);
+        UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
         ObraEntity obra = getObraByIdExternoAndTenantIdService.execute(obraExternalId, tenantId);
 
-        checkIfUserCanUpdateObra(obra.getId(), userTenant);
+        checkIfUserCanUpdateObra(obra.getId(), currentUserTenant);
 
         obra.setNome(request.nome());
         obra.setResponsavel(request.responsavel());
@@ -52,12 +54,5 @@ public class UpdateObraService {
         if (!userTenant.getAuthorities().getObras().getCanCreateAndEdit() || !userTenant.getObrasPermitidasIds().contains(id)) {
             throw new ForbiddenException();
         }
-    }
-
-    private UserTenantEntity getCurrentUserTenant(List<UserTenantEntity> userTenants, Long tenantId) {
-        return userTenants.stream()
-                .filter(ut -> ut.getTenantId().equals(tenantId))
-                .findFirst()
-                .orElseThrow(ForbiddenException::new);
     }
 }

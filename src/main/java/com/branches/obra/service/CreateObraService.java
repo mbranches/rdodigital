@@ -11,6 +11,7 @@ import com.branches.exception.BadRequestException;
 import com.branches.exception.ForbiddenException;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
+import com.branches.usertenant.service.GetCurrentUserTenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,12 @@ public class CreateObraService {
     private final GetAssinaturaActiveByTenantIdService getAssinaturaActiveByTenantIdService;
     private final ObraRepository obraRepository;
     private final GetGrupoDeObraByIdAndTenantIdService getGrupoDeObraByIdAndTenantIdService;
+    private final GetCurrentUserTenantService getCurrentUserTenantService;
 
     public CreateObraResponse execute(CreateObraRequest request, String tenantDaObraExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantDaObraExternalId);
 
-        UserTenantEntity currentUserTenant = getCurrentUserTenant(userTenants, tenantId);
+        UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
         verifyIfUserHasPermissionToCreateObra(currentUserTenant);
 
@@ -67,13 +69,6 @@ public class CreateObraService {
         if (!userCanCreateOrEdit) {
             throw new ForbiddenException();
         }
-    }
-
-    private UserTenantEntity getCurrentUserTenant(List<UserTenantEntity> userTenants, Long tenantDaObraId) {
-        return userTenants.stream()
-                .filter(ut -> ut.getTenantId().equals(tenantDaObraId))
-                .findFirst()
-                .orElseThrow(ForbiddenException::new);
     }
 
     private void verifyIfPlanoAllowsCreateObra(Long tenantId) {

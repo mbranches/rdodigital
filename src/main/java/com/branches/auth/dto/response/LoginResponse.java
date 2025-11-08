@@ -1,4 +1,8 @@
 package com.branches.auth.dto.response;
 
-public record LoginResponse(String accessToken) {
+import com.branches.usertenant.dto.response.TenantByUserInfoResponse;
+
+import java.util.List;
+
+public record LoginResponse(String accessToken, List<TenantByUserInfoResponse> tenants) {
 }

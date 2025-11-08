@@ -6,7 +6,6 @@ import com.branches.tenant.domain.TenantEntity;
 import com.branches.tenant.repository.TenantRepository;
 import com.branches.tenant.repository.projection.TenantInfoProjection;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
-import com.branches.user.domain.UserEntity;
 import com.branches.user.repository.UserRepository;
 import com.branches.user.repository.projection.UserInfoProjection;
 import com.branches.usertenant.dto.response.UserTenantInfoResponse;
@@ -30,7 +29,7 @@ public class GetUserTenantInfoService {
 
         UserInfoProjection user = userRepository.findUserInfoByIdAndTenantId(userId, tenantId)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado para o tenant informado"));
-        List<TenantEntity> allTenantsByUser = tenantRepository.findAllByIdIn(tenantIds);
+        List<TenantEntity> allTenantsByUser = tenantRepository.findAllByIdInAndAtivoIsTrue(tenantIds);
 
         TenantInfoProjection tenant = tenantRepository.findTenantInfoById(tenantId)
                 .orElseThrow(() -> new NotFoundException("Tenant não encontrado"));

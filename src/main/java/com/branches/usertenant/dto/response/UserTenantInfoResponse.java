@@ -7,6 +7,7 @@ import com.branches.user.repository.projection.UserInfoProjection;
 import java.util.List;
 
 public record UserTenantInfoResponse(
+        
         UserInfoResponse user,
         TenantInfoResponse tenant
 ) {

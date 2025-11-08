@@ -21,7 +21,7 @@ public class GetUserTenantInfoController {
         Long userId = UserTenantsContext.getUserId();
         List<Long> tenantIds = UserTenantsContext.getTenantIds();
 
-        UserTenantInfoResponse response = getUserTenantInfoService.execute(tenantExternalId, userId, tenantIds);
+        UserTenantInfoResponse response = getUserTenantInfoService.     execute(tenantExternalId, userId, tenantIds);
 
         return ResponseEntity.ok(response);
     }

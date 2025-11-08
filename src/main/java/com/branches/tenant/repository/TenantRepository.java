@@ -49,5 +49,5 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
 """)
     Optional<TenantInfoProjection> findTenantInfoById(Long tenantId);
 
-    List<TenantEntity> findAllByIdIn(Collection<Long> ids);
+    List<TenantEntity> findAllByIdInAndAtivoIsTrue(Collection<Long> ids);
 }

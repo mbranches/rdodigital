@@ -73,7 +73,7 @@ class GetUserTenantInfoServiceTest {
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(userRepository.findUserInfoByIdAndTenantId(userId, tenantId))
                 .thenReturn(Optional.of(userInfoProjection));
-        when(tenantRepository.findAllByIdIn(tenantIds)).thenReturn(tenantEntities);
+        when(tenantRepository.findAllByIdInAndAtivoIsTrue(tenantIds)).thenReturn(tenantEntities);
         when(tenantRepository.findTenantInfoById(tenantId))
                 .thenReturn(Optional.of(tenantInfoProjection));
 
@@ -156,7 +156,7 @@ class GetUserTenantInfoServiceTest {
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(userRepository.findUserInfoByIdAndTenantId(userId, tenantId))
                 .thenReturn(Optional.of(userInfoProjection));
-        when(tenantRepository.findAllByIdIn(tenantIds)).thenReturn(tenantEntities);
+        when(tenantRepository.findAllByIdInAndAtivoIsTrue(tenantIds)).thenReturn(tenantEntities);
         when(tenantRepository.findTenantInfoById(tenantId))
                 .thenReturn(Optional.empty());
 

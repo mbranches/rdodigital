@@ -16,4 +16,5 @@ public class PermissionsRelatorio extends PermissionsDefault {
     private Boolean canAprovar;
     private Boolean canViewOnlyAprovados;
     private Boolean canAddFotos;
+    private Boolean canAddComentarios;
 }

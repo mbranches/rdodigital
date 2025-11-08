@@ -14,4 +14,6 @@ import lombok.experimental.SuperBuilder;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PermissionsRelatorio extends PermissionsDefault {
     private Boolean canAprovar;
+    private Boolean canViewOnlyAprovados;
+    private Boolean canAddFotos;
 }

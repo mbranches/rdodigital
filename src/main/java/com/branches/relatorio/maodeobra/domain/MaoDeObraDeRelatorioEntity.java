@@ -1,5 +1,6 @@
-package com.branches.domain;
-import com.branches.domain.enums.PresencaMaoDeObra;
+package com.branches.relatorio.maodeobra.domain;
+import com.branches.relatorio.rdo.domain.RelatorioEntity;
+import com.branches.relatorio.maodeobra.domain.enums.PresencaMaoDeObra;
 import jakarta.persistence.*;
 import lombok.*;
 

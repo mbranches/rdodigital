@@ -1,4 +1,4 @@
-package com.branches.domain.enums;
+package com.branches.relatorio.maodeobra.domain.enums;
 
 public enum PresencaMaoDeObra {
     PRESENTE,

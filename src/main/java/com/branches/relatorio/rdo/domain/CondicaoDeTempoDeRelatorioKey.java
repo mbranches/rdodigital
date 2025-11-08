@@ -1,6 +1,6 @@
-package com.branches.domain;
+package com.branches.relatorio.rdo.domain;
 
-import com.branches.domain.enums.PeriodoDoDia;
+import com.branches.relatorio.rdo.domain.enums.PeriodoDoDia;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

@@ -1,4 +1,4 @@
-package com.branches.domain;
+package com.branches.relatorio.maodeobra.domain;
 
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.config.envers.AuditableTenantOwned;

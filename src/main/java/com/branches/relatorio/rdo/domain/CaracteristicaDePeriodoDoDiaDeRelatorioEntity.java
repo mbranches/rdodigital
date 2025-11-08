@@ -1,8 +1,8 @@
-package com.branches.domain;
+package com.branches.relatorio.rdo.domain;
 
-import com.branches.domain.enums.Clima;
-import com.branches.domain.enums.CondicaoDoTempo;
-import com.branches.domain.enums.PeriodoDoDia;
+import com.branches.relatorio.rdo.domain.enums.Clima;
+import com.branches.relatorio.rdo.domain.enums.CondicaoDoTempo;
+import com.branches.relatorio.rdo.domain.enums.PeriodoDoDia;
 import jakarta.persistence.*;
 import lombok.*;
 

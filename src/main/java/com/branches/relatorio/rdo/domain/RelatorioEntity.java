@@ -1,6 +1,6 @@
-package com.branches.domain;
+package com.branches.relatorio.rdo.domain;
 
-import com.branches.domain.enums.StatusRelatorio;
+import com.branches.relatorio.rdo.domain.enums.StatusRelatorio;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.config.envers.AuditableTenantOwned;
 import jakarta.persistence.*;

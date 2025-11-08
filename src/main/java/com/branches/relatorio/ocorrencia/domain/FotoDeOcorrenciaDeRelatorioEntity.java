@@ -1,4 +1,4 @@
-package com.branches.domain;
+package com.branches.relatorio.ocorrencia.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,13 +9,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class FotoDeAtividadeDeRelatorioEntity {
+public class FotoDeOcorrenciaDeRelatorioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String url;
     @ManyToOne
-    @JoinColumn(name = "atividade_de_relatorio_id", nullable = false)
-    private AtividadeDeRelatorioEntity atividadeDeRelatorio;
+    @JoinColumn(name = "ocorrencia_de_relatorio_id", nullable = false)
+    private OcorrenciaDeRelatorioEntity ocorrenciaDeRelatorio;
 }

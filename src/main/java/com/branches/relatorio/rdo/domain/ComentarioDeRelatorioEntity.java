@@ -1,4 +1,4 @@
-package com.branches.domain;
+package com.branches.relatorio.rdo.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

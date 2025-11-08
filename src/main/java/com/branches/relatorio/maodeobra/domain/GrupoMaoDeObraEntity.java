@@ -1,19 +1,19 @@
-package com.branches.domain;
+package com.branches.relatorio.maodeobra.domain;
 
 import com.branches.config.envers.AuditableTenantOwned;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Builder
 @Setter
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-public class EquipamentoEntity extends AuditableTenantOwned {
+@NoArgsConstructor
+@AllArgsConstructor
+public class GrupoMaoDeObraEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 100)
+    @Column(length = 100, nullable = false)
     private String descricao;
 }

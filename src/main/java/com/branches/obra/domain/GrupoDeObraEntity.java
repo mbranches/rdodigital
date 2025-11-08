@@ -19,4 +19,8 @@ public class GrupoDeObraEntity extends AuditableTenantOwned {
     private String descricao;
     @Column(nullable = false)
     private Boolean ativo;
+
+    public boolean isAtivo() {
+        return Boolean.TRUE.equals(ativo);
+    }
 }

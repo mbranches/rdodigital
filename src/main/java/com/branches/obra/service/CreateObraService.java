@@ -48,9 +48,8 @@ public class CreateObraService {
                 .tipoMaoDeObra(request.tipoMaoDeObra())
                 .status(request.status())
                 .ativo(true)
+                .tenantId(tenantId)
                 .build();
-
-        obraToSave.setTenantId(tenantId);
 
         if (request.grupoId() != null) {
             GrupoDeObraEntity grupo = getGrupoDeObraByIdAndTenantIdService.execute(request.grupoId(), tenantId);

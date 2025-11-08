@@ -4,17 +4,18 @@ import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class ObraEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,6 @@
-package com.branches.relatorio.equipamento.domain;
+package com.branches.relatorio.rdo.domain;
 
-import com.branches.relatorio.rdo.domain.RelatorioEntity;
+import com.branches.relatorio.equipamento.domain.EquipamentoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

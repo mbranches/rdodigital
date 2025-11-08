@@ -1,6 +1,6 @@
 package com.branches.obra.service;
 
-import com.branches.domain.GrupoDeObraEntity;
+import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.exception.ForbiddenException;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.domain.StatusObra;

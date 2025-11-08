@@ -1,6 +1,6 @@
 package com.branches.obra.service;
 
-import com.branches.domain.GrupoDeObraEntity;
+import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.exception.NotFoundException;
 import com.branches.obra.repository.GrupoDeObraRepository;
 import org.junit.jupiter.api.BeforeEach;

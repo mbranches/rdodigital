@@ -2,7 +2,7 @@ package com.branches.obra.service;
 import com.branches.assinatura.domain.AssinaturaEntity;
 import com.branches.assinatura.domain.enums.AssinaturaStatus;
 import com.branches.assinatura.service.GetAssinaturaActiveByTenantIdService;
-import com.branches.domain.GrupoDeObraEntity;
+import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.obra.domain.ObraEntity;
 
 import java.math.BigDecimal;

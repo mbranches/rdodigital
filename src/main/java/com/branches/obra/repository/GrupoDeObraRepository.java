@@ -1,6 +1,6 @@
 package com.branches.obra.repository;
 
-import com.branches.domain.GrupoDeObraEntity;
+import com.branches.obra.domain.GrupoDeObraEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

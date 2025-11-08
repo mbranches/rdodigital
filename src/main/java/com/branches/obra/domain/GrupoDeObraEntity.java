@@ -1,4 +1,4 @@
-package com.branches.domain;
+package com.branches.obra.domain;
 
 import com.branches.config.envers.AuditableTenantOwned;
 import jakarta.persistence.*;

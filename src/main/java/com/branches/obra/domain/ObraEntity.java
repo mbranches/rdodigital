@@ -1,6 +1,5 @@
 package com.branches.obra.domain;
 
-import com.branches.domain.GrupoDeObraEntity;
 import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import jakarta.persistence.*;

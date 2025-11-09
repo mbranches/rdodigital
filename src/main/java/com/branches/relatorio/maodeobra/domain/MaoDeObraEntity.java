@@ -4,9 +4,13 @@ import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.config.envers.AuditableTenantOwned;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 @Setter
 @Getter
 @Entity

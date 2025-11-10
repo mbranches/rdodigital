@@ -42,11 +42,9 @@ public class CreateMaoDeObraService {
                 ? buildMaoDeObraEntityPersonalizada(request, tenantId)
                 : buildMaoDeObraEntityGenerica(request, tenantId);
 
-        if (request.grupoId() != null) {
-            GrupoMaoDeObraEntity grupo = getGrupoMaoDeObraByIdAndTenantIdService.execute(request.grupoId(), tenantId);
+        GrupoMaoDeObraEntity grupo = getGrupoMaoDeObraByIdAndTenantIdService.execute(request.grupoId(), tenantId);
 
-            maodeobraEntity.setGrupo(grupo);
-        }
+        maodeobraEntity.setGrupo(grupo);
 
         MaoDeObraEntity saved = maoDeObraRepository.save(maodeobraEntity);
 

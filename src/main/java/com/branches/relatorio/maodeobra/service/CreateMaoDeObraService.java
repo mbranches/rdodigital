@@ -24,6 +24,7 @@ public class CreateMaoDeObraService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetGrupoMaoDeObraByIdAndTenantIdService getGrupoMaoDeObraByIdAndTenantIdService;
     private final MaoDeObraRepository maoDeObraRepository;
+    private final GetHorasTrabalhadaOfMaoDeObraService getHorasTrabalhadaOfMaoDeObraService;
 
     public CreateMaoDeObraResponse execute(CreateMaoDeObraRequest request, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -52,12 +53,18 @@ public class CreateMaoDeObraService {
     }
 
     private MaoDeObraEntity buildMaoDeObraEntityPersonalizada(CreateMaoDeObraRequest request, Long tenantId) {
+        LocalTime horaInicio = request.horaInicio();
+        LocalTime horaFim = request.horaFim();
+        LocalTime horasIntervalo = request.horasIntervalo();
+
         return MaoDeObraEntity.builder()
                 .tenantId(tenantId)
                 .nome(request.nome())
                 .tipo(request.tipo())
-                .horaInicio(request.horaInicio())
-                .horasIntervalo(getHorasIntervalo(request))
+                .horaInicio(horaInicio)
+                .horasIntervalo(horasIntervalo)
+                .horaFim(horaFim)
+                .horasTrabalhadas(getHorasTrabalhadaOfMaoDeObraService.execute(horaInicio, horaFim, horasIntervalo))
                 .horaFim(request.horaFim())
                 .funcao(request.funcao())
                 .build();
@@ -69,24 +76,6 @@ public class CreateMaoDeObraService {
                 .tipo(request.tipo())
                 .funcao(request.funcao())
                 .build();
-    }
-
-    private LocalTime getHorasIntervalo(CreateMaoDeObraRequest request) {
-        if (request.tipo().equals(TipoMaoDeObra.GENERICA)) return null;
-
-        if ((request.horaInicio() != null && request.horaFim() == null) || (request.horaInicio() == null && request.horaFim() != null)) {
-            throw new BadRequestException("Quando hora de início ou hora de fim forem preenchidas, ambas devem ser preenchidas");
-        }
-
-        if (request.horaInicio() == null) {
-            return null;
-        }
-
-        int horasDeIntervalo = request.horasIntervalo() != null ? request.horasIntervalo().getHour() : 0;
-        int minutosDeIntervalo = request.horasIntervalo() != null ? request.horasIntervalo().getMinute() : 0;
-
-        return request.horaFim().minusHours(request.horaInicio().getHour()).minusMinutes(request.horaInicio().getMinute())
-                .minusHours(horasDeIntervalo).minusMinutes(minutosDeIntervalo);
     }
 
     private void checkIfUserCanAccessToMaoDeObra(UserTenantEntity currentUserTenant) {

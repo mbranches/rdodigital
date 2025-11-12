@@ -1,0 +1,69 @@
+package com.branches.relatorio.maodeobra.service;
+
+import com.branches.exception.BadRequestException;
+import com.branches.exception.ForbiddenException;
+import com.branches.obra.domain.enums.TipoMaoDeObra;
+import com.branches.relatorio.maodeobra.domain.GrupoMaoDeObraEntity;
+import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
+import com.branches.relatorio.maodeobra.dto.request.UpdateMaoDeObraRequest;
+import com.branches.relatorio.maodeobra.repository.MaoDeObraRepository;
+import com.branches.tenant.service.GetTenantIdByIdExternoService;
+import com.branches.usertenant.domain.UserTenantEntity;
+import com.branches.usertenant.service.GetCurrentUserTenantService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalTime;
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
+public class UpdateMaoDeObraService {
+    private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
+    private final GetCurrentUserTenantService getCurrentUserTenantService;
+    private final GetMaoDeObraByIdAndTenantIdService getMaoDeObraByIdService;
+    private final GetGrupoMaoDeObraByIdAndTenantIdService getGrupoMaoDeObraByIdAndTenantIdService;
+    private final GetHorasTrabalhadaOfMaoDeObraService getHorasTrabalhadaOfMaoDeObraService;
+    private final MaoDeObraRepository maoDeObraRepository;
+
+    public void execute(UpdateMaoDeObraRequest request, Long id, String tenantExternalId, List<UserTenantEntity> userTenants) {
+        Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
+
+        UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
+
+        checkIfUserHasAccessToMaoDeObra(currentUserTenant);
+
+        MaoDeObraEntity maoDeObraEntity = getMaoDeObraByIdService.execute(id, tenantId);
+
+        TipoMaoDeObra tipo = maoDeObraEntity.getTipo();
+
+        GrupoMaoDeObraEntity grupo = getGrupoMaoDeObraByIdAndTenantIdService.execute(request.grupoId(), tenantId);
+
+        if (tipo.equals(TipoMaoDeObra.PERSONALIZADA) && (request.nome() == null || request.nome().isBlank())) {
+            throw new BadRequestException("Nome é obrigatório para mão de obra do tipo PERSONALIZADA");
+        }
+
+        maoDeObraEntity.setFuncao(request.funcao());
+        maoDeObraEntity.setGrupo(grupo);
+
+        if (tipo.equals(TipoMaoDeObra.PERSONALIZADA)) {
+            LocalTime horaInicio = request.horaInicio();
+            LocalTime horaFim = request.horaFim();
+            LocalTime horasIntervalo = request.horasIntervalo();
+
+            maoDeObraEntity.setNome(request.nome());
+            maoDeObraEntity.setHoraInicio(horaInicio);
+            maoDeObraEntity.setHoraFim(horaFim);
+            maoDeObraEntity.setHorasIntervalo(horasIntervalo);
+            maoDeObraEntity.setHorasTrabalhadas(getHorasTrabalhadaOfMaoDeObraService.execute(horaInicio, horaFim, horasIntervalo));
+        }
+
+        maoDeObraRepository.save(maoDeObraEntity);
+    }
+
+    private void checkIfUserHasAccessToMaoDeObra(UserTenantEntity currentUserTenant) {
+        if (!currentUserTenant.getAuthorities().getCadastros().getMaoDeObra()) {
+            throw new ForbiddenException();
+        }
+    }
+}

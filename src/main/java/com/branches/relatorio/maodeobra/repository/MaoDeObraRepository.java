@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface MaoDeObraRepository extends JpaRepository<MaoDeObraEntity, Long> {
-    List<MaoDeObraEntity> findAllByTenantIdAndTipo(Long tenantId, TipoMaoDeObra tipo);
+    List<MaoDeObraEntity> findAllByTenantIdAndTipoAndAtivoIsTrue(Long tenantId, TipoMaoDeObra tipo);
 
-    Optional<MaoDeObraEntity> findByIdAndTenantId(Long id, Long tenantId);
+    Optional<MaoDeObraEntity> findByIdAndTenantIdIsTrue(Long id, Long tenantId);
 }

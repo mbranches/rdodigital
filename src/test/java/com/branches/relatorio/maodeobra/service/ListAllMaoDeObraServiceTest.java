@@ -110,7 +110,7 @@ class ListAllMaoDeObraServiceTest {
     void deveExecutarComSucessoQuandoTipoIsPersonalizada() {
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenantWithAccess);
-        when(maoDeObraRepository.findAllByTenantIdAndTipo(tenantId, TipoMaoDeObra.PERSONALIZADA))
+        when(maoDeObraRepository.findAllByTenantIdAndTipoAndAtivoIsTrue(tenantId, TipoMaoDeObra.PERSONALIZADA))
                 .thenReturn(maoDeObraEntityList);
         doNothing().when(checkIfUserHasAccessToMaoDeObraService).execute(userTenantWithAccess);
 
@@ -153,7 +153,7 @@ class ListAllMaoDeObraServiceTest {
 
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenantWithAccess);
-        when(maoDeObraRepository.findAllByTenantIdAndTipo(tenantId, TipoMaoDeObra.GENERICA))
+        when(maoDeObraRepository.findAllByTenantIdAndTipoAndAtivoIsTrue(tenantId, TipoMaoDeObra.GENERICA))
                 .thenReturn(maoDeObraGenericaList);
         doNothing().when(checkIfUserHasAccessToMaoDeObraService).execute(userTenantWithAccess);
 
@@ -175,7 +175,7 @@ class ListAllMaoDeObraServiceTest {
     void deveRetornarListaVaziaQuandoNaoExisteMaoDeObra() {
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenantWithAccess);
-        when(maoDeObraRepository.findAllByTenantIdAndTipo(tenantId, TipoMaoDeObra.PERSONALIZADA))
+        when(maoDeObraRepository.findAllByTenantIdAndTipoAndAtivoIsTrue(tenantId, TipoMaoDeObra.PERSONALIZADA))
                 .thenReturn(List.of());
         doNothing().when(checkIfUserHasAccessToMaoDeObraService).execute(userTenantWithAccess);
 

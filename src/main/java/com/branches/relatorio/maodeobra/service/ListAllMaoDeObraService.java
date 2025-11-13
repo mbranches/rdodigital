@@ -27,7 +27,7 @@ public class ListAllMaoDeObraService {
 
         checkIfUserHasAccessToMaoDeObraService.execute(currentUserTenant);
 
-        List<MaoDeObraEntity> maoDeObraList = maoDeObraRepository.findAllByTenantIdAndTipo(tenantId, tipoMaoDeObra);
+        List<MaoDeObraEntity> maoDeObraList = maoDeObraRepository.findAllByTenantIdAndTipoAndAtivoIsTrue(tenantId, tipoMaoDeObra);
 
         return maoDeObraList.stream()
                 .map(MaoDeObraResponse::from)

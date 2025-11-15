@@ -10,6 +10,8 @@ public class UserTenantsContext {
 
     private static ThreadLocal<Long> userId = new ThreadLocal<>();
 
+    private static ThreadLocal<Boolean> userIsAdmin = new ThreadLocal<>();
+
     public static List<UserTenantEntity> getUserTenants() {
         return userTenants.get();
     }
@@ -28,12 +30,20 @@ public class UserTenantsContext {
         return userId.get();
     }
 
+    public static Boolean getUserIsAdmin() {
+        return userIsAdmin.get();
+    }
+
     public static void setUserTenants(List<UserTenantEntity> tenantIds) {
         userTenants.set(tenantIds);
     }
 
     public static void setUserId(Long id) {
         userId.set(id);
+    }
+
+    public static void setUserIsAdmin(boolean is) {
+        userIsAdmin.set(is);
     }
 
     public static void cleanup() {

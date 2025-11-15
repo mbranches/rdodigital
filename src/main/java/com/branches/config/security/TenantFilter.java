@@ -1,6 +1,7 @@
 package com.branches.config.security;
 
 import com.branches.auth.model.UserDetailsImpl;
+import com.branches.user.domain.enums.Role;
 import com.branches.usertenant.domain.UserTenantEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,6 +34,7 @@ public class TenantFilter extends OncePerRequestFilter {
 
             UserTenantsContext.setUserTenants(activeUserTenants);
             UserTenantsContext.setUserId(userDetails.getUser().getId());
+            UserTenantsContext.setUserIsAdmin(userDetails.getUser().getRole().equals(Role.ADMIN));
 
         } else {
             UserTenantsContext.setUserTenants(Collections.emptyList());

@@ -18,4 +18,13 @@ public class Authorities {
     private PermissionsDefault obras;
     private PermissionsCadastro cadastros;
     private PermissionsItensDeRelatorio itensDeRelatorio;
+
+    public static Authorities adminAuthorities() {
+        return Authorities.builder()
+                .relatorios(PermissionsRelatorio.fullPermissions())
+                .obras(PermissionsDefault.fullPermissions())
+                .cadastros(PermissionsCadastro.fullPermissions())
+                .itensDeRelatorio(PermissionsItensDeRelatorio.fullPermissions())
+                .build();
+    }
 }

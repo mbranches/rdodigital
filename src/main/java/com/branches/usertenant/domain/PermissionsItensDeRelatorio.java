@@ -15,4 +15,16 @@ public class PermissionsItensDeRelatorio {
     private Boolean comentarios;
     private Boolean fotos;
     private Boolean condicaoDoClima;
+
+    public static PermissionsItensDeRelatorio fullPermissions() {
+        return new PermissionsItensDeRelatorio(
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+        );
+    }
 }

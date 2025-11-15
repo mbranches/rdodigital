@@ -17,4 +17,6 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
     List<ObraEntity> findAllByTenantId(Long tenantId);
 
     List<ObraEntity> findAllByTenantIdAndIdIn(Long tenantId, Collection<Long> ids);
+
+    List<ObraEntity> findAllByIdExternoInAndTenantIdAndAtivoIsTrue(Collection<String> obrasExternalIds, Long tenantId);
 }

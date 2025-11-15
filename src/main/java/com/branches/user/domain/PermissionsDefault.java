@@ -14,4 +14,11 @@ import lombok.experimental.SuperBuilder;
 public class PermissionsDefault {
     private Boolean canCreateAndEdit;
     private Boolean canDelete;
+
+    public static PermissionsDefault fullPermissions() {
+        return new PermissionsDefault(
+                true,
+                true
+        );
+    }
 }

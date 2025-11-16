@@ -4,6 +4,8 @@ import com.branches.exception.ForbiddenException;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.relatorio.rdo.domain.*;
+import com.branches.relatorio.rdo.domain.enums.Clima;
+import com.branches.relatorio.rdo.domain.enums.CondicaoDoTempo;
 import com.branches.relatorio.rdo.domain.enums.StatusRelatorio;
 import com.branches.relatorio.rdo.dto.request.CreateRelatorioRequest;
 import com.branches.relatorio.rdo.dto.response.CreateRelatorioResponse;
@@ -14,10 +16,12 @@ import com.branches.usertenant.service.GetCurrentUserTenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class CreateRelatorioService {
@@ -27,7 +31,6 @@ public class CreateRelatorioService {
     private final RelatorioRepository relatorioRepository;
     private final AtividadeDeRelatorioRepository atividadeDeRelatorioRepository;
     private final ComentarioDeRelatorioEntityRepository comentarioDeRelatorioRepository;
-    private final CaracteristicaDePeriodoDoDiaDeRelatorioRepository caracteristicaDePeriodoDoDiaDeRelatorioEntityRepository;
     private final MaoDeObraDeRelatorioRepository maoDeObraDeRelatorioRepository;
     private final EquipamentoDeRelatorioRepository equipamentoDeRelatorioRepository;
     private final OcorrenciaDeRelatorioRepository ocorrenciaDeRelatorioRepository;
@@ -51,6 +54,9 @@ public class CreateRelatorioService {
                 .prazoContratualObra(ChronoUnit.DAYS.between(obra.getDataInicio(), obra.getDataPrevistaFim()))
                 .prazoDecorridoObra(ChronoUnit.DAYS.between(obra.getDataInicio(), request.data()))
                 .prazoPraVencerObra(ChronoUnit.DAYS.between(request.data(), obra.getDataPrevistaFim()))
+                .caracteristicasManha(buildCaracteristicaDefault())
+                .caracteristicasTarde(buildCaracteristicaDefault())
+                .caracteristicasNoite(buildCaracteristicaDefault())
                 .status(StatusRelatorio.ANDAMENTO)
                 .tenantId(tenantId)
                 .build();
@@ -67,6 +73,14 @@ public class CreateRelatorioService {
         //todo: atualizar o relatorio com o pdf url
 
         return new CreateRelatorioResponse(savedRelatorio.getIdExterno());
+    }
+
+    private CaracteristicaDePeriodoDoDiaEntity buildCaracteristicaDefault() {
+        return CaracteristicaDePeriodoDoDiaEntity.builder()
+                .condicaoDoTempo(CondicaoDoTempo.PRATICAVEL)
+                .clima(Clima.CLARO)
+                .ativo(false)
+                .build();
     }
 
     private void copyInfoFromLastRelatorio(Long tenantId, Long obraId, RelatorioEntity relatorio, CreateRelatorioRequest request) {
@@ -155,20 +169,11 @@ public class CreateRelatorioService {
     }
 
     private void copyCondicoesClimaticasFromLastRelatorio(RelatorioEntity lastRelatorio, RelatorioEntity relatorio) {
-        var condicoesClimaticas = caracteristicaDePeriodoDoDiaDeRelatorioEntityRepository.findAllByRelatorioId(lastRelatorio.getId());
+        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasManha().withRelatorio(relatorio).withId(null));
+        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasTarde().withRelatorio(relatorio).withId(null));
+        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasNoite().withRelatorio(relatorio).withId(null));
 
-        var newCondicoesClimaticas = condicoesClimaticas.stream()
-                .map(condicao -> {
-                    var newCondicao = new CaracteristicaDePeriodoDoDiaDeRelatorioEntity();
-
-                    BeanUtils.copyProperties(condicao, newCondicao, "relatorio", "id");
-
-                    newCondicao.setRelatorio(relatorio);
-
-                    return newCondicao;
-                }).toList();
-
-        caracteristicaDePeriodoDoDiaDeRelatorioEntityRepository.saveAll(newCondicoesClimaticas);
+        relatorioRepository.save(relatorio);
     }
 
     private void copyComentariosFromLastRelatorio(RelatorioEntity lastRelatorio, RelatorioEntity relatorio) {

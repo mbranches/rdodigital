@@ -12,11 +12,17 @@ public record CreateRelatorioRequest(
         LocalDate data,
         @NotNull(message = "O campo 'copiarInformacoesDoUltimoRelatorio' é obrigatório")
         Boolean copiarInformacoesDoUltimoRelatorio,
+        @NotNull(message = "O campo 'copiarCondicoesClimaticas' é obrigatório")
         Boolean copiarCondicoesClimaticas,
+        @NotNull(message = "O campo 'copiarMaoDeObra' é obrigatório")
         Boolean copiarMaoDeObra,
+        @NotNull(message = "O campo 'copiarEquipamentos' é obrigatório")
         Boolean copiarEquipamentos,
+        @NotNull(message = "O campo 'copiarAtividades' é obrigatório")
         Boolean copiarAtividades,
+        @NotNull(message = "O campo 'copiarOcorrencias' é obrigatório")
         Boolean copiarOcorrencias,
+        @NotNull(message = "O campo 'copiarComentarios' é obrigatório")
         Boolean copiarComentarios
 ) {
 }

@@ -44,7 +44,7 @@ public class CreateRelatorioService {
 
         ObraEntity obra = getObraByIdExternoAndTenantIdService.execute(request.obraId(), tenantId);
 
-        long quantityOfRelatoriosOfObra = relatorioRepository.countByTenantIdAndObraId(tenantId, obra.getId());
+        long quantityOfRelatoriosOfObra = relatorioRepository.countByTenantIdAndObraIdAndAtivoIsTrue(tenantId, obra.getId());
 
         RelatorioEntity relatorio = RelatorioEntity.builder()
                 .obraId(obra.getId())
@@ -84,7 +84,7 @@ public class CreateRelatorioService {
     }
 
     private void copyInfoFromLastRelatorio(Long tenantId, Long obraId, RelatorioEntity relatorio, CreateRelatorioRequest request) {
-        RelatorioEntity lastRelatorio = relatorioRepository.findFirstByTenantIdAndObraIdOrderByEnversCreatedDateDesc(tenantId, obraId)
+        RelatorioEntity lastRelatorio = relatorioRepository.findFirstByTenantIdAndObraIdAndAtivoIsTrueOrderByEnversCreatedDateDesc(tenantId, obraId)
                 .orElse(null);
 
         if (lastRelatorio == null) return;

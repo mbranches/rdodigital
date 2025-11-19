@@ -10,11 +10,11 @@ import java.util.Optional;
 
 @Repository
 public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long> {
-    Optional<RelatorioEntity> findFirstByTenantIdAndObraIdOrderByEnversCreatedDateDesc(Long tenantId, Long obraId);
+    Optional<RelatorioEntity> findFirstByTenantIdAndObraIdAndAtivoIsTrueOrderByEnversCreatedDateDesc(Long tenantId, Long obraId);
 
-    long countByTenantIdAndObraId(Long tenantId, Long obraId);
+    long countByTenantIdAndObraIdAndAtivoIsTrue(Long tenantId, Long obraId);
 
-    Optional<RelatorioEntity> findByIdExternoAndTenantId(String relatorioExternalId, Long tenantId);
+    Optional<RelatorioEntity> findByIdExternoAndTenantIdAndAtivoIsTrue(String relatorioExternalId, Long tenantId);
 
     @Query("""
     SELECT r.id AS id,
@@ -59,6 +59,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         JOIN UserEntity u2 ON u2.id = r.enversModifier
     WHERE r.idExterno = :relatorioExternalId
       AND r.tenantId = :tenantId
+      AND t.ativo IS TRUE
 """)
     RelatorioDetailsProjection findDetailsByIdExternoAndTenantId(String relatorioExternalId, Long tenantId, Boolean canViewCondicaoDoClima);
 }

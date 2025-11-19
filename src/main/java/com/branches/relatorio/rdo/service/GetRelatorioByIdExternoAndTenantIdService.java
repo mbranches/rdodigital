@@ -12,7 +12,7 @@ public class GetRelatorioByIdExternoAndTenantIdService {
     private final RelatorioRepository relatorioRepository;
 
     public RelatorioEntity execute(String relatorioExternalId, Long tenantId) {
-        return relatorioRepository.findByIdExternoAndTenantId(relatorioExternalId, tenantId)
+        return relatorioRepository.findByIdExternoAndTenantIdAndAtivoIsTrue(relatorioExternalId, tenantId)
                 .orElseThrow(() -> new NotFoundException("Relatório não encontrado com o id externo: " + relatorioExternalId + " para o tenant informado"));
     }
 }

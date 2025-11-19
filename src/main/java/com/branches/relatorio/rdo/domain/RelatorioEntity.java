@@ -64,5 +64,9 @@ public class RelatorioEntity extends AuditableTenantOwned {
     @JoinColumn(name = "caracteristicas_noite_id")
     private CaracteristicaDePeriodoDoDiaEntity caracteristicasNoite;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean ativo = true;
+
     //todo: adicionar videos e anexos
 }

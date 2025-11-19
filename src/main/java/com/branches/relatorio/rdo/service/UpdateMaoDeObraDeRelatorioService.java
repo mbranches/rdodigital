@@ -2,6 +2,7 @@ package com.branches.relatorio.rdo.service;
 
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
+import com.branches.relatorio.maodeobra.domain.enums.PresencaMaoDeObra;
 import com.branches.utils.GetHorasTotais;
 import com.branches.relatorio.maodeobra.service.GetMaoDeObraListByTenantIdAndIdInAndTypeService;
 import com.branches.relatorio.rdo.domain.MaoDeObraDeRelatorioEntity;
@@ -101,7 +102,7 @@ public class UpdateMaoDeObraDeRelatorioService {
         entity.setMaoDeObra(maoDeObra);
         entity.setFuncao(maoDeObra.getFuncao());
 
-        if (tipoMaoDeObra.equals(TipoMaoDeObra.GENERICA)) return;
+        if (tipoMaoDeObra.equals(TipoMaoDeObra.GENERICA) || !request.presenca().equals(PresencaMaoDeObra.PRESENTE)) return;
 
         entity.setHoraInicio(request.horaInicio());
         entity.setHoraFim(request.horaFim());

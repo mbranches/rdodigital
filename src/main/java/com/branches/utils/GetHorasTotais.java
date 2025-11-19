@@ -1,6 +1,5 @@
-package com.branches.relatorio.maodeobra.service;
+package com.branches.utils;
 
-import com.branches.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -8,15 +7,11 @@ import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Service
-public class GetHorasTrabalhadaOfMaoDeObraService {
-    public LocalTime execute(LocalTime horaInicio, LocalTime horaFim, LocalTime horasIntervalo) {
-        if ((horaInicio != null && horaFim == null) || (horaInicio == null && horaFim != null)) {
-            throw new BadRequestException("Quando hora de início ou hora de fim forem preenchidas, ambas devem ser preenchidas");
-        }
+public class GetHorasTotais {
+    private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFim;
 
-        if (horaInicio == null) {
-            return null;
-        }
+    public LocalTime execute(LocalTime horaInicio, LocalTime horaFim, LocalTime horasIntervalo) {
+        validateHoraInicioAndHoraFim.execute(horaInicio, horaFim);
 
         int horasDeIntervalo = horasIntervalo != null ? horasIntervalo.getHour() : 0;
         int minutosDeIntervalo = horasIntervalo != null ? horasIntervalo.getMinute() : 0;

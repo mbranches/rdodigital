@@ -9,6 +9,7 @@ import com.branches.relatorio.maodeobra.repository.MaoDeObraRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.GetHorasTotais;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UpdateMaoDeObraService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetMaoDeObraByIdAndTenantIdService getMaoDeObraByIdService;
     private final GetGrupoMaoDeObraByIdAndTenantIdService getGrupoMaoDeObraByIdAndTenantIdService;
-    private final GetHorasTrabalhadaOfMaoDeObraService getHorasTrabalhadaOfMaoDeObraService;
+    private final GetHorasTotais getHorasTotais;
     private final MaoDeObraRepository maoDeObraRepository;
     private final CheckIfUserHasAccessToMaoDeObraService checkIfUserHasAccessToMaoDeObraService;
 
@@ -55,7 +56,7 @@ public class UpdateMaoDeObraService {
             maoDeObraEntity.setHoraInicio(horaInicio);
             maoDeObraEntity.setHoraFim(horaFim);
             maoDeObraEntity.setHorasIntervalo(horasIntervalo);
-            maoDeObraEntity.setHorasTrabalhadas(getHorasTrabalhadaOfMaoDeObraService.execute(horaInicio, horaFim, horasIntervalo));
+            maoDeObraEntity.setHorasTrabalhadas(getHorasTotais.execute(horaInicio, horaFim, horasIntervalo));
         }
 
         maoDeObraRepository.save(maoDeObraEntity);

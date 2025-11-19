@@ -1,5 +1,6 @@
 package com.branches.relatorio.rdo.service;
 
+import com.branches.utils.GetHorasTotais;
 import com.branches.relatorio.rdo.domain.AtividadeDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.RelatorioEntity;
@@ -28,6 +29,7 @@ public class UpdateOcorrenciasDeRelatorioService {
     private final GetTiposDeOcorrenciaByTenantIdAndIdInService getTiposDeOcorrenciaByTenantIdAndIdInService;
     private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFim;
     private final GetAtividadeListByRelatorioIdAndIdInService getAtividadeListByRelatorioIdAndIdInService;
+    private final GetHorasTotais getHorasTotais;
 
     public void execute(List<OcorrenciaDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
         if (requestList == null || requestList.isEmpty()) {
@@ -40,7 +42,7 @@ public class UpdateOcorrenciasDeRelatorioService {
         Map<Long, AtividadeDeRelatorioEntity> atividadesMap = getAtividadesMap(relatorio, requestList);
 
         List<OcorrenciaDeRelatorioEntity> updatedOcorrencias = updateExistingOcorrencias(requestList, relatorio, tenantId, tiposDeOcorrenciaMap, atividadesMap);
-        List<OcorrenciaDeRelatorioEntity> newOcorrencias = createNewOcorrencias(requestList, relatorio, tenantId);
+        List<OcorrenciaDeRelatorioEntity> newOcorrencias = createNewOcorrencias(requestList, relatorio, tenantId, tiposDeOcorrenciaMap, atividadesMap);
 
         List<OcorrenciaDeRelatorioEntity> ocorrenciasToSave = new ArrayList<>(updatedOcorrencias);
         ocorrenciasToSave.addAll(newOcorrencias);
@@ -60,13 +62,13 @@ public class UpdateOcorrenciasDeRelatorioService {
         ocorrenciaDeRelatorioRepository.removeAllByIdNotInAndRelatorioId(ids, relatorioId);
     }
 
-    private List<OcorrenciaDeRelatorioEntity> createNewOcorrencias(List<OcorrenciaDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
+    private List<OcorrenciaDeRelatorioEntity> createNewOcorrencias(List<OcorrenciaDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId, Map<Long, TipoDeOcorrenciaEntity> tiposDeOcorrenciaMap, Map<Long, AtividadeDeRelatorioEntity> atividadesMap) {
         return requestList.stream()
                 .filter(request -> request.id() == null)
                 .map(request -> {
                     OcorrenciaDeRelatorioEntity ocorrencia = new OcorrenciaDeRelatorioEntity();
                     ocorrencia.setRelatorio(relatorio);
-                    setNewFields(ocorrencia, request, Map.of(), Map.of(), tenantId);
+                    setNewFields(ocorrencia, request, tiposDeOcorrenciaMap, atividadesMap, tenantId);
                     return ocorrencia;
                 })
                 .toList();
@@ -112,6 +114,7 @@ public class UpdateOcorrenciasDeRelatorioService {
         validateHoraInicioAndHoraFim.execute(request.horaInicio(), request.horaFim());
         ocorrencia.setHoraInicio(request.horaInicio());
         ocorrencia.setHoraFim(request.horaFim());
+        ocorrencia.setTotalHoras(getHorasTotais.execute(request.horaInicio(), request.horaFim(), null));
         ocorrencia.setAtividadeVinculada(
                 request.atividadeVinculadaId() != null
                         ? atividadesMap.get(request.atividadeVinculadaId())

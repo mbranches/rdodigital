@@ -2,7 +2,7 @@ package com.branches.relatorio.rdo.service;
 
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
-import com.branches.relatorio.maodeobra.service.GetHorasTrabalhadaOfMaoDeObraService;
+import com.branches.utils.GetHorasTotais;
 import com.branches.relatorio.maodeobra.service.GetMaoDeObraListByTenantIdAndIdInAndTypeService;
 import com.branches.relatorio.rdo.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.RelatorioEntity;
@@ -27,7 +27,7 @@ public class UpdateMaoDeObraDeRelatorioService {
     private final MaoDeObraDeRelatorioRepository maoDeObraDeRelatorioRepository;
     private final GetMaoDeObraListByTenantIdAndIdInAndTypeService getMaoDeObraListByTenantIdAndIdInAndTypeService;
     private final GetMaoDeObraDeRelatorioListByRelatorioIdAndIdInService getMaoDeObraDeRelatorioListByRelatorioIdAndIdInService;
-    private final GetHorasTrabalhadaOfMaoDeObraService getHorasTrabalhadaOfMaoDeObraService;
+    private final GetHorasTotais getHorasTotais;
 
     public void execute(List<MaoDeObraDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
         if(requestList == null || requestList.isEmpty()) {
@@ -106,7 +106,7 @@ public class UpdateMaoDeObraDeRelatorioService {
         entity.setHoraInicio(request.horaInicio());
         entity.setHoraFim(request.horaFim());
         entity.setHorasIntervalo(request.horasIntervalo());
-        LocalTime horasTrabalhadas = getHorasTrabalhadaOfMaoDeObraService.execute(request.horaInicio(), request.horaFim(), request.horasIntervalo());
+        LocalTime horasTrabalhadas = getHorasTotais.execute(request.horaInicio(), request.horaFim(), request.horasIntervalo());
         entity.setHorasTrabalhadas(horasTrabalhadas);
     }
 

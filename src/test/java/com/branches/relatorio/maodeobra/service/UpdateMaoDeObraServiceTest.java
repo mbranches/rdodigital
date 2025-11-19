@@ -12,6 +12,7 @@ import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.Authorities;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.GetHorasTotais;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +42,7 @@ class UpdateMaoDeObraServiceTest {
     private GetGrupoMaoDeObraByIdAndTenantIdService getGrupoMaoDeObraByIdAndTenantIdService;
 
     @Mock
-    private GetHorasTrabalhadaOfMaoDeObraService getHorasTrabalhadaOfMaoDeObraService;
+    private GetHorasTotais getHorasTotais;
 
     @Mock
     private MaoDeObraRepository maoDeObraRepository;
@@ -158,7 +159,7 @@ class UpdateMaoDeObraServiceTest {
         doNothing().when(checkIfUserHasAccessToMaoDeObraService).execute(userTenantWithAccess);
         when(getMaoDeObraByIdService.execute(maoDeObraId, tenantId)).thenReturn(maoDeObraPersonalizada);
         when(getGrupoMaoDeObraByIdAndTenantIdService.execute(novoGrupoId, tenantId)).thenReturn(novoGrupoMaoDeObra);
-        when(getHorasTrabalhadaOfMaoDeObraService.execute(
+        when(getHorasTotais.execute(
                 requestPersonalizada.horaInicio(),
                 requestPersonalizada.horaFim(),
                 requestPersonalizada.horasIntervalo()

@@ -1,6 +1,7 @@
 package com.branches.relatorio.rdo.service;
 
 import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
+import com.branches.utils.GetHorasTotais;
 import com.branches.relatorio.maodeobra.service.GetMaoDeObraListByTenantIdAndIdInAndTypeService;
 import com.branches.relatorio.rdo.domain.AtividadeDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
@@ -9,7 +10,6 @@ import com.branches.relatorio.rdo.dto.request.AtividadeDeRelatorioRequest;
 import com.branches.relatorio.rdo.dto.request.MaoDeObraDeAtividadeRequest;
 import com.branches.relatorio.rdo.repository.AtividadeDeRelatorioRepository;
 import com.branches.relatorio.rdo.repository.MaoDeObraDeAtividadeDeRelatorioRepository;
-import com.branches.utils.ValidateHoraInicioAndHoraFim;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +28,8 @@ public class UpdateAtividadesDeRelatorioService {
     private final MaoDeObraDeAtividadeDeRelatorioRepository maoDeObraDeAtividadeDeRelatorioRepository;
     private final GetMaoDeObraListByTenantIdAndIdInAndTypeService getMaoDeObraListByTenantIdAndIdInAndTypeService;
     private final GetMaoDeObraDeAtividadeListByAtividadeIdAndIdInService getMaoDeObraDeAtividadeListByAtividadeIdAndIdInService;
-    private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFim;
     private final GetAtividadeListByRelatorioIdAndIdInService getAtividadeListByRelatorioIdAndIdInService;
+    private final GetHorasTotais getHorasTotais;
 
     public void execute(List<AtividadeDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
         if (requestList == null || requestList.isEmpty()) {
@@ -150,9 +150,9 @@ public class UpdateAtividadesDeRelatorioService {
         entity.setUnidadeMedida(request.unidadeMedida());
         entity.setPorcentagemConcluida(request.porcentagemConcluida());
         entity.setStatus(request.status());
-        validateHoraInicioAndHoraFim.execute(request.horaInicio(), request.horaFim());
         entity.setHoraInicio(request.horaInicio());
         entity.setHoraFim(request.horaFim());
+        entity.setTotalHoras(getHorasTotais.execute(request.horaInicio(), request.horaFim(), null));
         entity.getCamposPersonalizados().clear();
         entity.setCamposPersonalizados(request.camposPersonalizados().stream().map(c -> c.toEntity(tenantId)).toList());
         entity.getMaosDeObra().clear();

@@ -1,6 +1,7 @@
 package com.branches.relatorio.maodeobra.service;
 
 import com.branches.exception.BadRequestException;
+import com.branches.utils.GetHorasTotais;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,10 +13,10 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class GetHorasTrabalhadaOfMaoDeObraServiceTest {
+class GetHorasTotaisTest {
 
     @InjectMocks
-    private GetHorasTrabalhadaOfMaoDeObraService getHorasTrabalhadaOfMaoDeObraService;
+    private GetHorasTotais getHorasTotais;
 
     private LocalTime horaInicio;
     private LocalTime horaFim;
@@ -30,7 +31,7 @@ class GetHorasTrabalhadaOfMaoDeObraServiceTest {
 
     @Test
     void deveCalcularHorasTrabalhadasCorretamente() {
-        LocalTime result = getHorasTrabalhadaOfMaoDeObraService.execute(horaInicio, horaFim, horasIntervalo);
+        LocalTime result = getHorasTotais.execute(horaInicio, horaFim, horasIntervalo);
 
         assertNotNull(result);
         assertEquals(LocalTime.of(8, 0), result);
@@ -38,7 +39,7 @@ class GetHorasTrabalhadaOfMaoDeObraServiceTest {
 
     @Test
     void deveCalcularHorasTrabalhadasSemIntervalo() {
-        LocalTime result = getHorasTrabalhadaOfMaoDeObraService.execute(horaInicio, horaFim, null);
+        LocalTime result = getHorasTotais.execute(horaInicio, horaFim, null);
 
         assertNotNull(result);
         assertEquals(LocalTime.of(9, 0), result);
@@ -46,7 +47,7 @@ class GetHorasTrabalhadaOfMaoDeObraServiceTest {
 
     @Test
     void deveRetornarNullQuandoHoraInicioEHoraFimForemNull() {
-        LocalTime result = getHorasTrabalhadaOfMaoDeObraService.execute(null, null, null);
+        LocalTime result = getHorasTotais.execute(null, null, null);
 
         assertNull(result);
     }
@@ -55,7 +56,7 @@ class GetHorasTrabalhadaOfMaoDeObraServiceTest {
     void deveLancarBadRequestExceptionQuandoApenasHoraInicioForPreenchida() {
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> getHorasTrabalhadaOfMaoDeObraService.execute(horaInicio, null, horasIntervalo)
+                () -> getHorasTotais.execute(horaInicio, null, horasIntervalo)
         );
 
         assertNotNull(exception);
@@ -67,7 +68,7 @@ class GetHorasTrabalhadaOfMaoDeObraServiceTest {
     void deveLancarBadRequestExceptionQuandoApenasHoraFimForPreenchida() {
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> getHorasTrabalhadaOfMaoDeObraService.execute(null, horaFim, horasIntervalo)
+                () -> getHorasTotais.execute(null, horaFim, horasIntervalo)
         );
 
         assertNotNull(exception);

@@ -27,7 +27,6 @@ public class UpdateOcorrenciasDeRelatorioService {
     private final GetOcorrenciaListByRelatorioIdAndIdInService getOcorrenciaListByRelatorioIdAndIdInService;
     private final GetTiposDeOcorrenciaByTenantIdAndIdInService getTiposDeOcorrenciaByTenantIdAndIdInService;
     private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFim;
-    private final GetAtividadeListByRelatorioIdAndIdInService getAtividadeListByRelatorioIdAndIdInService;
     private final GetHorasTotais getHorasTotais;
 
     public void execute(List<OcorrenciaDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.lang.ScopedValue;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -50,4 +51,6 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
     Optional<TenantInfoProjection> findTenantInfoById(Long tenantId);
 
     List<TenantEntity> findAllByIdInAndAtivoIsTrue(Collection<Long> ids);
+
+    Optional<TenantEntity> findByIdExterno(String idExterno);
 }

@@ -1,7 +1,7 @@
 package com.branches.obra.dto.response;
 
-import com.branches.obra.domain.StatusObra;
-import com.branches.obra.domain.TipoContratoDeObra;
+import com.branches.obra.domain.enums.StatusObra;
+import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.obra.repository.projections.ObraDetailsProjection;
 import com.branches.relatorio.rdo.dto.response.RelatorioResponse;

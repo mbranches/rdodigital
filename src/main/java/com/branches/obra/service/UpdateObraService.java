@@ -3,7 +3,7 @@ package com.branches.obra.service;
 import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.exception.ForbiddenException;
 import com.branches.obra.domain.ObraEntity;
-import com.branches.obra.domain.StatusObra;
+import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.dto.request.UpdateObraRequest;
 import com.branches.obra.repository.ObraRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;

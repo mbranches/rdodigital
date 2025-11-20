@@ -3,8 +3,8 @@ package com.branches.obra.service;
 
 import com.branches.exception.NotFoundException;
 import com.branches.obra.domain.ObraEntity;
-import com.branches.obra.domain.StatusObra;
-import com.branches.obra.domain.TipoContratoDeObra;
+import com.branches.obra.domain.enums.StatusObra;
+import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.obra.repository.ObraRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -7,8 +7,8 @@ import com.branches.obra.domain.ObraEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import com.branches.obra.domain.StatusObra;
-import com.branches.obra.domain.TipoContratoDeObra;
+import com.branches.obra.domain.enums.StatusObra;
+import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.dto.request.CreateObraRequest;
 import com.branches.obra.dto.response.CreateObraResponse;
 import com.branches.obra.domain.enums.TipoMaoDeObra;

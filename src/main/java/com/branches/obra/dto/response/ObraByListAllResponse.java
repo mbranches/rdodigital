@@ -1,6 +1,6 @@
 package com.branches.obra.dto.response;
 
-import com.branches.obra.domain.StatusObra;
+import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.repository.projections.ObraProjection;
 
 public record ObraByListAllResponse(

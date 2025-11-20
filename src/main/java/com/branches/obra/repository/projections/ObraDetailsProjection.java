@@ -1,8 +1,8 @@
 package com.branches.obra.repository.projections;
 
 import com.branches.obra.domain.GrupoDeObraEntity;
-import com.branches.obra.domain.StatusObra;
-import com.branches.obra.domain.TipoContratoDeObra;
+import com.branches.obra.domain.enums.StatusObra;
+import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 
 import java.time.LocalDate;

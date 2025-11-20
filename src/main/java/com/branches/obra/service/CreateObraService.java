@@ -4,13 +4,14 @@ import com.branches.assinatura.domain.AssinaturaEntity;
 import com.branches.assinatura.service.GetAssinaturaActiveByTenantIdService;
 import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.obra.domain.ObraEntity;
-import com.branches.obra.domain.StatusObra;
+import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.dto.request.CreateObraRequest;
 import com.branches.obra.dto.response.CreateObraResponse;
 import com.branches.obra.repository.ObraRepository;
 import com.branches.exception.BadRequestException;
 import com.branches.exception.ForbiddenException;
-import com.branches.tenant.service.GetTenantIdByIdExternoService;
+import com.branches.tenant.domain.TenantEntity;
+import com.branches.tenant.service.GetTenantByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +23,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class CreateObraService {
-    private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
     private final GetAssinaturaActiveByTenantIdService getAssinaturaActiveByTenantIdService;
     private final ObraRepository obraRepository;
     private final GetGrupoDeObraByIdAndTenantIdService getGrupoDeObraByIdAndTenantIdService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
+    private final GetTenantByIdExternoService getTenantByIdExternoService;
 
     public CreateObraResponse execute(CreateObraRequest request, String tenantDaObraExternalId, List<UserTenantEntity> userTenants) {
-        Long tenantId = getTenantIdByIdExternoService.execute(tenantDaObraExternalId);
+        TenantEntity tenant = getTenantByIdExternoService.execute(tenantDaObraExternalId);
+
+        Long tenantId = tenant.getId();
 
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
@@ -49,7 +52,7 @@ public class CreateObraService {
                 .observacoes(request.observacoes())
                 .tipoMaoDeObra(request.tipoMaoDeObra())
                 .status(request.status())
-                .ativo(true)
+                .modeloDeRelatorio(tenant.getModeloDeRelatorioDefault())
                 .tenantId(tenantId)
                 .build();
 

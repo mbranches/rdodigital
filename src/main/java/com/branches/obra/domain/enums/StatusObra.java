@@ -1,4 +1,4 @@
-package com.branches.obra.domain;
+package com.branches.obra.domain.enums;
 
 public enum StatusObra {
     EM_ANDAMENTO,

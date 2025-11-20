@@ -1,6 +1,9 @@
 package com.branches.obra.domain;
 
 import com.branches.config.envers.AuditableTenantOwned;
+import com.branches.configuradores.domain.ModeloDeRelatorioEntity;
+import com.branches.obra.domain.enums.StatusObra;
+import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import jakarta.persistence.*;
 import lombok.*;
@@ -65,8 +68,13 @@ public class ObraEntity extends AuditableTenantOwned {
     @JoinColumn(name = "grupo_de_obra_id")
     private GrupoDeObraEntity grupo;
 
+    @Builder.Default
     @Column(nullable = false)
-    private Boolean ativo;
+    private Boolean ativo = true;
+
+    @ManyToOne
+    @JoinColumn(name = "modelo_de_relatorio_id")
+    private ModeloDeRelatorioEntity modeloDeRelatorio;
 
     @Override
     public boolean equals(Object o) {

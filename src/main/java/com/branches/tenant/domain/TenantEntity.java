@@ -1,6 +1,7 @@
 package com.branches.tenant.domain;
 
 import com.branches.config.envers.Auditable;
+import com.branches.configuradores.domain.ModeloDeRelatorioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,4 +40,8 @@ public class TenantEntity extends Auditable {
 
     @Column(nullable = false)
     private Boolean ativo;
+
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private ModeloDeRelatorioEntity modeloDeRelatorioDefault;
 }

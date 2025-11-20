@@ -1,6 +1,6 @@
 package com.branches.obra.repository.projections;
 
-import com.branches.obra.domain.StatusObra;
+import com.branches.obra.domain.enums.StatusObra;
 
 public interface ObraProjection {
     String getIdExterno();

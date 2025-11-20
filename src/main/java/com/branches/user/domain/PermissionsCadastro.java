@@ -12,9 +12,11 @@ public class PermissionsCadastro {
     private Boolean equipamentos;
     private Boolean maoDeObra;
     private Boolean tiposDeOcorrencia;
+    private Boolean modelosDeRelatorio;
 
     public static PermissionsCadastro fullPermissions() {
         return new PermissionsCadastro(
+                true,
                 true,
                 true,
                 true,

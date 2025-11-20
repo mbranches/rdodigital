@@ -21,7 +21,7 @@ public class PermissionsRelatorio extends PermissionsDefault {
     public static PermissionsRelatorio fullPermissions() {
         return new PermissionsRelatorio(
                 true,
-                true,
+                false,
                 true,
                 true
         );

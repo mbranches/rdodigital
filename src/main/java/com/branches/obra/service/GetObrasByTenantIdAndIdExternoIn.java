@@ -6,7 +6,6 @@ import com.branches.obra.repository.ObraRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 public class GetObrasByTenantIdAndIdExternoIn {
     private final ObraRepository obraRepository;
 
-    public List<ObraEntity> execute(Long tenantId, Collection<String> obrasExternalIds) {
+    public List<ObraEntity> execute(Long tenantId, Set<String> obrasExternalIds) {
         List<ObraEntity> obrasList = obraRepository.findAllByIdExternoInAndTenantIdAndAtivoIsTrue(obrasExternalIds, tenantId);
 
         if (obrasList.size() != obrasExternalIds.size()) {

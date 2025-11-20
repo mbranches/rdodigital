@@ -1,8 +1,10 @@
 package com.branches.relatorio.rdo.repository;
 
 import com.branches.relatorio.rdo.domain.RelatorioEntity;
+import com.branches.relatorio.rdo.domain.enums.StatusRelatorio;
 import com.branches.relatorio.rdo.repository.projections.RelatorioDetailsProjection;
 import com.branches.relatorio.rdo.repository.projections.RelatorioProjection;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,27 +29,15 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         o.endereco AS obraEndereco,
         o.contratante AS obraContratante,
         o.responsavel AS obraResponsavel,
+        o.numeroContrato AS obraNumeroContrato,
         r.data AS data,
         r.numero AS numero,
         r.prazoContratualObra AS prazoContratual,
         r.prazoDecorridoObra AS prazoDecorrido,
         r.prazoPraVencerObra AS prazoPraVencer,
-        CASE
-            WHEN :canViewCondicaoDoClima = true THEN r.caracteristicasManha
-            ELSE NULL
-        END AS caracteristicaManha,
-        CASE
-            WHEN :canViewCondicaoDoClima = true THEN r.caracteristicasTarde
-            ELSE NULL
-        END AS caracteristicaTarde,
-        CASE
-            WHEN :canViewCondicaoDoClima = true THEN r.caracteristicasNoite
-            ELSE NULL
-        END AS caracteristicaNoite,
-        CASE
-            WHEN :canViewCondicaoDoClima = true THEN r.indiciePluviometrico
-            ELSE NULL
-        END AS indiciePluviometrico,
+        r.caracteristicasManha AS caracteristicasManha,
+        r.caracteristicasTarde AS caracteristicasTarde,
+        r.caracteristicasNoite AS caracteristicasNoite,
         r.indiciePluviometrico AS indicePluviometrico,
         r.status AS status,
         u.nome AS criadoPor,
@@ -63,7 +53,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
       AND r.tenantId = :tenantId
       AND t.ativo IS TRUE
 """)
-    RelatorioDetailsProjection findDetailsByIdExternoAndTenantId(String relatorioExternalId, Long tenantId, Boolean canViewCondicaoDoClima);
+    Optional<RelatorioDetailsProjection> findDetailsByIdExternoAndTenantId(String relatorioExternalId, Long tenantId);
 
     @Query("""
     SELECT r.idExterno AS idExterno,
@@ -84,4 +74,43 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     LIMIT 5
 """)
     List<RelatorioProjection> findTop5ByObraIdProjection(Long id);
+
+    @Query("""
+    SELECT r.idExterno AS idExterno,
+        r.data AS data,
+        r.numero AS numero,
+        r.status AS status,
+        r.pdfUrl AS pdfUrl,
+        o.idExterno AS obraIdExterno,
+        o.nome AS obraNome,
+        o.endereco AS obraEndereco,
+        o.contratante AS obraContratante,
+        o.responsavel AS obraResponsavel,
+        o.numeroContrato AS obraNumeroContrato
+    FROM RelatorioEntity r
+    JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
+    WHERE r.obraId = :obraId
+        AND r.status = :statusRelatorio
+        AND r.ativo IS TRUE
+""")
+    List<RelatorioProjection> findAllByObraIdAndStatusProjection(Long obraId, StatusRelatorio statusRelatorio, Pageable pageable);
+
+    @Query("""
+    SELECT r.idExterno AS idExterno,
+        r.data AS data,
+        r.numero AS numero,
+        r.status AS status,
+        r.pdfUrl AS pdfUrl,
+        o.idExterno AS obraIdExterno,
+        o.nome AS obraNome,
+        o.endereco AS obraEndereco,
+        o.contratante AS obraContratante,
+        o.responsavel AS obraResponsavel,
+        o.numeroContrato AS obraNumeroContrato
+    FROM RelatorioEntity r
+    JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
+    WHERE r.obraId = :obraId
+        AND r.ativo IS TRUE
+""")
+    List<RelatorioProjection> findAllByObraIdProjection(Long obraId, Pageable pageable);
 }

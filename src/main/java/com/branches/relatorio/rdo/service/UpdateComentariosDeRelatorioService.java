@@ -2,6 +2,7 @@ package com.branches.relatorio.rdo.service;
 
 import com.branches.relatorio.rdo.domain.ComentarioDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.RelatorioEntity;
+import com.branches.relatorio.rdo.dto.request.CampoPersonalizadoRequest;
 import com.branches.relatorio.rdo.dto.request.ComentarioDeRelatorioRequest;
 import com.branches.relatorio.rdo.repository.ComentarioDeRelatorioRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +39,18 @@ public class UpdateComentariosDeRelatorioService {
         comentarioDeRelatorioRepository.saveAll(comentariosToSave);
     }
 
-    private void removeAllNotMentioned(List<ComentarioDeRelatorioEntity> updatedComentarios, Long id) {
+    private void removeAllNotMentioned(List<ComentarioDeRelatorioEntity> updatedComentarios, Long relatorioId) {
         List<Long> idsToKeep = updatedComentarios.stream()
                 .map(ComentarioDeRelatorioEntity::getId)
                 .toList();
 
-        comentarioDeRelatorioRepository.removeAllByIdNotInAndRelatorioId(idsToKeep, id);
+        if (idsToKeep.isEmpty()) {
+            comentarioDeRelatorioRepository.removeAllByRelatorioId(relatorioId);
+
+            return;
+        }
+
+        comentarioDeRelatorioRepository.removeAllByIdNotInAndRelatorioId(idsToKeep, relatorioId);
     }
 
     private List<ComentarioDeRelatorioEntity> createNewComentarios(List<ComentarioDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
@@ -65,6 +72,7 @@ public class UpdateComentariosDeRelatorioService {
         List<Long> ids = requestList.stream()
                 .map(ComentarioDeRelatorioRequest::id)
                 .filter(Objects::nonNull)
+                .distinct()
                 .toList();
 
         Map<Long, ComentarioDeRelatorioRequest> requestMap = requestList.stream()
@@ -82,10 +90,14 @@ public class UpdateComentariosDeRelatorioService {
     }
 
     private void setNewFields(ComentarioDeRelatorioEntity entity, ComentarioDeRelatorioRequest request, Long tenantId) {
+        List<CampoPersonalizadoRequest> campoPersonalizadoRequest = request.camposPersonalizados() != null
+                ? request.camposPersonalizados()
+                : List.of();
+
         entity.setDescricao(request.descricao());
         entity.getCamposPersonalizados().clear();
         entity.getCamposPersonalizados().addAll(
-                request.camposPersonalizados().stream().map(c -> c.toEntity(tenantId)).toList()
+                campoPersonalizadoRequest.stream().map(c -> c.toEntity(tenantId)).toList()
         );
     }
 }

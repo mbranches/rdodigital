@@ -18,7 +18,7 @@ public record GetRelatorioDetailsResponse(
         ObraByRelatorioResponse obra,
         LocalDate data,
         String diaDaSemana,
-        String numeroContrato,
+        Long numeroRelatorio,
         Long prazoContratual,
         Long prazoDecorrido,
         Long prazoPraVencer,
@@ -37,17 +37,17 @@ public record GetRelatorioDetailsResponse(
         ModifyerByRelatorioResponse ultimaModificacao
 
 ) {
-    public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails, List<OcorrenciaDeRelatorioEntity> ocorrencias, List<AtividadeDeRelatorioEntity> atividades, List<EquipamentoDeRelatorioEntity> equipamentos, List<MaoDeObraDeRelatorioEntity> maoDeObra, List<ComentarioDeRelatorioEntity> comentarios) {
-        ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorioDetails.getObraIdExterno(), relatorioDetails.getObraNome(), relatorioDetails.getObraEndereco(), relatorioDetails.getObraContratante(), relatorioDetails.getObraResponsavel());
+    public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails, List<OcorrenciaDeRelatorioEntity> ocorrencias, List<AtividadeDeRelatorioEntity> atividades, List<EquipamentoDeRelatorioEntity> equipamentos, List<MaoDeObraDeRelatorioEntity> maoDeObra, List<ComentarioDeRelatorioEntity> comentarios, Boolean canViewCondicaoDoClima) {
+        ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorioDetails.getObraIdExterno(), relatorioDetails.getObraNome(), relatorioDetails.getObraEndereco(), relatorioDetails.getObraContratante(), relatorioDetails.getObraResponsavel(), relatorioDetails.getObraNumeroContrato());
 
         String dayOfWeekResponse = relatorioDetails.getData().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"));
 
-        var caracteristicaManha = relatorioDetails.getCaracteristicaManha() != null ?
-                CaracteristicaDePeriodoDoDiaResponse.from(relatorioDetails.getCaracteristicaManha()) : null;
-        var caracteristicaTarde = relatorioDetails.getCaracteristicaTarde() != null ?
-                CaracteristicaDePeriodoDoDiaResponse.from(relatorioDetails.getCaracteristicaTarde()) : null;
-        var caracteristicaNoite = relatorioDetails.getCaracteristicaNoite() != null ?
-                CaracteristicaDePeriodoDoDiaResponse.from(relatorioDetails.getCaracteristicaNoite()) : null;
+        var caracteristicaManha = canViewCondicaoDoClima ?
+                CaracteristicaDePeriodoDoDiaResponse.from(relatorioDetails.getCaracteristicasManha()) : null;
+        var caracteristicaTarde = canViewCondicaoDoClima ?
+                CaracteristicaDePeriodoDoDiaResponse.from(relatorioDetails.getCaracteristicasTarde()) : null;
+        var caracteristicaNoite = canViewCondicaoDoClima ?
+                CaracteristicaDePeriodoDoDiaResponse.from(relatorioDetails.getCaracteristicasNoite()) : null;
 
         var equipamentosResponse = equipamentos != null ?
                 equipamentos.stream().map(EquipamentoDeRelatorioResponse::from).toList() : null;

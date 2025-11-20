@@ -1,6 +1,7 @@
 package com.branches.relatorio.rdo.service;
 
 import com.branches.exception.ForbiddenException;
+import com.branches.exception.NotFoundException;
 import com.branches.relatorio.rdo.domain.*;
 import com.branches.relatorio.rdo.domain.enums.StatusRelatorio;
 import com.branches.relatorio.rdo.dto.response.GetRelatorioDetailsResponse;
@@ -33,11 +34,12 @@ public class GetRelatorioDetailsService {
 
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
-        Boolean canViewCondicaoDoClima = currentUserTenant.getAuthorities().getItensDeRelatorio().getCondicaoDoClima();
-        RelatorioDetailsProjection relatorioDetails = relatorioRepository.findDetailsByIdExternoAndTenantId(relatorioExternalId, tenantId, canViewCondicaoDoClima);
+        RelatorioDetailsProjection relatorioDetails = relatorioRepository.findDetailsByIdExternoAndTenantId(relatorioExternalId, tenantId)
+                .orElseThrow(() -> new NotFoundException("Relatório não encontrado com o id: " + relatorioExternalId));
 
         checkIfUserCanViewRelatorio(currentUserTenant, relatorioDetails.getStatus());
 
+        Boolean canViewCondicaoDoClima = currentUserTenant.getAuthorities().getItensDeRelatorio().getCondicaoDoClima();
         Boolean canViewOcorrencias = currentUserTenant.getAuthorities().getItensDeRelatorio().getOcorrencias();
         Boolean canVAtividades = currentUserTenant.getAuthorities().getItensDeRelatorio().getAtividades();
         Boolean canViewEquipamentos = currentUserTenant.getAuthorities().getItensDeRelatorio().getEquipamentos();
@@ -59,7 +61,8 @@ public class GetRelatorioDetailsService {
                 atividades,
                 equipamentos,
                 maoDeObra,
-                comentarios
+                comentarios,
+                canViewCondicaoDoClima
         );
     }
 

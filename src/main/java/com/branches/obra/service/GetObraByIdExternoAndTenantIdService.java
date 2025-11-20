@@ -12,7 +12,7 @@ public class GetObraByIdExternoAndTenantIdService {
     private final ObraRepository obraRepository;
 
     public ObraEntity execute(String idExterno, Long tenantId) {
-        return obraRepository.findByIdExternoAndTenantId(idExterno, tenantId)
+        return obraRepository.findByIdExternoAndTenantIdAndAtivoIsTrue(idExterno, tenantId)
                 .orElseThrow(() -> new NotFoundException("Obra com idExterno " + idExterno + " não encontrada para o tenant informado"));
     }
 }

@@ -6,6 +6,7 @@ import com.branches.relatorio.rdo.repository.AtividadeDeRelatorioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,9 +19,10 @@ public class GetAtividadeListByRelatorioIdAndIdInService {
         List<AtividadeDeRelatorioEntity> response =  atividadeDeRelatorioRepository.findAllByIdInAndRelatorioId(ids, relatorioId);
 
         if (response.size() != ids.size()) {
-            ids.removeAll(response.stream().map(AtividadeDeRelatorioEntity::getId).toList());
+            List<Long> missingIds = new ArrayList<>(ids);
+            missingIds.removeAll(response.stream().map(AtividadeDeRelatorioEntity::getId).toList());
 
-            throw new NotFoundException("Atividade(s) de relatorio nao encontrado(s) para o(s) id(s): " + ids);
+            throw new NotFoundException("Atividade(s) de relatorio nao encontrado(s) para o(s) id(s): " + missingIds);
         }
 
         return response;

@@ -15,7 +15,7 @@ public record RelatorioResponse(
         ObraByRelatorioResponse obra
 ) {
     public static RelatorioResponse from(RelatorioProjection relatorio) {
-        ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorio.getObraIdExterno(), relatorio.getObraNome(), relatorio.getObraEndereco(), relatorio.getObraContratante(), relatorio.getObraResponsavel());
+        ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorio.getObraIdExterno(), relatorio.getObraNome(), relatorio.getObraEndereco(), relatorio.getObraContratante(), relatorio.getObraResponsavel(), relatorio.getObraNumeroContrato());
 
         return new RelatorioResponse(
                 relatorio.getIdExterno(),

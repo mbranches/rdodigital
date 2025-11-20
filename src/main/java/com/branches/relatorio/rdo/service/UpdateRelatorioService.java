@@ -45,9 +45,9 @@ public class UpdateRelatorioService {
         relatorio.setPrazoPraVencerObra(request.prazoPraVencer());
         relatorio.setIndiciePluviometrico(request.indicePluviometrico());
         updateStatus(currentUserTenant, relatorio, request.status());
-        relatorio.setCaracteristicasManha(getUpdatedCaracteristicaEntity(request.caracteristicasManha(), relatorio.getId()));
-        relatorio.setCaracteristicasTarde(getUpdatedCaracteristicaEntity(request.caracteristicasTarde(), relatorio.getId()));
-        relatorio.setCaracteristicasNoite(getUpdatedCaracteristicaEntity(request.caracteristicasNoite(), relatorio.getId()));
+        relatorio.setCaracteristicasManha(getUpdatedCaracteristicaEntity(request.caracteristicasManha(), tenantId));
+        relatorio.setCaracteristicasTarde(getUpdatedCaracteristicaEntity(request.caracteristicasTarde(), tenantId));
+        relatorio.setCaracteristicasNoite(getUpdatedCaracteristicaEntity(request.caracteristicasNoite(), tenantId));
 
         relatorioRepository.save(relatorio);
 
@@ -68,10 +68,10 @@ public class UpdateRelatorioService {
         relatorio.setStatus(status);
     }
 
-    private CaracteristicaDePeriodoDoDiaEntity getUpdatedCaracteristicaEntity(CaracteristicaDePeriodoDoDiaRequest request, Long relatorioId) {
+    private CaracteristicaDePeriodoDoDiaEntity getUpdatedCaracteristicaEntity(CaracteristicaDePeriodoDoDiaRequest request, Long tenantId) {
         var id = request.id();
 
-        var entity = caracteristicaDePeriodoDoDiaRepository.findByIdAndRelatorioId(id, relatorioId)
+        var entity = caracteristicaDePeriodoDoDiaRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new NotFoundException("Caracteristica de periodo do dia não encontrada com o id: " + id));
 
         entity.setClima(request.clima());

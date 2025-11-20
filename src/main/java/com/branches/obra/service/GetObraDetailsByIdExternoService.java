@@ -30,7 +30,7 @@ public class GetObraDetailsByIdExternoService {
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantDaObraId);
 
         ObraDetailsProjection obra = obraRepository.findObraDetailsByIdExternoAndTenantId(idExterno, tenantDaObraId)
-                .orElseThrow(() -> new NotFoundException("Obra não encontrada para o id: " + idExterno));
+                .orElseThrow(() -> new NotFoundException("Obra não encontrada com o id: " + idExterno));
 
         List<RelatorioProjection> relatoriosRecentes = relatorioRepository.findTop5ByObraIdProjection(obra.getId());
 

@@ -6,21 +6,23 @@ import com.branches.relatorio.rdo.repository.MaoDeObraDeRelatorioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class GetMaoDeObraDeRelatorioListByRelatorioIdAndIdInService {
     private final MaoDeObraDeRelatorioRepository maoDeObraDeRelatorioRepository;
 
-    public List<MaoDeObraDeRelatorioEntity> execute(Long relatorioId, Collection<Long> maoDeObraDeRelatorioIds) {
+    public List<MaoDeObraDeRelatorioEntity> execute(Long relatorioId, Set<Long> maoDeObraDeRelatorioIds) {
         List<MaoDeObraDeRelatorioEntity> response = maoDeObraDeRelatorioRepository.findAllByIdInAndRelatorioId(maoDeObraDeRelatorioIds, relatorioId);
 
         if (response.size() != maoDeObraDeRelatorioIds.size()) {
-            maoDeObraDeRelatorioIds.removeAll(response.stream().map(MaoDeObraDeRelatorioEntity::getId).toList());
+            List<Long> missingIds = new ArrayList<>(maoDeObraDeRelatorioIds);
+            missingIds.removeAll(response.stream().map(MaoDeObraDeRelatorioEntity::getId).toList());
 
-            throw new NotFoundException("Mão de obra de relatório não encontrada(s) com o(s) id(s): " + maoDeObraDeRelatorioIds);
+            throw new NotFoundException("Mão de obra de relatório não encontrada(s) com o(s) id(s): " + missingIds);
         }
 
         return response;

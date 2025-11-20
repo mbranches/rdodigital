@@ -120,7 +120,7 @@ class ListAllObrasServiceTest {
         userTenants = List.of(userTenantAdministrador);
 
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
-        when(obraRepository.findAllByTenantId(tenantId)).thenReturn(obras);
+//        when(obraRepository.findAllByTenantId(tenantId)).thenReturn(obras);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenantAdministrador);
 
         List<ObraByListAllResponse> result = listAllObrasService.execute(tenantExternalId, userTenants);
@@ -146,7 +146,7 @@ class ListAllObrasServiceTest {
         List<ObraEntity> obrasPermitidas = List.of(obra1);
 
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
-        when(obraRepository.findAllByTenantIdAndIdIn(tenantId, obrasPermitidasIds)).thenReturn(obrasPermitidas);
+        when(obraRepository.findAllByTenantIdAndIdInAndAtivoIsTrue(tenantId, obrasPermitidasIds)).thenReturn(obrasPermitidas);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenantPersonalizado);
 
         List<ObraByListAllResponse> result = listAllObrasService.execute(tenantExternalId, userTenants);

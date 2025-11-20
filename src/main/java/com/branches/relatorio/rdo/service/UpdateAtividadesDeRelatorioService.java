@@ -1,7 +1,8 @@
 package com.branches.relatorio.rdo.service;
 
 import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
-import com.branches.utils.GetHorasTotais;
+import com.branches.relatorio.rdo.dto.request.CampoPersonalizadoRequest;
+import com.branches.utils.CalculateHorasTotais;
 import com.branches.relatorio.maodeobra.service.GetMaoDeObraListByTenantIdAndIdInAndTypeService;
 import com.branches.relatorio.rdo.domain.AtividadeDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
@@ -13,10 +14,7 @@ import com.branches.relatorio.rdo.repository.MaoDeObraDeAtividadeDeRelatorioRepo
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,7 +27,7 @@ public class UpdateAtividadesDeRelatorioService {
     private final GetMaoDeObraListByTenantIdAndIdInAndTypeService getMaoDeObraListByTenantIdAndIdInAndTypeService;
     private final GetMaoDeObraDeAtividadeListByAtividadeIdAndIdInService getMaoDeObraDeAtividadeListByAtividadeIdAndIdInService;
     private final GetAtividadeListByRelatorioIdAndIdInService getAtividadeListByRelatorioIdAndIdInService;
-    private final GetHorasTotais getHorasTotais;
+    private final CalculateHorasTotais calculateHorasTotais;
 
     public void execute(List<AtividadeDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
         if (requestList == null || requestList.isEmpty()) {
@@ -51,7 +49,23 @@ public class UpdateAtividadesDeRelatorioService {
         List<AtividadeDeRelatorioEntity> atividadesToSave = new ArrayList<>(existingAtividades);
         atividadesToSave.addAll(newAtividades);
 
+        removeAllNotMentioned(existingAtividades, relatorio.getId());
+
         atividadeDeRelatorioRepository.saveAll(atividadesToSave);
+    }
+
+    private void removeAllNotMentioned(List<AtividadeDeRelatorioEntity> existingAtividades, Long id) {
+        List<Long> idsToKeep = existingAtividades.stream()
+                .map(AtividadeDeRelatorioEntity::getId)
+                .toList();
+
+        if (idsToKeep.isEmpty()) {
+            atividadeDeRelatorioRepository.removeAllByRelatorioId(id);
+
+            return;
+        }
+
+        atividadeDeRelatorioRepository.removeAllByRelatorioIdAndIdNotIn(id, idsToKeep);
     }
 
     private List<AtividadeDeRelatorioEntity> createNewAtividadesDeRelatorio(List<AtividadeDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {
@@ -62,14 +76,14 @@ public class UpdateAtividadesDeRelatorioService {
 
                     entity.setRelatorio(relatorio);
                     entity.setMaoDeObra(new ArrayList<>());
-                    setNewFieldsToAtividade(entity, request, relatorio, tenantId, maoDeObraEntityMap);
+                    setNewFieldsToAtividade(entity, request, tenantId, maoDeObraEntityMap);
 
                     return entity;
                 })
                 .toList();
     }
 
-    private List<MaoDeObraDeAtividadeDeRelatorioEntity> updateMaoDeObraDeAtividade(List<MaoDeObraDeAtividadeRequest> requestList, AtividadeDeRelatorioEntity atividade, RelatorioEntity relatorio, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {
+    private List<MaoDeObraDeAtividadeDeRelatorioEntity> updateMaoDeObraDeAtividade(List<MaoDeObraDeAtividadeRequest> requestList, AtividadeDeRelatorioEntity atividade, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {
         if (requestList == null || requestList.isEmpty()) {
             maoDeObraDeAtividadeDeRelatorioRepository.removeAllByAtividadeDeRelatorioId(atividade.getId());
 
@@ -106,6 +120,7 @@ public class UpdateAtividadesDeRelatorioService {
         List<Long> ids = requestList.stream()
                 .map(MaoDeObraDeAtividadeRequest::id)
                 .filter(Objects::nonNull)
+                .distinct()
                 .toList();
 
         Map<Long, MaoDeObraDeAtividadeRequest> requestMap = requestList.stream()
@@ -128,6 +143,7 @@ public class UpdateAtividadesDeRelatorioService {
         List<Long> ids = requestList.stream()
                 .map(AtividadeDeRelatorioRequest::id)
                 .filter(Objects::nonNull)
+                .distinct()
                 .toList();
 
         Map<Long, AtividadeDeRelatorioRequest> requestMap = requestList.stream()
@@ -138,13 +154,17 @@ public class UpdateAtividadesDeRelatorioService {
         existingAtividadeList.forEach(entity -> {
             var request = requestMap.get(entity.getId());
 
-            setNewFieldsToAtividade(entity, request, relatorio, tenantId, maoDeObraEntityMap);
+            setNewFieldsToAtividade(entity, request, tenantId, maoDeObraEntityMap);
         });
 
         return existingAtividadeList;
     }
 
-    private void setNewFieldsToAtividade(AtividadeDeRelatorioEntity entity, AtividadeDeRelatorioRequest request, RelatorioEntity relatorio, Long tenantId, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {
+    private void setNewFieldsToAtividade(AtividadeDeRelatorioEntity entity, AtividadeDeRelatorioRequest request, Long tenantId, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {
+        List<CampoPersonalizadoRequest> campoPersonalizadoRequest = request.camposPersonalizados() != null
+                ? request.camposPersonalizados()
+                : List.of();
+
         entity.setDescricao(request.descricao());
         entity.setQuantidadeRealizada(request.quantidadeRealizada());
         entity.setUnidadeMedida(request.unidadeMedida());
@@ -152,18 +172,17 @@ public class UpdateAtividadesDeRelatorioService {
         entity.setStatus(request.status());
         entity.setHoraInicio(request.horaInicio());
         entity.setHoraFim(request.horaFim());
-        entity.setTotalHoras(getHorasTotais.execute(request.horaInicio(), request.horaFim(), null));
+        entity.setTotalHoras(calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), null));
         entity.getCamposPersonalizados().clear();
-        entity.setCamposPersonalizados(request.camposPersonalizados().stream().map(c -> c.toEntity(tenantId)).toList());
+        entity.setCamposPersonalizados(campoPersonalizadoRequest.stream().map(c -> c.toEntity(tenantId)).toList());
         entity.getMaoDeObra().clear();
-        entity.setMaoDeObra(updateMaoDeObraDeAtividade(request.maoDeObra(), entity, relatorio, maoDeObraEntityMap));
+        entity.setMaoDeObra(updateMaoDeObraDeAtividade(request.maoDeObra(), entity, maoDeObraEntityMap));
     }
 
     private Map<Long, MaoDeObraEntity> getMaoDeObraEntityMap(List<MaoDeObraDeAtividadeRequest> requestList, Long tenantId, RelatorioEntity relatorio) {
-        List<Long> maoDeObraIds = requestList.stream()
+        Set<Long> maoDeObraIds = requestList.stream()
                 .map(MaoDeObraDeAtividadeRequest::maoDeObraId)
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         List<MaoDeObraEntity> maoDeObraEntities = getMaoDeObraListByTenantIdAndIdInAndTypeService.execute(tenantId, maoDeObraIds, relatorio.getTipoMaoDeObra());
         return maoDeObraEntities.stream()

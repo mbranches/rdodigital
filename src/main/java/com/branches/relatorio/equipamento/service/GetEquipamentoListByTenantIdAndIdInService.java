@@ -6,21 +6,23 @@ import com.branches.relatorio.equipamento.repository.EquipamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class GetEquipamentoListByTenantIdAndIdInService {
     private final EquipamentoRepository equipamentoRepository;
 
-    public List<EquipamentoEntity> execute(Long tenantId, Collection<Long> equipamentosIds) {
+    public List<EquipamentoEntity> execute(Long tenantId, Set<Long> equipamentosIds) {
         List<EquipamentoEntity> response = equipamentoRepository.findAllByIdInAndTenantIdAndAtivoIsTrue(equipamentosIds, tenantId);
 
         if (response.size() != equipamentosIds.size()) {
-            equipamentosIds.removeAll(response.stream().map(EquipamentoEntity::getId).toList());
+            List<Long> missingIds = new ArrayList<>(equipamentosIds);
+            missingIds.removeAll(response.stream().map(EquipamentoEntity::getId).toList());
 
-            throw new NotFoundException("Equipamento(s) não encontrado(s) com id(s): " + equipamentosIds);
+            throw new NotFoundException("Equipamento(s) não encontrado(s) com id(s): " + missingIds);
         }
 
         return response;

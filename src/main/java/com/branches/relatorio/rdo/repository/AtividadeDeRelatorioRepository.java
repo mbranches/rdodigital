@@ -14,4 +14,6 @@ public interface AtividadeDeRelatorioRepository extends JpaRepository<AtividadeD
     void removeAllByRelatorioId(Long relatorioId);
 
     List<AtividadeDeRelatorioEntity> findAllByIdInAndRelatorioId(Collection<Long> ids, Long relatorioId);
+
+    void removeAllByRelatorioIdAndIdNotIn(Long relatorioId, Collection<Long> ids);
 }

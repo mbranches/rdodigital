@@ -15,11 +15,9 @@ import java.util.Optional;
 public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
     Integer countByTenantIdAndAtivoIsTrue(Long tenantId);
 
-    Optional<ObraEntity> findByIdExternoAndTenantId(String idExterno, Long tenantId);
+    Optional<ObraEntity> findByIdExternoAndTenantIdAndAtivoIsTrue(String idExterno, Long tenantId);
 
-    List<ObraEntity> findAllByTenantId(Long tenantId);
-
-    List<ObraEntity> findAllByTenantIdAndIdIn(Long tenantId, Collection<Long> ids);
+    List<ObraEntity> findAllByTenantIdAndIdInAndAtivoIsTrue(Long tenantId, Collection<Long> ids);
 
     List<ObraEntity> findAllByIdExternoInAndTenantIdAndAtivoIsTrue(Collection<String> obrasExternalIds, Long tenantId);
 
@@ -93,10 +91,19 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
             WHERE cdr.relatorio.obraId = o.id AND cdr.relatorio.ativo IS TRUE
         ) AS quantidadeComentarios
     FROM ObraEntity o
+    LEFT JOIN o.grupo
     WHERE o.idExterno = :idExterno
       AND o.tenantId = :tenantDaObraId
       AND o.ativo IS TRUE
 """)
     Optional<ObraDetailsProjection> findObraDetailsByIdExternoAndTenantId(String idExterno, Long tenantDaObraId);
 
+    @Query("""
+    SELECT o.id
+    FROM ObraEntity o
+    WHERE o.idExterno = :idExterno
+      AND o.tenantId = :tenantId
+      AND o.ativo IS TRUE
+""")
+    Optional<Long> findIdByIdExternoAndTenantId(String idExterno, Long tenantId);
 }

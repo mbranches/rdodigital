@@ -37,8 +37,9 @@ public class MaoDeObraEntity extends AuditableTenantOwned {
     @Column(nullable = false)
     private TipoMaoDeObra tipo;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean ativo;
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean ativo = true;
 
     public void desativar() {
         this.ativo = false;

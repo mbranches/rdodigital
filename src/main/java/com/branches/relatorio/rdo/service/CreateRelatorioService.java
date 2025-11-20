@@ -55,9 +55,9 @@ public class CreateRelatorioService {
                 .prazoContratualObra(ChronoUnit.DAYS.between(obra.getDataInicio(), obra.getDataPrevistaFim()))
                 .prazoDecorridoObra(ChronoUnit.DAYS.between(obra.getDataInicio(), request.data()))
                 .prazoPraVencerObra(diferencaEntreDataRelatorioEDataPrevistaFim < 0 ? 0L : diferencaEntreDataRelatorioEDataPrevistaFim)
-                .caracteristicasManha(buildCaracteristicaDefault())
-                .caracteristicasTarde(buildCaracteristicaDefault())
-                .caracteristicasNoite(buildCaracteristicaDefault())
+                .caracteristicasManha(buildCaracteristicaDefault(tenantId))
+                .caracteristicasTarde(buildCaracteristicaDefault(tenantId))
+                .caracteristicasNoite(buildCaracteristicaDefault(tenantId))
                 .status(StatusRelatorio.ANDAMENTO)
                 .tenantId(tenantId)
                 .build();
@@ -76,10 +76,11 @@ public class CreateRelatorioService {
         return new CreateRelatorioResponse(savedRelatorio.getIdExterno());
     }
 
-    private CaracteristicaDePeriodoDoDiaEntity buildCaracteristicaDefault() {
+    private CaracteristicaDePeriodoDoDiaEntity buildCaracteristicaDefault(Long tenantId) {
         return CaracteristicaDePeriodoDoDiaEntity.builder()
                 .condicaoDoTempo(CondicaoDoTempo.PRATICAVEL)
                 .clima(Clima.CLARO)
+                .tenantId(tenantId)
                 .ativo(false)
                 .build();
     }
@@ -170,9 +171,9 @@ public class CreateRelatorioService {
     }
 
     private void copyCondicoesClimaticasFromLastRelatorio(RelatorioEntity lastRelatorio, RelatorioEntity relatorio) {
-        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasManha().withRelatorio(relatorio).withId(null));
-        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasTarde().withRelatorio(relatorio).withId(null));
-        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasNoite().withRelatorio(relatorio).withId(null));
+        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasManha());
+        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasTarde());
+        relatorio.setCaracteristicasManha(lastRelatorio.getCaracteristicasNoite());
 
         relatorioRepository.save(relatorio);
     }

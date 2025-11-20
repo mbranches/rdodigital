@@ -3,7 +3,7 @@ package com.branches.relatorio.rdo.service;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
 import com.branches.relatorio.maodeobra.domain.enums.PresencaMaoDeObra;
-import com.branches.utils.GetHorasTotais;
+import com.branches.utils.CalculateHorasTotais;
 import com.branches.relatorio.maodeobra.service.GetMaoDeObraListByTenantIdAndIdInAndTypeService;
 import com.branches.relatorio.rdo.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.RelatorioEntity;
@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,7 +25,7 @@ public class UpdateMaoDeObraDeRelatorioService {
     private final MaoDeObraDeRelatorioRepository maoDeObraDeRelatorioRepository;
     private final GetMaoDeObraListByTenantIdAndIdInAndTypeService getMaoDeObraListByTenantIdAndIdInAndTypeService;
     private final GetMaoDeObraDeRelatorioListByRelatorioIdAndIdInService getMaoDeObraDeRelatorioListByRelatorioIdAndIdInService;
-    private final GetHorasTotais getHorasTotais;
+    private final CalculateHorasTotais calculateHorasTotais;
 
     public void execute(List<MaoDeObraDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
         if(requestList == null || requestList.isEmpty()) {
@@ -68,11 +65,10 @@ public class UpdateMaoDeObraDeRelatorioService {
     }
 
     private List<MaoDeObraDeRelatorioEntity> updateExistingMaoDeObraDeRelatorio(List<MaoDeObraDeRelatorioRequest> requestList, RelatorioEntity relatorio, Map<Long, MaoDeObraEntity> maoDeObraEntityMap, TipoMaoDeObra tipoMaoDeObra) {
-        List<Long> ids = requestList.stream()
+        Set<Long> ids = requestList.stream()
                 .map(MaoDeObraDeRelatorioRequest::id)
                 .filter(Objects::nonNull)
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         Map<Long, MaoDeObraDeRelatorioRequest> requestMap = requestList.stream()
                 .filter(r -> r.id() != null)
@@ -89,6 +85,12 @@ public class UpdateMaoDeObraDeRelatorioService {
     }
 
     private void removeAllNotMentioned(List<MaoDeObraDeRelatorioEntity> existingMaoDeObraList, Long relatorioId) {
+        if (existingMaoDeObraList.isEmpty()) {
+            maoDeObraDeRelatorioRepository.removeAllByRelatorioId(relatorioId);
+
+            return;
+        }
+
         maoDeObraDeRelatorioRepository.removeAllByIdNotInAndRelatorioId(
                 existingMaoDeObraList.stream()
                         .map(MaoDeObraDeRelatorioEntity::getId)
@@ -107,14 +109,14 @@ public class UpdateMaoDeObraDeRelatorioService {
         entity.setHoraInicio(request.horaInicio());
         entity.setHoraFim(request.horaFim());
         entity.setHorasIntervalo(request.horasIntervalo());
-        LocalTime horasTrabalhadas = getHorasTotais.execute(request.horaInicio(), request.horaFim(), request.horasIntervalo());
+        LocalTime horasTrabalhadas = calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), request.horasIntervalo());
         entity.setHorasTrabalhadas(horasTrabalhadas);
     }
 
     private Map<Long, MaoDeObraEntity> getMaoDeObraMap(List<MaoDeObraDeRelatorioRequest> requestList, Long tenantId, TipoMaoDeObra tipoMaoDeObra) {
-        List<Long> maoDeObraIds = requestList.stream()
+        Set<Long> maoDeObraIds = requestList.stream()
                 .map(MaoDeObraDeRelatorioRequest::maoDeObraId)
-                .toList();
+                .collect(Collectors.toSet());
 
         List<MaoDeObraEntity> maoDeObraEntities = getMaoDeObraListByTenantIdAndIdInAndTypeService.execute(tenantId, maoDeObraIds, tipoMaoDeObra);
         return maoDeObraEntities.stream()

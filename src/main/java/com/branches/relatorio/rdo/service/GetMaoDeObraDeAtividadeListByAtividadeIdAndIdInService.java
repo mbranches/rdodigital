@@ -6,6 +6,7 @@ import com.branches.relatorio.rdo.repository.MaoDeObraDeAtividadeDeRelatorioRepo
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,9 +18,10 @@ public class GetMaoDeObraDeAtividadeListByAtividadeIdAndIdInService {
         List<MaoDeObraDeAtividadeDeRelatorioEntity> response = maoDeObraDeAtividadeDeRelatorioRepository.findAllByIdInAndAtividadeDeRelatorioId(ids, atividadeId);
 
         if (response.size() != ids.size()) {
-            ids.removeAll(response.stream().map(MaoDeObraDeAtividadeDeRelatorioEntity::getId).toList());
+            List<Long> missingIds = new ArrayList<>(ids);
+            missingIds.removeAll(response.stream().map(MaoDeObraDeAtividadeDeRelatorioEntity::getId).toList());
 
-            throw new NotFoundException("Mão de obra de atividade não encontrada(s) com o(s) id(s): " + ids);
+            throw new NotFoundException("Mão de obra de atividade não encontrada(s) com o(s) id(s): " + missingIds);
         }
         return response;
     }

@@ -5,6 +5,7 @@ public record ObraByRelatorioResponse(
         String nome,
         String endereco,
         String contratante,
-        String responsavel
+        String responsavel,
+        String numeroContrato
 ) {
 }

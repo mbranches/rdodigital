@@ -1,6 +1,7 @@
 package com.branches.relatorio.rdo.service;
 
-import com.branches.utils.GetHorasTotais;
+import com.branches.relatorio.rdo.dto.request.CampoPersonalizadoRequest;
+import com.branches.utils.CalculateHorasTotais;
 import com.branches.relatorio.rdo.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.relatorio.rdo.domain.RelatorioEntity;
 import com.branches.relatorio.rdo.dto.request.OcorrenciaDeRelatorioRequest;
@@ -12,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,7 +25,7 @@ public class UpdateOcorrenciasDeRelatorioService {
     private final GetOcorrenciaListByRelatorioIdAndIdInService getOcorrenciaListByRelatorioIdAndIdInService;
     private final GetTiposDeOcorrenciaByTenantIdAndIdInService getTiposDeOcorrenciaByTenantIdAndIdInService;
     private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFim;
-    private final GetHorasTotais getHorasTotais;
+    private final CalculateHorasTotais calculateHorasTotais;
 
     public void execute(List<OcorrenciaDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
         if (requestList == null || requestList.isEmpty()) {
@@ -44,17 +42,22 @@ public class UpdateOcorrenciasDeRelatorioService {
         List<OcorrenciaDeRelatorioEntity> ocorrenciasToSave = new ArrayList<>(updatedOcorrencias);
         ocorrenciasToSave.addAll(newOcorrencias);
 
-        removeNotIncluded(updatedOcorrencias, relatorio.getId());
+        removeAllNotMentioned(updatedOcorrencias, relatorio.getId());
 
         ocorrenciaDeRelatorioRepository.saveAll(ocorrenciasToSave);
     }
 
-    private void removeNotIncluded(List<OcorrenciaDeRelatorioEntity> updatedOcorrencias, Long relatorioId) {
+    private void removeAllNotMentioned(List<OcorrenciaDeRelatorioEntity> updatedOcorrencias, Long relatorioId) {
         List<Long> ids = updatedOcorrencias.stream()
                 .map(OcorrenciaDeRelatorioEntity::getId)
                 .filter(Objects::nonNull)
-                .distinct()
                 .toList();
+
+        if (ids.isEmpty()) {
+            ocorrenciaDeRelatorioRepository.removeAllByRelatorioId(relatorioId);
+
+            return;
+        }
 
         ocorrenciaDeRelatorioRepository.removeAllByIdNotInAndRelatorioId(ids, relatorioId);
     }
@@ -107,26 +110,25 @@ public class UpdateOcorrenciasDeRelatorioService {
         ocorrencia.getTiposDeOcorrencia().clear();
         ocorrencia.getTiposDeOcorrencia().addAll(currentTipos);
 
+        List<CampoPersonalizadoRequest> campoPersonalizadoRequest = request.camposPersonalizados() != null
+                ? request.camposPersonalizados()
+                : List.of();
+
         validateHoraInicioAndHoraFim.execute(request.horaInicio(), request.horaFim());
         ocorrencia.setHoraInicio(request.horaInicio());
         ocorrencia.setHoraFim(request.horaFim());
-        ocorrencia.setTotalHoras(getHorasTotais.execute(request.horaInicio(), request.horaFim(), null));
+        ocorrencia.setTotalHoras(calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), null));
         ocorrencia.getCamposPersonalizados().clear();
         ocorrencia.getCamposPersonalizados().addAll(
-                request.camposPersonalizados() != null
-                        ? request.camposPersonalizados().stream()
-                        .map(c -> c.toEntity(tenantId))
-                        .toList()
-                        : List.of()
+                campoPersonalizadoRequest.stream().map(c -> c.toEntity(tenantId)).toList()
         );
     }
 
     private Map<Long, TipoDeOcorrenciaEntity> getTiposDeOcorrenciaMap(Long tenantId, List<OcorrenciaDeRelatorioRequest> requestList) {
-        List<Long> tipoDeOcorrenciaIds = requestList.stream()
+        Set<Long> tipoDeOcorrenciaIds = requestList.stream()
                 .filter(request -> request.tiposOcorrenciaIds() != null)
                 .flatMap(request -> request.tiposOcorrenciaIds().stream())
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         List<TipoDeOcorrenciaEntity> tiposDeOcorrencia = getTiposDeOcorrenciaByTenantIdAndIdInService.execute(tenantId, tipoDeOcorrenciaIds);
         return tiposDeOcorrencia.stream()

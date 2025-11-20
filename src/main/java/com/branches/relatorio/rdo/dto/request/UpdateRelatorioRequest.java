@@ -27,13 +27,13 @@ public record UpdateRelatorioRequest(
         Long prazoPraVencer,
 
         @Valid
-        @NotNull(message = "O campo 'caracteristicaManha' é obrigatório")
+        @NotNull(message = "O campo 'caracteristicasManha' é obrigatório")
         CaracteristicaDePeriodoDoDiaRequest caracteristicasManha,
         @Valid
-        @NotNull(message = "O campo 'caracteristicaTarde' é obrigatório")
+        @NotNull(message = "O campo 'caracteristicasTarde' é obrigatório")
         CaracteristicaDePeriodoDoDiaRequest caracteristicasTarde,
         @Valid
-        @NotNull(message = "O campo 'caracteristicaNoite' é obrigatório")
+        @NotNull(message = "O campo 'caracteristicasNoite' é obrigatório")
         CaracteristicaDePeriodoDoDiaRequest caracteristicasNoite,
         @DecimalMax(value = "999.99", message = "O campo 'indicePluviometrico' deve ser menor ou igual a 999.99")
         @DecimalMin(value = "0.00", message = "O campo 'indicePluviometrico' deve ser maior ou igual a 0.00")

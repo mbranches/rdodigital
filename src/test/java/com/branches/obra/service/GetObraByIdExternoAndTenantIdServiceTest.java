@@ -59,7 +59,7 @@ class GetObraByIdExternoAndTenantIdServiceTest {
 
     @Test
     void deveRetornarObraQuandoEncontrada() {
-        when(obraRepository.findByIdExternoAndTenantId(obraIdExterno, tenantId))
+        when(obraRepository.findByIdExternoAndTenantIdAndAtivoIsTrue(obraIdExterno, tenantId))
                 .thenReturn(Optional.of(obraEntity));
 
         ObraEntity result = getObraByIdExternoAndTenantIdService.execute(obraIdExterno, tenantId);
@@ -71,12 +71,12 @@ class GetObraByIdExternoAndTenantIdServiceTest {
         assertEquals("João Silva", result.getResponsavel());
         assertEquals(StatusObra.EM_ANDAMENTO, result.getStatus());
 
-        verify(obraRepository, times(1)).findByIdExternoAndTenantId(obraIdExterno, tenantId);
+        verify(obraRepository, times(1)).findByIdExternoAndTenantIdAndAtivoIsTrue(obraIdExterno, tenantId);
     }
 
     @Test
     void deveLancarNotFoundExceptionQuandoObraNaoEncontrada() {
-        when(obraRepository.findByIdExternoAndTenantId(obraIdExterno, tenantId))
+        when(obraRepository.findByIdExternoAndTenantIdAndAtivoIsTrue(obraIdExterno, tenantId))
                 .thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(
@@ -88,7 +88,7 @@ class GetObraByIdExternoAndTenantIdServiceTest {
         assertEquals("Obra não encontrada com idExterno: " + obraIdExterno + " e tenantId: " + tenantId,
                 exception.getReason());
 
-        verify(obraRepository, times(1)).findByIdExternoAndTenantId(obraIdExterno, tenantId);
+        verify(obraRepository, times(1)).findByIdExternoAndTenantIdAndAtivoIsTrue(obraIdExterno, tenantId);
     }
 }
 

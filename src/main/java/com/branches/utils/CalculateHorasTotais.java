@@ -7,11 +7,15 @@ import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Service
-public class GetHorasTotais {
+public class CalculateHorasTotais {
     private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFim;
 
     public LocalTime execute(LocalTime horaInicio, LocalTime horaFim, LocalTime horasIntervalo) {
         validateHoraInicioAndHoraFim.execute(horaInicio, horaFim);
+
+        if (horaFim  == null || horaInicio == null) {
+            return null;
+        }
 
         int horasDeIntervalo = horasIntervalo != null ? horasIntervalo.getHour() : 0;
         int minutosDeIntervalo = horasIntervalo != null ? horasIntervalo.getMinute() : 0;

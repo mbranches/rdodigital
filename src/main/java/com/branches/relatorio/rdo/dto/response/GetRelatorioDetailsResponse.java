@@ -35,13 +35,14 @@ public record GetRelatorioDetailsResponse(
         List<AtividadeDeRelatorioResponse> atividades,
         List<OcorrenciaDeRelatorioResponse> ocorrencias,
         List<ComentarioDeRelatorioResponse> comentarios,
+        List<MaterialDeRelatorioResponse> materiais,
         //todo:adicionar fotos
         StatusRelatorio status,
         ModifyerByRelatorioResponse criadoPor,
         ModifyerByRelatorioResponse ultimaModificacao
 
 ) {
-    public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails, List<OcorrenciaDeRelatorioEntity> ocorrencias, List<AtividadeDeRelatorioEntity> atividades, List<EquipamentoDeRelatorioEntity> equipamentos, List<MaoDeObraDeRelatorioEntity> maoDeObra, List<ComentarioDeRelatorioEntity> comentarios, Boolean canViewCondicaoDoClima) {
+    public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails, List<OcorrenciaDeRelatorioEntity> ocorrencias, List<AtividadeDeRelatorioEntity> atividades, List<EquipamentoDeRelatorioEntity> equipamentos, List<MaoDeObraDeRelatorioEntity> maoDeObra, List<ComentarioDeRelatorioEntity> comentarios, List<MaterialDeRelatorioEntity> materiais, Boolean canViewCondicaoDoClima) {
         ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorioDetails.getObraIdExterno(), relatorioDetails.getObraNome(), relatorioDetails.getObraEndereco(), relatorioDetails.getObraContratante(), relatorioDetails.getObraResponsavel(), relatorioDetails.getObraNumeroContrato());
 
         String dayOfWeekResponse = relatorioDetails.getDataFim().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"));
@@ -63,6 +64,8 @@ public record GetRelatorioDetailsResponse(
                 maoDeObra.stream().map(MaoDeObraDeRelatorioResponse::from).toList() : null;
         var comentariosResponse = comentarios != null ?
                 comentarios.stream().map(ComentarioDeRelatorioResponse::from).toList() : null;
+        var materiaisResponse = materiais != null ?
+                materiais.stream().map(MaterialDeRelatorioResponse::from).toList() : null;
 
         return new GetRelatorioDetailsResponse(
                 relatorioDetails.getIdExterno(),
@@ -85,6 +88,7 @@ public record GetRelatorioDetailsResponse(
                 atividadesResponse,
                 ocorrenciasResponse,
                 comentariosResponse,
+                materiaisResponse,
                 relatorioDetails.getStatus(),
                 new ModifyerByRelatorioResponse(relatorioDetails.getCriadoPor(), relatorioDetails.getCriadoEm()),
                 new ModifyerByRelatorioResponse(relatorioDetails.getUltimaModificacaoPor(), relatorioDetails.getUltimaModificacaoEm())

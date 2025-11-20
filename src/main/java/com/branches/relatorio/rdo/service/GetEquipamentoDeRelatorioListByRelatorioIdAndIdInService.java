@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class GetEquipamentoDeRelatorioListByRelatorioIdAndIdInService {
     private final EquipamentoDeRelatorioRepository equipamentoDeRelatorioRepository;
 
-    public List<EquipamentoDeRelatorioEntity> execute(Long relatorioId, Collection<Long> ids) {
+    public List<EquipamentoDeRelatorioEntity> execute(Long relatorioId, Set<Long> ids) {
         List<EquipamentoDeRelatorioEntity> response = equipamentoDeRelatorioRepository.findAllByIdInAndRelatorioId(ids, relatorioId);
 
         if (response.size() != ids.size()) {

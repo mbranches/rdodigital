@@ -55,6 +55,9 @@ public record UpdateRelatorioRequest(
         @Valid
         List<ComentarioDeRelatorioRequest> comentarios,
 
+        @Valid
+        List<MaterialDeRelatorioRequest> materiais,
+
         //todo: adicionar campo de fotos quando for implementado
         @NotNull(message = "O campo 'status' é obrigatório")
         StatusRelatorio status

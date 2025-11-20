@@ -27,6 +27,7 @@ public class GetRelatorioDetailsService {
     private final EquipamentoDeRelatorioRepository equipamentoDeRelatorioRepository;
     private final MaoDeObraDeRelatorioRepository maoDeObraDeRelatorioRepository;
     private final ComentarioDeRelatorioRepository comentarioDeRelatorioRepository;
+    private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
 
     public GetRelatorioDetailsResponse execute(String tenantExternalId,
                                                String relatorioExternalId,
@@ -47,6 +48,7 @@ public class GetRelatorioDetailsService {
         boolean canViewEquipamentos = relatorioDetails.getShowEquipamentos() && permissionsOfItensRelatorio.getEquipamentos();
         boolean canViewMaoDeObra = relatorioDetails.getShowMaoDeObra() && permissionsOfItensRelatorio.getMaoDeObra();
         boolean canViewComentarios = relatorioDetails.getShowComentarios() && permissionsOfItensRelatorio.getComentarios();
+        boolean canViewMateriais = relatorioDetails.getShowMateriais() && permissionsOfItensRelatorio.getMateriais();
 //        TODO: ADICIONAR FOTOS Boolean viewFotos = currentUserTenant.getAuthorities().getItensDeRelatorio().getFotos();
 
         Long relatorioId = relatorioDetails.getId();
@@ -56,6 +58,7 @@ public class GetRelatorioDetailsService {
         List<EquipamentoDeRelatorioEntity> equipamentos = canViewEquipamentos ? equipamentoDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
         List<MaoDeObraDeRelatorioEntity> maoDeObra = canViewMaoDeObra ? maoDeObraDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
         List<ComentarioDeRelatorioEntity> comentarios = canViewComentarios ? comentarioDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
+        List<MaterialDeRelatorioEntity> materiais = canViewMateriais ? materialDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
 
         return GetRelatorioDetailsResponse.from(
                 relatorioDetails,
@@ -64,6 +67,7 @@ public class GetRelatorioDetailsService {
                 equipamentos,
                 maoDeObra,
                 comentarios,
+                materiais,
                 canViewCondicaoDoClima
         );
     }

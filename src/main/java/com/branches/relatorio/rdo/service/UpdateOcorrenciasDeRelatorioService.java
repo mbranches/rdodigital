@@ -75,10 +75,10 @@ public class UpdateOcorrenciasDeRelatorioService {
     }
 
     private List<OcorrenciaDeRelatorioEntity> updateExistingOcorrencias(List<OcorrenciaDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId, Map<Long, TipoDeOcorrenciaEntity> tiposDeOcorrenciaMap) {
-        List<Long> ids = requestList.stream()
+        Set<Long> ids = requestList.stream()
                 .map(OcorrenciaDeRelatorioRequest::id)
                 .filter(Objects::nonNull)
-                .toList();
+                .collect(Collectors.toSet());
 
         Map<Long, OcorrenciaDeRelatorioRequest> requestMap = requestList.stream()
                 .filter(request -> request.id() != null)

@@ -117,11 +117,10 @@ public class UpdateAtividadesDeRelatorioService {
     }
 
     private List<MaoDeObraDeAtividadeDeRelatorioEntity> updateExistingMaoDeObraDeAtividade(List<MaoDeObraDeAtividadeRequest> requestList, Long atividadeId, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {
-        List<Long> ids = requestList.stream()
+        Set<Long> ids = requestList.stream()
                 .map(MaoDeObraDeAtividadeRequest::id)
                 .filter(Objects::nonNull)
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         Map<Long, MaoDeObraDeAtividadeRequest> requestMap = requestList.stream()
                 .filter(r -> r.id() != null)
@@ -140,11 +139,10 @@ public class UpdateAtividadesDeRelatorioService {
     }
 
     private List<AtividadeDeRelatorioEntity> updateExistingAtividadeDeRelatorio(List<AtividadeDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {
-        List<Long> ids = requestList.stream()
+        Set<Long> ids = requestList.stream()
                 .map(AtividadeDeRelatorioRequest::id)
                 .filter(Objects::nonNull)
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         Map<Long, AtividadeDeRelatorioRequest> requestMap = requestList.stream()
                 .filter(r -> r.id() != null)

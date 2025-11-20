@@ -8,10 +8,7 @@ import com.branches.relatorio.rdo.repository.ComentarioDeRelatorioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -69,11 +66,10 @@ public class UpdateComentariosDeRelatorioService {
     }
 
     private List<ComentarioDeRelatorioEntity> updateExistingComentarios(List<ComentarioDeRelatorioRequest> requestList, RelatorioEntity relatorio, Long tenantId) {
-        List<Long> ids = requestList.stream()
+        Set<Long> ids = requestList.stream()
                 .map(ComentarioDeRelatorioRequest::id)
                 .filter(Objects::nonNull)
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         Map<Long, ComentarioDeRelatorioRequest> requestMap = requestList.stream()
                 .filter(r -> r.id() != null)

@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class GetComentarioListByRelatorioIdAndIdInService {
     private final ComentarioDeRelatorioRepository comentarioDeRelatorioRepository;
 
-    public List<ComentarioDeRelatorioEntity> execute(Long relatorioId, Collection<Long> ids) {
+    public List<ComentarioDeRelatorioEntity> execute(Long relatorioId, Set<Long> ids) {
         List<ComentarioDeRelatorioEntity> response = comentarioDeRelatorioRepository.findAllByIdInAndRelatorioId(ids, relatorioId);
 
         if (response.size() != ids.size()) {

@@ -32,6 +32,7 @@ public class UpdateRelatorioService {
     private final UpdateOcorrenciasDeRelatorioService updateOcorrenciasDeRelatorioService;
     private final UpdateComentariosDeRelatorioService updateComentariosDeRelatorioService;
     private final ObraRepository obraRepository;
+    private final UpdateMateriaisDeRelatorioService updateMateriaisDeRelatorioService;
 
     @Transactional
     public void execute(UpdateRelatorioRequest request, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
@@ -83,6 +84,10 @@ public class UpdateRelatorioService {
 
         if (modeloDeRelatorio.getShowComentarios()) {
             updateComentariosDeRelatorioService.execute(request.comentarios(), relatorio, tenantId);
+        }
+
+        if (modeloDeRelatorio.getShowMateriais()) {
+            updateMateriaisDeRelatorioService.execute(request.materiais(), relatorio, tenantId);
         }
 
         //todo: gerar html do relatorio

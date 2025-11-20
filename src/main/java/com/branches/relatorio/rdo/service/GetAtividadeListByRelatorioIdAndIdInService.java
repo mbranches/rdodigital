@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class GetAtividadeListByRelatorioIdAndIdInService {
     private final AtividadeDeRelatorioRepository atividadeDeRelatorioRepository;
 
-    public List<AtividadeDeRelatorioEntity> execute(Long relatorioId, Collection<Long> ids) {
+    public List<AtividadeDeRelatorioEntity> execute(Long relatorioId, Set<Long> ids) {
         List<AtividadeDeRelatorioEntity> response =  atividadeDeRelatorioRepository.findAllByIdInAndRelatorioId(ids, relatorioId);
 
         if (response.size() != ids.size()) {

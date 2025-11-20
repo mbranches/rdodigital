@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class GetMaoDeObraDeAtividadeListByAtividadeIdAndIdInService {
     private final MaoDeObraDeAtividadeDeRelatorioRepository maoDeObraDeAtividadeDeRelatorioRepository;
 
-    public List<MaoDeObraDeAtividadeDeRelatorioEntity> execute(Long atividadeId, List<Long> ids) {
+    public List<MaoDeObraDeAtividadeDeRelatorioEntity> execute(Long atividadeId, Set<Long> ids) {
         List<MaoDeObraDeAtividadeDeRelatorioEntity> response = maoDeObraDeAtividadeDeRelatorioRepository.findAllByIdInAndAtividadeDeRelatorioId(ids, atividadeId);
 
         if (response.size() != ids.size()) {

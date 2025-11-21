@@ -1,8 +1,8 @@
 package com.branches.relatorio.rdo.service;
 
-import com.branches.configuradores.domain.ModeloDeRelatorioEntity;
 import com.branches.exception.ForbiddenException;
 import com.branches.exception.NotFoundException;
+import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.repository.ObraRepository;
 import com.branches.relatorio.rdo.domain.*;
@@ -49,7 +49,7 @@ public class UpdateRelatorioService {
         ObraEntity obra = obraRepository.findById(relatorio.getObraId())
                         .orElseThrow(() -> new NotFoundException("Não foi possível encontra a obra do relatório com id: " + relatorioExternalId));
 
-        ModeloDeRelatorioEntity modeloDeRelatorio = obra.getModeloDeRelatorio();
+        ConfiguracaoRelatoriosEntity configuracaoRelatorios = obra.getConfiguracaoRelatorios();
 
         relatorio.setNumero(request.numeroRelatorio());
         relatorio.setDataInicio(request.dataInicio());
@@ -59,7 +59,7 @@ public class UpdateRelatorioService {
         relatorio.setPrazoPraVencerObra(request.prazoPraVencer());
         updateStatus(currentUserTenant, relatorio, request.status());
 
-        if (modeloDeRelatorio.getShowCondicaoClimatica()) {
+        if (configuracaoRelatorios.getShowCondicaoClimatica()) {
             relatorio.setIndiciePluviometrico(request.indicePluviometrico());
             relatorio.setCaracteristicasManha(getUpdatedCaracteristicaEntity(request.caracteristicasManha(), tenantId));
             relatorio.setCaracteristicasTarde(getUpdatedCaracteristicaEntity(request.caracteristicasTarde(), tenantId));
@@ -68,7 +68,7 @@ public class UpdateRelatorioService {
 
         relatorioRepository.save(relatorio);
 
-        if (modeloDeRelatorio.getShowHorarioDeTrabalho()) {
+        if (configuracaoRelatorios.getShowHorarioDeTrabalho()) {
             relatorio.setHoraInicioTrabalhos(request.horaInicioTrabalhos());
             relatorio.setHoraFimTrabalhos(request.horaFimTrabalhos());
             relatorio.setHorasIntervalo(request.horasIntervalo());
@@ -77,27 +77,27 @@ public class UpdateRelatorioService {
             relatorioRepository.save(relatorio);
         }
 
-        if (modeloDeRelatorio.getShowMaoDeObra()) {
+        if (configuracaoRelatorios.getShowMaoDeObra()) {
             updateMaoDeObraDeRelatorioService.execute(request.maoDeObra(), relatorio, tenantId);
         }
 
-        if (modeloDeRelatorio.getShowEquipamentos()) {
+        if (configuracaoRelatorios.getShowEquipamentos()) {
             updateEquipamentosDeRelatorioService.execute(request.equipamentos(), relatorio, tenantId);
         }
 
-        if (modeloDeRelatorio.getShowAtividades()) {
+        if (configuracaoRelatorios.getShowAtividades()) {
             updateAtividadesDeRelatorioService.execute(request.atividades(), relatorio, tenantId);
         }
 
-        if (modeloDeRelatorio.getShowOcorrencias()) {
+        if (configuracaoRelatorios.getShowOcorrencias()) {
             updateOcorrenciasDeRelatorioService.execute(request.ocorrencias(), relatorio, tenantId);
         }
 
-        if (modeloDeRelatorio.getShowComentarios()) {
+        if (configuracaoRelatorios.getShowComentarios()) {
             updateComentariosDeRelatorioService.execute(request.comentarios(), relatorio, tenantId);
         }
 
-        if (modeloDeRelatorio.getShowMateriais()) {
+        if (configuracaoRelatorios.getShowMateriais()) {
             updateMateriaisDeRelatorioService.execute(request.materiais(), relatorio, tenantId);
         }
 

@@ -1,7 +1,7 @@
 package com.branches.relatorio.rdo.service;
 
-import com.branches.configuradores.domain.ModeloDeRelatorioEntity;
 import com.branches.exception.ForbiddenException;
+import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.relatorio.rdo.domain.*;
@@ -47,7 +47,7 @@ public class CreateRelatorioService {
         long quantityOfRelatoriosOfObra = relatorioRepository.countByTenantIdAndObraIdAndAtivoIsTrue(tenantId, obra.getId());
 
         long diferencaEntreDataRelatorioEDataPrevistaFim = ChronoUnit.DAYS.between(request.dataInicio(), obra.getDataPrevistaFim());
-        ModeloDeRelatorioEntity modeloDeRelatorio = obra.getModeloDeRelatorio();
+        ConfiguracaoRelatoriosEntity configuracaoRelatorios = obra.getConfiguracaoRelatorios();
 
         RelatorioEntity relatorio = new RelatorioEntity();
         relatorio.setObraId(obra.getId());
@@ -67,7 +67,7 @@ public class CreateRelatorioService {
         RelatorioEntity savedRelatorio = relatorioRepository.save(relatorio);
 
         if(request.copiarInformacoesDoUltimoRelatorio() && quantityOfRelatoriosOfObra > 0) {
-            copyInfoFromLastRelatorio(tenantId, obra.getId(), savedRelatorio, request, modeloDeRelatorio);
+            copyInfoFromLastRelatorio(tenantId, obra.getId(), savedRelatorio, request, configuracaoRelatorios);
         }
 
         //todo: gerar o html
@@ -87,7 +87,7 @@ public class CreateRelatorioService {
                 .build();
     }
 
-    private void copyInfoFromLastRelatorio(Long tenantId, Long obraId, RelatorioEntity relatorio, CreateRelatorioRequest request, ModeloDeRelatorioEntity modeloDeRelatorio) {
+    private void copyInfoFromLastRelatorio(Long tenantId, Long obraId, RelatorioEntity relatorio, CreateRelatorioRequest request, ConfiguracaoRelatoriosEntity configuracaoRelatorios) {
         RelatorioEntity lastRelatorio = relatorioRepository.findFirstByTenantIdAndObraIdAndAtivoIsTrueOrderByEnversCreatedDateDesc(tenantId, obraId)
                 .orElse(null);
 
@@ -97,11 +97,11 @@ public class CreateRelatorioService {
             copyHorarioDeTrabalhoFromLastRelatorio(lastRelatorio, relatorio);
         }
 
-        if (request.copiarAtividades() && modeloDeRelatorio.getShowAtividades()) {
+        if (request.copiarAtividades() && configuracaoRelatorios.getShowAtividades()) {
             copyAtividadesFromLastRelatorio(lastRelatorio, relatorio);
         }
 
-        if (request.copiarComentarios() && modeloDeRelatorio.getShowComentarios()) {
+        if (request.copiarComentarios() && configuracaoRelatorios.getShowComentarios()) {
             copyComentariosFromLastRelatorio(lastRelatorio, relatorio);
         }
 
@@ -109,15 +109,15 @@ public class CreateRelatorioService {
             copyCondicoesClimaticasFromLastRelatorio(lastRelatorio, relatorio);
         }
 
-        if (request.copiarMaoDeObra() && modeloDeRelatorio.getShowMaoDeObra()) {
+        if (request.copiarMaoDeObra() && configuracaoRelatorios.getShowMaoDeObra()) {
             copyMaoDeObraFromLastRelatorio(lastRelatorio, relatorio);
         }
 
-        if (request.copiarEquipamentos() && modeloDeRelatorio.getShowEquipamentos()) {
+        if (request.copiarEquipamentos() && configuracaoRelatorios.getShowEquipamentos()) {
             copyEquipamentosFromLastRelatorio(lastRelatorio, relatorio);
         }
 
-        if (request.copiarOcorrencias() && modeloDeRelatorio.getShowOcorrencias()) {
+        if (request.copiarOcorrencias() && configuracaoRelatorios.getShowOcorrencias()) {
             copyOcorrenciasFromLastRelatorio(lastRelatorio, relatorio);
         }
     }

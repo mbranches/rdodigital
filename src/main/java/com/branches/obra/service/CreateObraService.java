@@ -2,6 +2,7 @@ package com.branches.obra.service;
 
 import com.branches.assinatura.domain.AssinaturaEntity;
 import com.branches.assinatura.service.GetAssinaturaActiveByTenantIdService;
+import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
 import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.domain.enums.StatusObra;
@@ -40,6 +41,7 @@ public class CreateObraService {
 
         verifyIfPlanoAllowsCreateObra(tenantId);
 
+        ConfiguracaoRelatoriosEntity configuracaoRelatorios = ConfiguracaoRelatoriosEntity.by(tenant.getModeloDeRelatorioDefault());
         ObraEntity obraToSave = ObraEntity.builder()
                 .nome(request.nome())
                 .responsavel(request.responsavel())
@@ -52,7 +54,7 @@ public class CreateObraService {
                 .observacoes(request.observacoes())
                 .tipoMaoDeObra(request.tipoMaoDeObra())
                 .status(request.status())
-                .modeloDeRelatorio(tenant.getModeloDeRelatorioDefault())
+                .configuracaoRelatorios(configuracaoRelatorios)
                 .tenantId(tenantId)
                 .build();
 

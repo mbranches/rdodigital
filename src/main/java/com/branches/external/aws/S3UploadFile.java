@@ -1,5 +1,7 @@
 package com.branches.external.aws;
 
+import com.branches.exception.InternalServerError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -9,6 +11,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+@Slf4j
 @Component
 public class S3UploadFile {
     @Value("${aws.accessKeyId}")
@@ -21,21 +24,27 @@ public class S3UploadFile {
     public String execute(String fileName, String path, byte[] fileContent, String contentType) {
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
 
-        S3Client s3Client = S3Client.builder()
+        try(S3Client s3Client = S3Client.builder()
                 .region(Region.US_EAST_2)
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
-                .build();
+                .build()) {
+            log.info("Subindo arquivo {} para o S3 na pasta {}", fileName, path);
 
-        String fullFileName = path + "/" + fileName;
+            String fullFileName = path + "/" + fileName;
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fullFileName)
-                .contentType(contentType)
-                .build();
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fullFileName)
+                    .contentType(contentType)
+                    .build();
 
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileContent));
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileContent));
 
-        return "https://%s.s3.us-east-2.amazonaws.com/%s".formatted(bucketName, fullFileName);
+            log.info("Arquivo {} enviado com sucesso para o S3", fileName);
+
+            return "https://%s.s3.us-east-2.amazonaws.com/%s".formatted(bucketName, fullFileName);
+        } catch (Exception e) {
+            throw new InternalServerError("Não foi possível salvar o arquivo: " + e.getMessage());
+        }
     }
 }

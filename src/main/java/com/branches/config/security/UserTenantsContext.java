@@ -1,5 +1,6 @@
 package com.branches.config.security;
 
+import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public class UserTenantsContext {
     private static ThreadLocal<Long> userId = new ThreadLocal<>();
 
     private static ThreadLocal<Boolean> userIsAdmin = new ThreadLocal<>();
+
+    private static ThreadLocal<UserEntity> user = new ThreadLocal<>();
 
     public static List<UserTenantEntity> getUserTenants() {
         return userTenants.get();
@@ -34,6 +37,10 @@ public class UserTenantsContext {
         return userIsAdmin.get();
     }
 
+    public static UserEntity getUser() {
+        return user.get();
+    }
+
     public static void setUserTenants(List<UserTenantEntity> tenantIds) {
         userTenants.set(tenantIds);
     }
@@ -44,6 +51,10 @@ public class UserTenantsContext {
 
     public static void setUserIsAdmin(boolean is) {
         userIsAdmin.set(is);
+    }
+
+    public static void setUser(UserEntity userEntity) {
+        user.set(userEntity);
     }
 
     public static void cleanup() {

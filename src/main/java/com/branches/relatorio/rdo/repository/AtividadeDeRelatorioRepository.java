@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AtividadeDeRelatorioRepository extends JpaRepository<AtividadeDeRelatorioEntity, Long> {
@@ -16,4 +17,6 @@ public interface AtividadeDeRelatorioRepository extends JpaRepository<AtividadeD
     List<AtividadeDeRelatorioEntity> findAllByIdInAndRelatorioId(Collection<Long> ids, Long relatorioId);
 
     void removeAllByRelatorioIdAndIdNotIn(Long relatorioId, Collection<Long> ids);
+
+    Optional<AtividadeDeRelatorioEntity> findByIdAndRelatorioId(Long id, Long relatorioId);
 }

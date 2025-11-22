@@ -8,8 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 
-public record AtividadeDeRelatorioRequest(
-        Long id,
+public record UpdateAtividadeDeRelatorioRequest(
         @NotBlank(message = "O campo 'descricao' é obrigatório")
         String descricao,
         Integer quantidadeRealizada,

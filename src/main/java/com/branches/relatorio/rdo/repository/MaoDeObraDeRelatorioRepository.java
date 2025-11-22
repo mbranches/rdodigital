@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MaoDeObraDeRelatorioRepository extends JpaRepository<MaoDeObraDeRelatorioEntity, Long> {
@@ -13,7 +14,7 @@ public interface MaoDeObraDeRelatorioRepository extends JpaRepository<MaoDeObraD
 
     List<MaoDeObraDeRelatorioEntity> findAllByIdInAndRelatorioId(Collection<Long> ids, Long relatorioId);
 
-    void removeAllByIdNotInAndRelatorioId(Collection<Long> ids, Long relatorioId);
-
     void removeAllByRelatorioId(Long relatorioId);
+
+    Optional<MaoDeObraDeRelatorioEntity> findByIdAndRelatorioId(Long id, Long relatorioId);
 }

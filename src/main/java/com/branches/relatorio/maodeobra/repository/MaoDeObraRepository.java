@@ -15,5 +15,5 @@ public interface MaoDeObraRepository extends JpaRepository<MaoDeObraEntity, Long
 
     Optional<MaoDeObraEntity> findByIdAndTenantIdAndAtivoIsTrue(Long id, Long tenantId);
 
-    List<MaoDeObraEntity> findAllByIdInAndTenantIdAndTipoAndAtivoIsTrue(Collection<Long> ids, Long tenantId, TipoMaoDeObra tipo);
+    Optional<MaoDeObraEntity> findByIdAndTenantIdAndTipoAndAtivoIsTrue(Long id, Long tenantId, TipoMaoDeObra type);
 }

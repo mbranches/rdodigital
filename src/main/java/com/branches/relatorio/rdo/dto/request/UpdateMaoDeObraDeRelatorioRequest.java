@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalTime;
 
-public record MaoDeObraDeRelatorioRequest(
-    Long id,
+public record UpdateMaoDeObraDeRelatorioRequest(
     @NotNull(message = "O campo 'maoDeObraId' é obrigatório")
     Long maoDeObraId,
     @NotNull(message = "O campo 'presenca' é obrigatório")

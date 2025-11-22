@@ -106,4 +106,6 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
       AND o.ativo IS TRUE
 """)
     Optional<Long> findIdByIdExternoAndTenantId(String idExterno, Long tenantId);
+
+    Optional<ObraEntity> findByIdAndTenantId(Long id, Long tenantId);
 }

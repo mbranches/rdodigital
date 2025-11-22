@@ -39,6 +39,8 @@ public class ModeloDeRelatorioEntity extends AuditableTenantOwned {
     private Boolean showMateriais;
     @Column(nullable = false)
     private Boolean showHorarioDeTrabalho;
+    @Column(nullable = false)
+    private Boolean showFotos;
 
     @Column(nullable = false)
     private Boolean isDefault;

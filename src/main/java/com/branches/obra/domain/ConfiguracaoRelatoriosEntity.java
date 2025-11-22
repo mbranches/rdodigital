@@ -40,6 +40,8 @@ public class ConfiguracaoRelatoriosEntity {
     private Boolean showMateriais;
     @Column(nullable = false)
     private Boolean showHorarioDeTrabalho;
+    @Column(nullable = false)
+    private Boolean showFotos;
 
     public static ConfiguracaoRelatoriosEntity by(ModeloDeRelatorioEntity modeloDeRelatorioDefault) {
         return ConfiguracaoRelatoriosEntity.builder()
@@ -53,6 +55,7 @@ public class ConfiguracaoRelatoriosEntity {
                 .showComentarios(modeloDeRelatorioDefault.getShowComentarios())
                 .showMateriais(modeloDeRelatorioDefault.getShowMateriais())
                 .showHorarioDeTrabalho(modeloDeRelatorioDefault.getShowHorarioDeTrabalho())
+                .showFotos(modeloDeRelatorioDefault.getShowFotos())
                 .build();
     }
 }

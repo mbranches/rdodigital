@@ -47,7 +47,7 @@ public class UpdateMaoDeObraDeRelatorioService {
 
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
 
-        checkIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObra(relatorio, tenantId);
+        checkIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObra(relatorio, tenantId, userTenant);
 
         TipoMaoDeObra tipoMaoDeObra = relatorio.getTipoMaoDeObra();
 

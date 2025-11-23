@@ -36,9 +36,9 @@ public class UpdateCondicaoClimaticaDeRelatorioService {
 
         UserTenantEntity userTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
-        checkIfUserHasAccessToEditRelatorioService.execute(userTenant);
-
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
+
+        checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
 
         checkIfConfiguracaoDeRelatorioDaObraPermiteCondicaoClimatica(relatorio, tenantId);
 

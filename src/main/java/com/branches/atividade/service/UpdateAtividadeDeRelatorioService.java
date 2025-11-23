@@ -46,9 +46,9 @@ public class UpdateAtividadeDeRelatorioService {
 
         UserTenantEntity userTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
-        checkIfUserHasAccessToEditRelatorioService.execute(userTenant);
-
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
+
+        checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
 
         checkIfConfiguracaoDeRelatorioDaObraPermiteAtividade.execute(relatorio, tenantId);
 

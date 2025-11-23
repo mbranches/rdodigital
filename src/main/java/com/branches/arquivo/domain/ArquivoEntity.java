@@ -1,4 +1,4 @@
-package com.branches.relatorio.domain;
+package com.branches.arquivo.domain;
 
 import com.branches.relatorio.domain.enums.TipoArquivo;
 import jakarta.persistence.*;
@@ -10,14 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ArquivoRelatorioEntity {
+public class ArquivoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "relatorio_id", nullable = false)
-    private RelatorioEntity relatorio;
 
     @Column(nullable = false)
     private String nomeArquivo;

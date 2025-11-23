@@ -1,4 +1,4 @@
-package com.branches.relatorio.rdo.service;
+package com.branches.relatorio.maodeobra.service;
 
 import com.branches.exception.NotFoundException;
 import com.branches.relatorio.rdo.domain.MaoDeObraDeAtividadeDeRelatorioEntity;

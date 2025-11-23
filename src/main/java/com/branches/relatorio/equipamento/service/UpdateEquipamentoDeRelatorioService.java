@@ -9,7 +9,6 @@ import com.branches.relatorio.rdo.domain.RelatorioEntity;
 import com.branches.relatorio.rdo.dto.request.UpdateEquipamentoDeRelatorioRequest;
 import com.branches.relatorio.rdo.repository.EquipamentoDeRelatorioRepository;
 import com.branches.relatorio.rdo.service.CheckIfUserHasAccessToEditRelatorioService;
-import com.branches.relatorio.rdo.service.GetEquipamentoDeRelatorioByIdAndRelatorioIdService;
 import com.branches.relatorio.rdo.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -23,7 +22,7 @@ import java.util.*;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class UpdateEquipamentosDeRelatorioService {
+public class UpdateEquipamentoDeRelatorioService {
 
     private final EquipamentoDeRelatorioRepository equipamentoDeRelatorioRepository;
     private final GetEquipamentoDeRelatorioByIdAndRelatorioIdService getEquipamentoDeRelatorioByIdAndRelatorioIdService;

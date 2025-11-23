@@ -1,4 +1,4 @@
-package com.branches.relatorio.rdo.service;
+package com.branches.relatorio.equipamento.service;
 
 import com.branches.exception.NotFoundException;
 import com.branches.relatorio.rdo.domain.EquipamentoDeRelatorioEntity;

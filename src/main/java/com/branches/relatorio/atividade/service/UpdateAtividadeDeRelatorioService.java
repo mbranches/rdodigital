@@ -8,7 +8,7 @@ import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
 import com.branches.relatorio.maodeobra.repository.MaoDeObraRepository;
 import com.branches.relatorio.rdo.dto.request.CampoPersonalizadoRequest;
 import com.branches.relatorio.rdo.service.CheckIfUserHasAccessToEditRelatorioService;
-import com.branches.relatorio.rdo.service.GetMaoDeObraDeAtividadeListByAtividadeIdAndIdInService;
+import com.branches.relatorio.maodeobra.service.GetMaoDeObraDeAtividadeListByAtividadeIdAndIdInService;
 import com.branches.relatorio.rdo.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class UpdateAtividadesDeRelatorioService {
+public class UpdateAtividadeDeRelatorioService {
 
     private final AtividadeDeRelatorioRepository atividadeDeRelatorioRepository;
     private final MaoDeObraDeAtividadeDeRelatorioRepository maoDeObraDeAtividadeDeRelatorioRepository;

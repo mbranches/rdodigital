@@ -1,7 +1,7 @@
 package com.branches.relatorio.atividade.controller;
 
 import com.branches.config.security.UserTenantsContext;
-import com.branches.relatorio.atividade.service.UpdateAtividadesDeRelatorioService;
+import com.branches.relatorio.atividade.service.UpdateAtividadeDeRelatorioService;
 import com.branches.relatorio.rdo.dto.request.UpdateAtividadeDeRelatorioRequest;
 import com.branches.usertenant.domain.UserTenantEntity;
 import jakarta.validation.Valid;
@@ -17,13 +17,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class UpdateAtividadeDeRelatorioController {
-    private final UpdateAtividadesDeRelatorioService updateAtividadesDeRelatorioService;
+    private final UpdateAtividadeDeRelatorioService updateAtividadeDeRelatorioService;
 
     @PutMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/atividades/{id}")
     public ResponseEntity<Void> execute(@RequestBody @Valid UpdateAtividadeDeRelatorioRequest request, @PathVariable String tenantExternalId, @PathVariable String relatorioExternalId, @PathVariable Long id) {
         List<UserTenantEntity> userTenants = UserTenantsContext.getUserTenants();
 
-        updateAtividadesDeRelatorioService.execute(request, id, relatorioExternalId, tenantExternalId, userTenants);
+        updateAtividadeDeRelatorioService.execute(request, id, relatorioExternalId, tenantExternalId, userTenants);
 
         return ResponseEntity.noContent().build();
     }

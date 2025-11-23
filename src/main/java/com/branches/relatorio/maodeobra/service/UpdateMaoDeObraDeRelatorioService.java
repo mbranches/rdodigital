@@ -7,7 +7,6 @@ import com.branches.obra.service.GetObraByIdAndTenantIdService;
 import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
 import com.branches.relatorio.maodeobra.domain.enums.PresencaMaoDeObra;
 import com.branches.relatorio.rdo.service.CheckIfUserHasAccessToEditRelatorioService;
-import com.branches.relatorio.rdo.service.GetMaoDeObraDeRelatorioByIdAndRelatorioId;
 import com.branches.relatorio.rdo.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;

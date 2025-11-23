@@ -2,6 +2,7 @@ package com.branches.relatorio.service;
 
 import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
+import com.branches.condicaoclimatica.domain.CondicaoClimaticaEntity;
 import com.branches.equipamento.domain.EquipamentoDeRelatorioEntity;
 import com.branches.exception.ForbiddenException;
 import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
@@ -84,8 +85,8 @@ public class CreateRelatorioService {
         return new CreateRelatorioResponse(savedRelatorio.getIdExterno());
     }
 
-    private CaracteristicaDePeriodoDoDiaEntity buildCaracteristicaDefault(Long tenantId) {
-        return CaracteristicaDePeriodoDoDiaEntity.builder()
+    private CondicaoClimaticaEntity buildCaracteristicaDefault(Long tenantId) {
+        return CondicaoClimaticaEntity.builder()
                 .condicaoDoTempo(CondicaoDoTempo.PRATICAVEL)
                 .clima(Clima.CLARO)
                 .tenantId(tenantId)

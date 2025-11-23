@@ -4,6 +4,7 @@ import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
 import com.branches.atividade.dto.response.AtividadeDeRelatorioResponse;
 import com.branches.comentarios.dto.response.ComentarioDeRelatorioResponse;
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
+import com.branches.condicaoclimatica.dto.response.CaracteristicaDePeriodoDoDiaResponse;
 import com.branches.equipamento.domain.EquipamentoDeRelatorioEntity;
 import com.branches.equipamento.dto.response.EquipamentoDeRelatorioResponse;
 import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;

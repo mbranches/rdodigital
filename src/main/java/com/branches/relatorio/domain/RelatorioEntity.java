@@ -1,5 +1,6 @@
 package com.branches.relatorio.domain;
 
+import com.branches.condicaoclimatica.domain.CondicaoClimaticaEntity;
 import com.branches.relatorio.domain.enums.StatusRelatorio;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.config.envers.AuditableTenantOwned;
@@ -63,13 +64,13 @@ public class RelatorioEntity extends AuditableTenantOwned {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "caracteristicas_manha_id")
-    private CaracteristicaDePeriodoDoDiaEntity caracteristicasManha;
+    private CondicaoClimaticaEntity caracteristicasManha;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "caracteristicas_tarde_id")
-    private CaracteristicaDePeriodoDoDiaEntity caracteristicasTarde;
+    private CondicaoClimaticaEntity caracteristicasTarde;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "caracteristicas_noite_id")
-    private CaracteristicaDePeriodoDoDiaEntity caracteristicasNoite;
+    private CondicaoClimaticaEntity caracteristicasNoite;
 
     @Builder.Default
     @Column(nullable = false)

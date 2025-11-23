@@ -1,6 +1,6 @@
-package com.branches.relatorio.dto.response;
+package com.branches.condicaoclimatica.dto.response;
 
-import com.branches.relatorio.domain.CaracteristicaDePeriodoDoDiaEntity;
+import com.branches.condicaoclimatica.domain.CondicaoClimaticaEntity;
 import com.branches.relatorio.domain.enums.Clima;
 import com.branches.relatorio.domain.enums.CondicaoDoTempo;
 
@@ -10,7 +10,7 @@ public record CaracteristicaDePeriodoDoDiaResponse(
         CondicaoDoTempo condicaoDoTempo,
         Boolean ativo
 ) {
-    public static CaracteristicaDePeriodoDoDiaResponse from(CaracteristicaDePeriodoDoDiaEntity caracteristicaManha) {
+    public static CaracteristicaDePeriodoDoDiaResponse from(CondicaoClimaticaEntity caracteristicaManha) {
         return new CaracteristicaDePeriodoDoDiaResponse(
                 caracteristicaManha.getId(),
                 caracteristicaManha.getClima(),

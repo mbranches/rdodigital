@@ -1,4 +1,4 @@
-package com.branches.relatorio.domain;
+package com.branches.condicaoclimatica.domain;
 
 import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.relatorio.domain.enums.Clima;
@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class CaracteristicaDePeriodoDoDiaEntity extends AuditableTenantOwned {
+public class CondicaoClimaticaEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

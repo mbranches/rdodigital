@@ -1,6 +1,6 @@
 package com.branches.relatorio.repository.projections;
 
-import com.branches.relatorio.domain.CaracteristicaDePeriodoDoDiaEntity;
+import com.branches.condicaoclimatica.domain.CondicaoClimaticaEntity;
 import com.branches.relatorio.domain.enums.StatusRelatorio;
 
 import java.math.BigDecimal;
@@ -46,9 +46,9 @@ public interface RelatorioDetailsProjection {
     Long getPrazoDecorrido();
     Long getPrazoPraVencer();
 
-    CaracteristicaDePeriodoDoDiaEntity getCaracteristicasManha();
-    CaracteristicaDePeriodoDoDiaEntity getCaracteristicasTarde();
-    CaracteristicaDePeriodoDoDiaEntity getCaracteristicasNoite();
+    CondicaoClimaticaEntity getCaracteristicasManha();
+    CondicaoClimaticaEntity getCaracteristicasTarde();
+    CondicaoClimaticaEntity getCaracteristicasNoite();
     BigDecimal getIndicePluviometrico();
 
     StatusRelatorio getStatus();

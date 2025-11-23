@@ -1,9 +1,6 @@
 package com.branches.material.service;
 
-import com.branches.exception.ForbiddenException;
 import com.branches.material.domain.MaterialDeRelatorioEntity;
-import com.branches.obra.domain.ObraEntity;
-import com.branches.obra.service.GetObraByIdAndTenantIdService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.material.dto.request.UpdateMaterialDeRelatorioRequest;
 import com.branches.material.repository.MaterialDeRelatorioRepository;
@@ -27,20 +24,21 @@ public class UpdateMaterialDeRelatorioService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
-    private final GetObraByIdAndTenantIdService getObraByIdAndTenantIdService;
+    private final CheckIfConfiguracaoDeRelatorioDaObraPermiteMaterialService checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService;
+    private final CheckIfUserCanViewMateriaisService checkIfUserCanViewMateriaisService;
 
     public void execute(UpdateMaterialDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
         UserTenantEntity userTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
-        checkIfUserHasAccessToEditRelatorioService.execute(userTenant);
-
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
 
-        checkIfConfiguracaoDeRelatorioDaObraPermiteMaterial(relatorio, tenantId);
+        checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
 
-        checkIfUserCanViewMateriais(userTenant);
+        checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService.execute(relatorio.getObraId(), tenantId);
+
+        checkIfUserCanViewMateriaisService.execute(userTenant);
 
         MaterialDeRelatorioEntity entity = getMaterialByIdAndRelatorioIdService.execute(id, relatorio.getId());
         entity.setDescricao(request.descricao());
@@ -48,19 +46,5 @@ public class UpdateMaterialDeRelatorioService {
         entity.setTipoMaterial(request.tipoMaterial());
 
         materialDeRelatorioRepository.save(entity);
-    }
-
-    private void checkIfUserCanViewMateriais(UserTenantEntity userTenant) {
-        if (userTenant.getAuthorities().getItensDeRelatorio().getMateriais()) return;
-
-        throw new ForbiddenException();
-    }
-
-    private void checkIfConfiguracaoDeRelatorioDaObraPermiteMaterial(RelatorioEntity relatorio, Long tenantId) {
-        ObraEntity obra = getObraByIdAndTenantIdService.execute(relatorio.getObraId(), tenantId);
-
-        if (obra.getConfiguracaoRelatorios().getShowMateriais()) return;
-
-        throw new ForbiddenException();
     }
 }

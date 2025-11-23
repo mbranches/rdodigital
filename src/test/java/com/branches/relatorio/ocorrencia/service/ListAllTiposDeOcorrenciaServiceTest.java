@@ -1,9 +1,10 @@
 package com.branches.relatorio.ocorrencia.service;
 
 import com.branches.exception.ForbiddenException;
-import com.branches.relatorio.ocorrencia.domain.TipoDeOcorrenciaEntity;
-import com.branches.relatorio.ocorrencia.dto.response.TipoDeOcorrenciaResponse;
-import com.branches.relatorio.ocorrencia.repository.TipoDeOcorrenciaRepository;
+import com.branches.ocorrencia.domain.TipoDeOcorrenciaEntity;
+import com.branches.ocorrencia.dto.response.TipoDeOcorrenciaResponse;
+import com.branches.ocorrencia.repository.TipoDeOcorrenciaRepository;
+import com.branches.ocorrencia.service.ListAllTiposDeOcorrenciaService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.PermissionsCadastro;
 import com.branches.user.domain.UserEntity;

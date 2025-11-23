@@ -1,7 +1,10 @@
 package com.branches.relatorio.maodeobra.service;
 
-import com.branches.relatorio.maodeobra.domain.GrupoMaoDeObraEntity;
-import com.branches.relatorio.maodeobra.repository.GrupoMaoDeObraRepository;
+import com.branches.maodeobra.domain.GrupoMaoDeObraEntity;
+import com.branches.maodeobra.repository.GrupoMaoDeObraRepository;
+import com.branches.maodeobra.service.CheckIfUserHasAccessToMaoDeObraService;
+import com.branches.maodeobra.service.DeleteGrupoMaoDeObraService;
+import com.branches.maodeobra.service.GetGrupoMaoDeObraByIdAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.PermissionsCadastro;
 import com.branches.user.domain.UserEntity;

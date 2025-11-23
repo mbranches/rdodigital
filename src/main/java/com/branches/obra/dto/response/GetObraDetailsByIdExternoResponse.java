@@ -4,8 +4,8 @@ import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.obra.repository.projections.ObraDetailsProjection;
-import com.branches.relatorio.rdo.dto.response.RelatorioResponse;
-import com.branches.relatorio.rdo.repository.projections.RelatorioProjection;
+import com.branches.relatorio.dto.response.RelatorioResponse;
+import com.branches.relatorio.repository.projections.RelatorioProjection;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

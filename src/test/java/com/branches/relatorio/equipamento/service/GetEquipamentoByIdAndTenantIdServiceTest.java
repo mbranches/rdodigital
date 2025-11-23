@@ -1,8 +1,9 @@
 package com.branches.relatorio.equipamento.service;
 
+import com.branches.equipamento.service.GetEquipamentoByIdAndTenantIdService;
 import com.branches.exception.NotFoundException;
-import com.branches.relatorio.equipamento.domain.EquipamentoEntity;
-import com.branches.relatorio.equipamento.repository.EquipamentoRepository;
+import com.branches.equipamento.domain.EquipamentoEntity;
+import com.branches.equipamento.repository.EquipamentoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

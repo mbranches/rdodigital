@@ -2,7 +2,7 @@ package com.branches.obra.controller;
 
 import com.branches.config.security.UserTenantsContext;
 import com.branches.obra.service.ListarRelatoriosDeObraService;
-import com.branches.relatorio.rdo.dto.response.RelatorioResponse;
+import com.branches.relatorio.dto.response.RelatorioResponse;
 import com.branches.usertenant.domain.UserTenantEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

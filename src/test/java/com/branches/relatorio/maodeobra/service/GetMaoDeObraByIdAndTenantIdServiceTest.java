@@ -1,10 +1,11 @@
 package com.branches.relatorio.maodeobra.service;
 
 import com.branches.exception.NotFoundException;
+import com.branches.maodeobra.service.GetMaoDeObraByIdAndTenantIdService;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
-import com.branches.relatorio.maodeobra.domain.GrupoMaoDeObraEntity;
-import com.branches.relatorio.maodeobra.domain.MaoDeObraEntity;
-import com.branches.relatorio.maodeobra.repository.MaoDeObraRepository;
+import com.branches.maodeobra.domain.GrupoMaoDeObraEntity;
+import com.branches.maodeobra.domain.MaoDeObraEntity;
+import com.branches.maodeobra.repository.MaoDeObraRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

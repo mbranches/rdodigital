@@ -1,9 +1,9 @@
 package com.branches.obra.service;
 
-import com.branches.relatorio.rdo.domain.enums.StatusRelatorio;
-import com.branches.relatorio.rdo.dto.response.RelatorioResponse;
-import com.branches.relatorio.rdo.repository.RelatorioRepository;
-import com.branches.relatorio.rdo.repository.projections.RelatorioProjection;
+import com.branches.relatorio.domain.enums.StatusRelatorio;
+import com.branches.relatorio.dto.response.RelatorioResponse;
+import com.branches.relatorio.repository.RelatorioRepository;
+import com.branches.relatorio.repository.projections.RelatorioProjection;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;

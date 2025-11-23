@@ -1,9 +1,11 @@
 package com.branches.relatorio.maodeobra.service;
 
-import com.branches.relatorio.maodeobra.domain.GrupoMaoDeObraEntity;
-import com.branches.relatorio.maodeobra.dto.request.CreateGrupoMaoDeObraRequest;
-import com.branches.relatorio.maodeobra.dto.response.CreateGrupoMaoDeObraResponse;
-import com.branches.relatorio.maodeobra.repository.GrupoMaoDeObraRepository;
+import com.branches.maodeobra.domain.GrupoMaoDeObraEntity;
+import com.branches.maodeobra.dto.request.CreateGrupoMaoDeObraRequest;
+import com.branches.maodeobra.dto.response.CreateGrupoMaoDeObraResponse;
+import com.branches.maodeobra.repository.GrupoMaoDeObraRepository;
+import com.branches.maodeobra.service.CheckIfUserHasAccessToMaoDeObraService;
+import com.branches.maodeobra.service.CreateGrupoMaoDeObraService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.PermissionsCadastro;
 import com.branches.user.domain.UserEntity;

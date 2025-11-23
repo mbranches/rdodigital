@@ -1,9 +1,11 @@
 package com.branches.relatorio.equipamento.service;
 
+import com.branches.equipamento.service.GetEquipamentoByIdAndTenantIdService;
+import com.branches.equipamento.service.UpdateEquipamentoService;
 import com.branches.exception.ForbiddenException;
-import com.branches.relatorio.equipamento.domain.EquipamentoEntity;
-import com.branches.relatorio.equipamento.dto.request.UpdateEquipamentoRequest;
-import com.branches.relatorio.equipamento.repository.EquipamentoRepository;
+import com.branches.equipamento.domain.EquipamentoEntity;
+import com.branches.equipamento.dto.request.UpdateEquipamentoRequest;
+import com.branches.equipamento.repository.EquipamentoRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.PermissionsCadastro;
 import com.branches.user.domain.UserEntity;

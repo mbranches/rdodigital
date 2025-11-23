@@ -1,9 +1,9 @@
-package com.branches.equipamento.controller;
+package com.branches.material.controller;
 
 import com.branches.config.security.UserTenantsContext;
-import com.branches.equipamento.dto.request.CreateEquipamentoDeRelatorioRequest;
-import com.branches.equipamento.dto.response.CreateEquipamentoDeRelatorioResponse;
-import com.branches.equipamento.service.CreateEquipamentoDeRelatorioService;
+import com.branches.material.dto.request.CreateMaterialDeRelatorioRequest;
+import com.branches.material.dto.response.CreateMaterialDeRelatorioResponse;
+import com.branches.material.service.CreateMaterialDeRelatorioService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +18,18 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class CreateEquipamentoDeRelatorioController {
-    private final CreateEquipamentoDeRelatorioService createEquipamentoDeRelatorioService;
+public class CreateMaterialDeRelatorioController {
+    private final CreateMaterialDeRelatorioService createMaterialDeRelatorioService;
 
-    @PostMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/equipamentos")
-    public ResponseEntity<CreateEquipamentoDeRelatorioResponse> execute(
-            @RequestBody @Valid CreateEquipamentoDeRelatorioRequest request,
+    @PostMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/materiais")
+    public ResponseEntity<CreateMaterialDeRelatorioResponse> execute(
+            @RequestBody @Valid CreateMaterialDeRelatorioRequest request,
             @PathVariable String tenantExternalId,
             @PathVariable String relatorioExternalId
     ) {
         List<UserTenantEntity> userTenants = UserTenantsContext.getUserTenants();
 
-        CreateEquipamentoDeRelatorioResponse response = createEquipamentoDeRelatorioService.execute(request, relatorioExternalId, tenantExternalId, userTenants);
+        CreateMaterialDeRelatorioResponse response = createMaterialDeRelatorioService.execute(request, relatorioExternalId, tenantExternalId, userTenants);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

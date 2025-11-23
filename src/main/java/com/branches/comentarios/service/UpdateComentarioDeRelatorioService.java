@@ -1,9 +1,6 @@
 package com.branches.comentarios.service;
 
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
-import com.branches.exception.ForbiddenException;
-import com.branches.obra.domain.ObraEntity;
-import com.branches.obra.service.GetObraByIdAndTenantIdService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import com.branches.comentarios.dto.request.UpdateComentarioDeRelatorioRequest;
@@ -26,8 +23,9 @@ public class UpdateComentarioDeRelatorioService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
-    private final GetObraByIdAndTenantIdService getObraByIdAndTenantIdService;
     private final GetComentarioDeRelatorioByIdAndRelatorioIdService getComentarioDeRelatorioByIdAndRelatorioIdService;
+    private final CheckIfUserCanViewComentariosService checkIfUserCanViewComentariosService;
+    private final CheckIfConfiguracaoDeRelatorioDaObraPermiteComentarioService checkIfConfiguracaoDeRelatorioDaObraPermiteComentarioService;
 
     public void execute(UpdateComentarioDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -38,9 +36,9 @@ public class UpdateComentarioDeRelatorioService {
 
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
 
-        checkIfConfiguracaoDeRelatorioDaObraPermiteComentario(relatorio, tenantId);
+        checkIfConfiguracaoDeRelatorioDaObraPermiteComentarioService.execute(relatorio.getObraId(), tenantId);
 
-        checkIfUserCanViewComentarios(userTenant);
+        checkIfUserCanViewComentariosService.execute(userTenant);
 
         ComentarioDeRelatorioEntity entity = getComentarioDeRelatorioByIdAndRelatorioIdService.execute(id, relatorio.getId());
         entity.setDescricao(request.descricao());
@@ -54,19 +52,5 @@ public class UpdateComentarioDeRelatorioService {
         );
 
         comentarioDeRelatorioRepository.save(entity);
-    }
-
-    private void checkIfUserCanViewComentarios(UserTenantEntity userTenant) {
-        if (userTenant.getAuthorities().getItensDeRelatorio().getComentarios()) return;
-
-        throw new ForbiddenException();
-    }
-
-    private void checkIfConfiguracaoDeRelatorioDaObraPermiteComentario(RelatorioEntity relatorio, Long tenantId) {
-        ObraEntity obra = getObraByIdAndTenantIdService.execute(relatorio.getObraId(), tenantId);
-
-        if (obra.getConfiguracaoRelatorios().getShowComentarios()) return;
-
-        throw new ForbiddenException();
     }
 }

@@ -1,6 +1,6 @@
 package com.branches.atividade.dto.request;
 
-import com.branches.maodeobra.dto.request.MaoDeObraDeAtividadeRequest;
+import com.branches.maodeobra.dto.request.UpdateMaoDeObraDeAtividadeRequest;
 import com.branches.atividade.domain.enums.StatusAtividade;
 import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ public record UpdateAtividadeDeRelatorioRequest(
         LocalTime horaInicio,
         LocalTime horaFim,
         @Valid
-        List<MaoDeObraDeAtividadeRequest> maoDeObra,
+        List<UpdateMaoDeObraDeAtividadeRequest> maoDeObra,
         @Valid
         List<CampoPersonalizadoRequest> camposPersonalizados
         //todo: adicionar fotos quando for implementado

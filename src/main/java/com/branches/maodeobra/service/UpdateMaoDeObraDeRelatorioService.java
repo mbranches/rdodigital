@@ -1,9 +1,6 @@
 package com.branches.maodeobra.service;
 
-import com.branches.exception.ForbiddenException;
-import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
-import com.branches.obra.service.GetObraByIdAndTenantIdService;
 import com.branches.maodeobra.domain.MaoDeObraEntity;
 import com.branches.maodeobra.domain.enums.PresencaMaoDeObra;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
@@ -35,18 +32,21 @@ public class UpdateMaoDeObraDeRelatorioService {
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
-    private final GetObraByIdAndTenantIdService getObraByIdAndTenantIdService;
+    private final CheckIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObraService checkIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObraService;
+    private final CheckIfUserCanViewMaoDeObraService checkIfUserCanViewMaoDeObraService;
 
     public void execute(UpdateMaoDeObraDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
         UserTenantEntity userTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
-        checkIfUserHasAccessToEditRelatorioService.execute(userTenant);
-
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
 
-        checkIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObra(relatorio, tenantId, userTenant);
+        checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
+
+        checkIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObraService.execute(relatorio.getObraId(), tenantId);
+
+        checkIfUserCanViewMaoDeObraService.execute(userTenant);
 
         TipoMaoDeObra tipoMaoDeObra = relatorio.getTipoMaoDeObra();
 
@@ -67,13 +67,5 @@ public class UpdateMaoDeObraDeRelatorioService {
         }
 
         maoDeObraDeRelatorioRepository.save(entity);
-    }
-
-    private void checkIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObra(RelatorioEntity relatorio, Long tenantId, UserTenantEntity userTenant) {
-        ObraEntity obra = getObraByIdAndTenantIdService.execute(relatorio.getObraId(), tenantId);
-
-        if (obra.getConfiguracaoRelatorios().getShowMaoDeObra() && userTenant.getAuthorities().getItensDeRelatorio().getMaoDeObra()) return;
-
-        throw new ForbiddenException();
     }
 }

@@ -34,14 +34,14 @@ public class AtividadeDeRelatorioEntity {
     private LocalTime horaInicio;
     private LocalTime horaFim;
     private LocalTime totalHoras;
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
             name = "atividade_relatorio_campos_personalizados",
             joinColumns = @JoinColumn(name = "atividade_relatorio_id"),
             inverseJoinColumns = @JoinColumn(name = "campo_personalizado_id")
     )
     private List<CampoPersonalizadoEntity> camposPersonalizados;
-    @OneToMany(mappedBy = "atividadeDeRelatorio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "atividadeDeRelatorio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<MaoDeObraDeAtividadeDeRelatorioEntity> maoDeObra;
     @ManyToOne
     @JoinColumn(name = "relatorio_id", nullable = false)

@@ -22,7 +22,7 @@ public class ComentarioDeRelatorioEntity {
     @ManyToOne
     @JoinColumn(name = "relatorio_id", nullable = false)
     private RelatorioEntity relatorio;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
         name = "comentario_campo_personalizado",
         joinColumns = @JoinColumn(name = "comentario_id"),

@@ -23,7 +23,7 @@ public class OcorrenciaDeRelatorioEntity {
     @JoinColumn(name = "relatorio_id", nullable = false)
     private RelatorioEntity relatorio;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "ocorrencia_relatorio_tipos_de_ocorrencia",
             joinColumns = @JoinColumn(name = "ocorrencia_relatorio_id"),
@@ -38,7 +38,7 @@ public class OcorrenciaDeRelatorioEntity {
     private LocalTime horaFim;
     private LocalTime totalHoras;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "ocorrencia_relatorio_campos_personalizados",
             joinColumns = @JoinColumn(name = "ocorrencia_relatorio_id"),

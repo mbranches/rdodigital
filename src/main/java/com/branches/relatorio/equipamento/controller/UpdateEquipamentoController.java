@@ -25,6 +25,6 @@ public class UpdateEquipamentoController {
 
         updateEquipamentoService.execute(id, request, tenantExternalId, userTenants);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

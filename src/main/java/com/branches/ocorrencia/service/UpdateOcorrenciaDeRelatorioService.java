@@ -10,7 +10,7 @@ import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import com.branches.utils.CalculateHorasTotais;
-import com.branches.relatorio.domain.OcorrenciaDeRelatorioEntity;
+import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.ocorrencia.dto.request.UpdateOcorrenciaDeRelatorioRequest;
 import com.branches.relatorio.repository.OcorrenciaDeRelatorioRepository;

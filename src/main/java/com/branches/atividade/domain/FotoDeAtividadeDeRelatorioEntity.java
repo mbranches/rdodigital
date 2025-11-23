@@ -1,6 +1,5 @@
-package com.branches.relatorio.domain;
+package com.branches.atividade.domain;
 
-import com.branches.maodeobra.domain.MaoDeObraEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,19 +9,15 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class MaoDeObraDeAtividadeDeRelatorioEntity {
+public class FotoDeAtividadeDeRelatorioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "mao_de_obra_id", nullable = false)
-    private MaoDeObraEntity maoDeObra;
-
-    @Column(length = 100, nullable = false)
-    private String funcao;
-
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String url;
     @ManyToOne
     @JoinColumn(name = "atividade_de_relatorio_id", nullable = false)
     private AtividadeDeRelatorioEntity atividadeDeRelatorio;
+
+    //todo: implementar
 }

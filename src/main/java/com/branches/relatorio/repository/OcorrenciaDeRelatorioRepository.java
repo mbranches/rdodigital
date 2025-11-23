@@ -1,6 +1,6 @@
 package com.branches.relatorio.repository;
 
-import com.branches.relatorio.domain.OcorrenciaDeRelatorioEntity;
+import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

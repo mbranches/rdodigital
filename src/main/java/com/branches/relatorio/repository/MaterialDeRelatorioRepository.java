@@ -1,6 +1,6 @@
 package com.branches.relatorio.repository;
 
-import com.branches.relatorio.domain.MaterialDeRelatorioEntity;
+import com.branches.material.domain.MaterialDeRelatorioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;

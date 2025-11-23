@@ -1,8 +1,8 @@
 package com.branches.relatorio.service;
 
-import com.branches.relatorio.domain.MaterialDeRelatorioEntity;
+import com.branches.material.domain.MaterialDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
-import com.branches.relatorio.dto.request.MaterialDeRelatorioRequest;
+import com.branches.material.dto.request.MaterialDeRelatorioRequest;
 import com.branches.relatorio.repository.MaterialDeRelatorioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

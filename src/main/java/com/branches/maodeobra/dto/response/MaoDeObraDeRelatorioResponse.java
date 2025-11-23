@@ -1,7 +1,7 @@
 package com.branches.maodeobra.dto.response;
 
 import com.branches.maodeobra.domain.enums.PresencaMaoDeObra;
-import com.branches.relatorio.domain.MaoDeObraDeRelatorioEntity;
+import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 
 import java.time.LocalTime;
 

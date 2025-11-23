@@ -1,4 +1,4 @@
-package com.branches.relatorio.dto.request;
+package com.branches.material.dto.request;
 
 import com.branches.relatorio.domain.enums.TipoMaterial;
 import jakarta.validation.constraints.NotBlank;

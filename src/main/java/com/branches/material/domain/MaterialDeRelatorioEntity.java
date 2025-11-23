@@ -1,5 +1,6 @@
-package com.branches.relatorio.domain;
+package com.branches.material.domain;
 
+import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.domain.enums.TipoMaterial;
 import jakarta.persistence.*;
 import jakarta.persistence.GenerationType;

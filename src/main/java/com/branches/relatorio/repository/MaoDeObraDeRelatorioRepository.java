@@ -1,6 +1,6 @@
 package com.branches.relatorio.repository;
 
-import com.branches.relatorio.domain.MaoDeObraDeRelatorioEntity;
+import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

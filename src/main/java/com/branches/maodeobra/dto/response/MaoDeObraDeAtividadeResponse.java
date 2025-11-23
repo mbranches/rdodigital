@@ -1,6 +1,6 @@
 package com.branches.maodeobra.dto.response;
 
-import com.branches.relatorio.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
+import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
 
 public record MaoDeObraDeAtividadeResponse(
         Long id,

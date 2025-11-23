@@ -1,5 +1,8 @@
-package com.branches.relatorio.domain;
+package com.branches.atividade.domain;
 
+import com.branches.relatorio.domain.CampoPersonalizadoEntity;
+import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
+import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.domain.enums.StatusAtividade;
 import jakarta.persistence.*;
 import lombok.*;

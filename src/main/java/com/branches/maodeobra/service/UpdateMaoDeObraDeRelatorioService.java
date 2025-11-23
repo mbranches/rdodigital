@@ -12,7 +12,7 @@ import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import com.branches.utils.CalculateHorasTotais;
-import com.branches.relatorio.domain.MaoDeObraDeRelatorioEntity;
+import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.maodeobra.dto.request.UpdateMaoDeObraDeRelatorioRequest;
 import com.branches.relatorio.repository.MaoDeObraDeRelatorioRepository;

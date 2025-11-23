@@ -1,10 +1,15 @@
 package com.branches.relatorio.service;
 
+import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
+import com.branches.equipamento.domain.EquipamentoDeRelatorioEntity;
 import com.branches.exception.ForbiddenException;
+import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
+import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
+import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.relatorio.domain.*;
 import com.branches.relatorio.domain.enums.Clima;
 import com.branches.relatorio.domain.enums.CondicaoDoTempo;

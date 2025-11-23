@@ -1,6 +1,6 @@
 package com.branches.equipamento.dto.response;
 
-import com.branches.relatorio.domain.EquipamentoDeRelatorioEntity;
+import com.branches.equipamento.domain.EquipamentoDeRelatorioEntity;
 
 public record EquipamentoDeRelatorioResponse(
         Long id,

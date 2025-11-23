@@ -1,6 +1,7 @@
-package com.branches.relatorio.domain;
+package com.branches.ocorrencia.domain;
 
-import com.branches.ocorrencia.domain.TipoDeOcorrenciaEntity;
+import com.branches.relatorio.domain.CampoPersonalizadoEntity;
+import com.branches.relatorio.domain.RelatorioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

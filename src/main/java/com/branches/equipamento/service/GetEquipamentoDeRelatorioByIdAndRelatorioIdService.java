@@ -1,7 +1,7 @@
 package com.branches.equipamento.service;
 
 import com.branches.exception.NotFoundException;
-import com.branches.relatorio.domain.EquipamentoDeRelatorioEntity;
+import com.branches.equipamento.domain.EquipamentoDeRelatorioEntity;
 import com.branches.relatorio.repository.EquipamentoDeRelatorioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

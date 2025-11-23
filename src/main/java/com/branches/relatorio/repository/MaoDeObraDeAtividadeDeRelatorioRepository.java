@@ -1,6 +1,6 @@
 package com.branches.relatorio.repository;
 
-import com.branches.relatorio.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
+import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;

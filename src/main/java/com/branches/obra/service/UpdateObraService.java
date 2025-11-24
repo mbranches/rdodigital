@@ -57,10 +57,11 @@ public class UpdateObraService {
               obra.setDataFimReal(null);
         }
 
-        GrupoDeObraEntity grupo = getGrupoDeObraByIdAndTenantIdService.execute(request.grupoId(), tenantId);
+        if (request.grupoId() != null) {
+            GrupoDeObraEntity grupo = getGrupoDeObraByIdAndTenantIdService.execute(request.grupoId(), tenantId);
 
-        obra.setGrupo(grupo);
-
+            obra.setGrupo(grupo);
+        }
         obraRepository.save(obra);
     }
 

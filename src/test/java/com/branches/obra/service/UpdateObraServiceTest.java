@@ -1,7 +1,7 @@
 package com.branches.obra.service;
 
-import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.exception.ForbiddenException;
+import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.domain.enums.TipoContratoDeObra;
@@ -11,8 +11,8 @@ import com.branches.obra.repository.ObraRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.PermissionsDefault;
 import com.branches.user.domain.UserEntity;
-import com.branches.usertenant.domain.UserObraPermitidaEntity;
 import com.branches.usertenant.domain.Authorities;
+import com.branches.usertenant.domain.UserObraPermitidaEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,14 +41,14 @@ class UpdateObraServiceTest {
     @Mock
     private GetGrupoDeObraByIdAndTenantIdService getGrupoDeObraByIdAndTenantIdService;
 
-    @InjectMocks
-    private UpdateObraService updateObraService;
-
     @Mock
     private GetCurrentUserTenantService getCurrentUserTenantService;
 
     @Mock
     private GetObraByIdExternoAndTenantIdService getObraByIdExternoAndTenantIdService;
+
+    @InjectMocks
+    private UpdateObraService updateObraService;
 
     private UpdateObraRequest updateObraRequest;
     private ObraEntity obraEntity;
@@ -160,6 +160,8 @@ class UpdateObraServiceTest {
         ));
 
         verify(getTenantIdByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(getObraByIdExternoAndTenantIdService, times(1)).execute(obraExternalId, tenantId);
         verify(getGrupoDeObraByIdAndTenantIdService, times(1)).execute(grupoId, tenantId);
         verify(obraRepository, times(1)).save(obraEntity);
 
@@ -212,6 +214,8 @@ class UpdateObraServiceTest {
 
         assertNotNull(exception);
         verify(getTenantIdByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(getObraByIdExternoAndTenantIdService, times(1)).execute(obraExternalId, tenantId);
         verify(obraRepository, never()).save(any(ObraEntity.class));
     }
 
@@ -227,7 +231,7 @@ class UpdateObraServiceTest {
                 Set.of(
                         UserObraPermitidaEntity.builder()
                                 .userTenant(userTenant)
-                                .obraId(obraIdNaoPermitida) // ID diferente da obra que está sendo editada
+                                .obraId(obraIdNaoPermitida)
                                 .build()
                 )
         );
@@ -252,7 +256,207 @@ class UpdateObraServiceTest {
 
         assertNotNull(exception);
         verify(getTenantIdByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(getObraByIdExternoAndTenantIdService, times(1)).execute(obraExternalId, tenantId);
         verify(obraRepository, never()).save(any(ObraEntity.class));
+    }
+
+    @Test
+    void deveDefinirDataFimRealQuandoStatusMudarParaConcluida() {
+        UpdateObraRequest requestConcluida = new UpdateObraRequest(
+                "Obra Concluída",
+                "Maria Silva",
+                "Contratante",
+                TipoContratoDeObra.CONTRATADA,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                "CONT-2025-001",
+                "Endereço",
+                "Observações",
+                TipoMaoDeObra.PERSONALIZADA,
+                StatusObra.CONCLUIDA,
+                grupoId
+        );
+
+        UserTenantEntity userTenant = createUserTenantWithPermission(obraId);
+        userTenants = List.of(userTenant);
+
+        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
+        when(getObraByIdExternoAndTenantIdService.execute(obraExternalId, tenantId))
+                .thenReturn(obraEntity);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getGrupoDeObraByIdAndTenantIdService.execute(grupoId, tenantId))
+                .thenReturn(grupoDeObra);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraEntity);
+
+        updateObraService.execute(requestConcluida, obraExternalId, tenantExternalId, userTenants);
+
+        assertEquals(StatusObra.CONCLUIDA, obraEntity.getStatus());
+        assertNotNull(obraEntity.getDataFimReal());
+        assertEquals(LocalDate.now(), obraEntity.getDataFimReal());
+
+        verify(obraRepository, times(1)).save(obraEntity);
+    }
+
+    @Test
+    void deveRemoverDataFimRealQuandoStatusMudarDeConcluidaParaOutro() {
+        obraEntity.setStatus(StatusObra.CONCLUIDA);
+        obraEntity.setDataFimReal(LocalDate.of(2025, 10, 1));
+
+        UpdateObraRequest requestEmAndamento = new UpdateObraRequest(
+                "Obra Em Andamento Novamente",
+                "Maria Silva",
+                "Contratante",
+                TipoContratoDeObra.CONTRATADA,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                "CONT-2025-001",
+                "Endereço",
+                "Observações",
+                TipoMaoDeObra.PERSONALIZADA,
+                StatusObra.EM_ANDAMENTO,
+                grupoId
+        );
+
+        UserTenantEntity userTenant = createUserTenantWithPermission(obraId);
+        userTenants = List.of(userTenant);
+
+        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
+        when(getObraByIdExternoAndTenantIdService.execute(obraExternalId, tenantId))
+                .thenReturn(obraEntity);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getGrupoDeObraByIdAndTenantIdService.execute(grupoId, tenantId))
+                .thenReturn(grupoDeObra);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraEntity);
+
+        updateObraService.execute(requestEmAndamento, obraExternalId, tenantExternalId, userTenants);
+
+        assertEquals(StatusObra.EM_ANDAMENTO, obraEntity.getStatus());
+        assertNull(obraEntity.getDataFimReal());
+
+        verify(obraRepository, times(1)).save(obraEntity);
+    }
+
+    @Test
+    void deveManterDataFimRealNullQuandoStatusJaEraConcluida() {
+        obraEntity.setStatus(StatusObra.CONCLUIDA);
+        LocalDate oldDataFimReal = LocalDate.of(2025, 10, 1);
+        obraEntity.setDataFimReal(oldDataFimReal);
+
+        UpdateObraRequest requestConcluida = new UpdateObraRequest(
+                "Obra Concluída",
+                "Maria Silva",
+                "Contratante",
+                TipoContratoDeObra.CONTRATADA,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                "CONT-2025-001",
+                "Endereço",
+                "Observações",
+                TipoMaoDeObra.PERSONALIZADA,
+                StatusObra.CONCLUIDA,
+                grupoId
+        );
+
+        UserTenantEntity userTenant = createUserTenantWithPermission(obraId);
+        userTenants = List.of(userTenant);
+
+        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
+        when(getObraByIdExternoAndTenantIdService.execute(obraExternalId, tenantId))
+                .thenReturn(obraEntity);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getGrupoDeObraByIdAndTenantIdService.execute(grupoId, tenantId))
+                .thenReturn(grupoDeObra);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraEntity);
+
+        updateObraService.execute(requestConcluida, obraExternalId, tenantExternalId, userTenants);
+
+        assertEquals(StatusObra.CONCLUIDA, obraEntity.getStatus());
+        assertEquals(oldDataFimReal, obraEntity.getDataFimReal());
+
+        verify(obraRepository, times(1)).save(obraEntity);
+    }
+
+    @Test
+    void deveAtualizarObraSemGrupoQuandoGrupoIdForNull() {
+        UpdateObraRequest requestSemGrupo = new UpdateObraRequest(
+                "Obra Sem Grupo",
+                "Maria Silva",
+                "Contratante",
+                TipoContratoDeObra.CONTRATADA,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                "CONT-2025-001",
+                "Endereço",
+                "Observações",
+                TipoMaoDeObra.PERSONALIZADA,
+                StatusObra.EM_ANDAMENTO,
+                null
+        );
+
+        UserTenantEntity userTenant = createUserTenantWithPermission(obraId);
+        userTenants = List.of(userTenant);
+
+        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
+        when(getObraByIdExternoAndTenantIdService.execute(obraExternalId, tenantId))
+                .thenReturn(obraEntity);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraEntity);
+
+        updateObraService.execute(requestSemGrupo, obraExternalId, tenantExternalId, userTenants);
+
+        assertEquals("Obra Sem Grupo", obraEntity.getNome());
+        assertNull(obraEntity.getGrupo());
+
+        verify(getGrupoDeObraByIdAndTenantIdService, never()).execute(null, tenantId);
+        verify(obraRepository, times(1)).save(obraEntity);
+    }
+
+    @Test
+    void deveAtualizarTodosOsCamposCorretamente() {
+        UserTenantEntity userTenant = createUserTenantWithPermission(obraId);
+        userTenants = List.of(userTenant);
+
+        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
+        when(getObraByIdExternoAndTenantIdService.execute(obraExternalId, tenantId))
+                .thenReturn(obraEntity);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getGrupoDeObraByIdAndTenantIdService.execute(grupoId, tenantId))
+                .thenReturn(grupoDeObra);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraEntity);
+
+        updateObraService.execute(updateObraRequest, obraExternalId, tenantExternalId, userTenants);
+
+        assertEquals(updateObraRequest.nome(), obraEntity.getNome());
+        assertEquals(updateObraRequest.responsavel(), obraEntity.getResponsavel());
+        assertEquals(updateObraRequest.contratante(), obraEntity.getContratante());
+        assertEquals(updateObraRequest.tipoContrato(), obraEntity.getTipoContrato());
+        assertEquals(updateObraRequest.dataInicio(), obraEntity.getDataInicio());
+        assertEquals(updateObraRequest.dataPrevistaFim(), obraEntity.getDataPrevistaFim());
+        assertEquals(updateObraRequest.numeroContrato(), obraEntity.getNumeroContrato());
+        assertEquals(updateObraRequest.endereco(), obraEntity.getEndereco());
+        assertEquals(updateObraRequest.observacoes(), obraEntity.getObservacoes());
+        assertEquals(updateObraRequest.tipoMaoDeObra(), obraEntity.getTipoMaoDeObra());
+        assertEquals(updateObraRequest.status(), obraEntity.getStatus());
+
+        verify(obraRepository, times(1)).save(obraEntity);
+    }
+
+    private UserTenantEntity createUserTenantWithPermission(Long obraId) {
+        UserTenantEntity userTenant = UserTenantEntity.builder()
+                .user(UserEntity.builder().id(1L).build())
+                .tenantId(tenantId)
+                .build();
+        userTenant.setUserObraPermitidaEntities(
+                Set.of(
+                        UserObraPermitidaEntity.builder()
+                                .userTenant(userTenant)
+                                .obraId(obraId)
+                                .build()
+                )
+        );
+        userTenant.setAuthorities(authorityCanEdit);
+        return userTenant;
     }
 }
 

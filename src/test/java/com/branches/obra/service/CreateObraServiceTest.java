@@ -1,24 +1,26 @@
 package com.branches.obra.service;
+
 import com.branches.assinatura.domain.AssinaturaEntity;
 import com.branches.assinatura.domain.enums.AssinaturaStatus;
 import com.branches.assinatura.service.GetAssinaturaActiveByTenantIdService;
-import com.branches.obra.domain.GrupoDeObraEntity;
-import com.branches.obra.domain.ObraEntity;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import com.branches.obra.domain.enums.StatusObra;
-import com.branches.obra.domain.enums.TipoContratoDeObra;
-import com.branches.obra.dto.request.CreateObraRequest;
-import com.branches.obra.dto.response.CreateObraResponse;
-import com.branches.obra.domain.enums.TipoMaoDeObra;
+import com.branches.configuradores.domain.ModeloDeRelatorioEntity;
+import com.branches.configuradores.service.GetModeloDeRelatorioByIdAndTenantIdService;
 import com.branches.exception.BadRequestException;
 import com.branches.exception.ForbiddenException;
+import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
+import com.branches.obra.domain.GrupoDeObraEntity;
+import com.branches.obra.domain.ObraEntity;
+import com.branches.obra.domain.enums.StatusObra;
+import com.branches.obra.domain.enums.TipoContratoDeObra;
+import com.branches.obra.domain.enums.TipoMaoDeObra;
+import com.branches.obra.dto.request.CreateObraRequest;
+import com.branches.obra.dto.response.CreateObraResponse;
 import com.branches.obra.repository.ObraRepository;
 import com.branches.plano.domain.PlanoEntity;
-import com.branches.tenant.service.GetTenantIdByIdExternoService;
-import com.branches.user.domain.*;
-import com.branches.usertenant.domain.UserObraPermitidaEntity;
+import com.branches.tenant.domain.TenantEntity;
+import com.branches.tenant.service.GetTenantByIdExternoService;
+import com.branches.user.domain.PermissionsDefault;
+import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.Authorities;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
@@ -29,8 +31,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,16 +42,10 @@ import static org.mockito.Mockito.*;
 class CreateObraServiceTest {
 
     @Mock
-    private ObraRepository obraRepository;
-
-    @Mock
-    private GetTenantIdByIdExternoService getTenantIdByIdExternoService;
-
-    @InjectMocks
-    private CreateObraService createObraService;
-
-    @Mock
     private GetAssinaturaActiveByTenantIdService getAssinaturaActiveByTenantIdService;
+
+    @Mock
+    private ObraRepository obraRepository;
 
     @Mock
     private GetGrupoDeObraByIdAndTenantIdService getGrupoDeObraByIdAndTenantIdService;
@@ -56,168 +53,89 @@ class CreateObraServiceTest {
     @Mock
     private GetCurrentUserTenantService getCurrentUserTenantService;
 
-    private CreateObraRequest createObraRequest;
-    private ObraEntity savedObra;
-    private ObraEntity obraToSave;
+    @Mock
+    private GetTenantByIdExternoService getTenantByIdExternoService;
+
+    @Mock
+    private GetModeloDeRelatorioByIdAndTenantIdService getModeloDeRelatorioByIdAndTenantIdService;
+
+    @InjectMocks
+    private CreateObraService createObraService;
+
     private String tenantExternalId;
     private Long tenantId;
-    private List<UserTenantEntity> userTenants;
-    private PlanoEntity plano;
+    private Long modeloId;
+    private Long grupoId;
+
+    private TenantEntity tenant;
     private AssinaturaEntity assinatura;
-    private Authorities authorityCreateObra;
-    private Authorities authorityNoCreateObra;
+    private ModeloDeRelatorioEntity modeloDeRelatorio;
+    private GrupoDeObraEntity grupo;
+
+    private CreateObraRequest request;
+    private List<UserTenantEntity> userTenants;
+
+    private Authorities authorityCanCreate;
+    private Authorities authorityCannotCreate;
 
     @BeforeEach
     void setUp() {
         tenantExternalId = "tenant-ext-123";
         tenantId = 1L;
+        modeloId = 1L;
+        grupoId = 1L;
 
-        plano = new PlanoEntity(
-                1L,
-                "Plano 1",
-                "Descrição do Plano 1",
-                BigDecimal.valueOf(212),
-                50,
-                50,
-                50
-        );
+        tenant = TenantEntity.builder()
+                .id(tenantId)
+                .idExterno(tenantExternalId)
+                .build();
+
+        PlanoEntity plano = PlanoEntity.builder()
+                .id(1L)
+                .nome("Plano Premium")
+                .descricao("Plano com recursos completos")
+                .valor(BigDecimal.valueOf(199.90))
+                .limiteObras(10)
+                .build();
 
         assinatura = AssinaturaEntity.builder()
                 .id(1L)
                 .tenantId(tenantId)
                 .plano(plano)
-                .dataInicio(LocalDate.of(2025, 1, 1))
-                .dataFim(LocalDate.of(2025, 12, 31))
                 .status(AssinaturaStatus.ATIVO)
-                .build();
-
-        createObraRequest = new CreateObraRequest(
-                "Obra Teste",
-                "João Silva",
-                "Contratante Teste",
-                TipoContratoDeObra.CONTRATADA,
-                LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31),
-                "CONT-2025-001",
-                "Rua Teste, 123",
-                "Observações de teste",
-                TipoMaoDeObra.PERSONALIZADA,
-                StatusObra.EM_ANDAMENTO,
-                null
-        );
-
-        savedObra = ObraEntity.builder()
-                .id(1L)
-                .idExterno("obra-id-ext-123")
-                .nome("Obra Teste")
-                .responsavel("João Silva")
-                .contratante("Contratante Teste")
-                .tipoContrato(TipoContratoDeObra.CONTRATADA)
                 .dataInicio(LocalDate.of(2025, 1, 1))
-                .dataPrevistaFim(LocalDate.of(2025, 12, 31))
-                .numeroContrato("CONT-2025-001")
-                .endereco("Rua Teste, 123")
-                .observacoes("Observações de teste")
-                .capaUrl("http://capa.url")
-                .tipoMaoDeObra(TipoMaoDeObra.PERSONALIZADA)
-                .status(StatusObra.EM_ANDAMENTO)
-                .ativo(true)
-                .build();
-        savedObra.setTenantId(1L);
-
-        obraToSave = ObraEntity.builder()
-                .nome("Obra Teste")
-                .responsavel("João Silva")
-                .contratante("Contratante Teste")
-                .tipoContrato(TipoContratoDeObra.CONTRATADA)
-                .dataInicio(LocalDate.of(2025, 1, 1))
-                .dataPrevistaFim(LocalDate.of(2025, 12, 31))
-                .numeroContrato("CONT-2025-001")
-                .endereco("Rua Teste, 123")
-                .observacoes("Observações de teste")
-                .tipoMaoDeObra(TipoMaoDeObra.PERSONALIZADA)
-                .status(StatusObra.EM_ANDAMENTO)
-                .ativo(true)
-                .build();
-        obraToSave.setTenantId(1L);
-
-        authorityCreateObra = Authorities.builder()
-                .obras(
-                        PermissionsDefault.builder()
-                                .canCreateAndEdit(true)
-                                .build()
-                )
+                .dataFim(LocalDate.of(2026, 1, 1))
                 .build();
 
-        authorityNoCreateObra = Authorities.builder()
-                .obras(
-                        PermissionsDefault.builder()
-                                .canCreateAndEdit(false)
-                                .build()
-                )
+        modeloDeRelatorio = ModeloDeRelatorioEntity.builder()
+                .id(modeloId)
+                .titulo("Modelo Padrão")
+                .showMaoDeObra(true)
                 .build();
-    }
+        modeloDeRelatorio.setTenantId(tenantId);
 
-    @Test
-    void deveExecutarComSucessoQuandoTenantEstaNaLista() {
-        UserTenantEntity userTenant = UserTenantEntity.builder()
-                .user(UserEntity.builder().id(1L).build())
-                .tenantId(1L)
-                .build();
-        userTenant.setUserObraPermitidaEntities(
-                Set.of(
-                        UserObraPermitidaEntity.builder()
-                                .userTenant(userTenant)
-                                .obraId(savedObra.getId())
-                                .build()
-                )
-        );
-        userTenant.setAuthorities(authorityCreateObra);
-
-        userTenants = List.of(
-                userTenant
-        );
-
-        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
-        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
-        when(obraRepository.save(obraToSave)).thenReturn(savedObra);
-        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(0);
-        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
-
-
-        CreateObraResponse response = createObraService.execute(
-                createObraRequest,
-                tenantExternalId,
-                userTenants
-        );
-
-        assertNotNull(response);
-        assertEquals("obra-id-ext-123", response.id());
-        assertEquals(createObraRequest.nome(), response.nome());
-        assertEquals(createObraRequest.responsavel(), response.responsavel());
-        assertEquals(createObraRequest.contratante(), response.contratante());
-        assertEquals(createObraRequest.tipoContrato(), response.tipoContrato());
-        assertEquals(createObraRequest.status(), response.status());
-        assertEquals(createObraRequest.dataInicio(), response.dataInicio());
-        assertEquals(createObraRequest.dataPrevistaFim(), response.dataPrevistaFim());
-        assertEquals(createObraRequest.numeroContrato(), response.numeroContrato());
-        assertEquals(createObraRequest.endereco(), response.endereco());
-        assertEquals(createObraRequest.observacoes(), response.observacoes());
-        assertEquals(createObraRequest.tipoMaoDeObra(), response.tipoMaoDeObra());
-    }
-
-    @Test
-    void deveExecutarComSucessoQuandoGrupoIdNaoForNulo() {
-        Long grupoId = 1L;
-        GrupoDeObraEntity grupo = GrupoDeObraEntity.builder()
+        grupo = GrupoDeObraEntity.builder()
                 .id(grupoId)
-                .descricao("Grupo Teste")
+                .descricao("Grupo de Obras Residenciais")
+                .build();
+        grupo.setTenantId(tenantId);
+
+        authorityCanCreate = Authorities.builder()
+                .obras(PermissionsDefault.builder()
+                        .canCreateAndEdit(true)
+                        .build())
                 .build();
 
-        CreateObraRequest requestComGrupo = new CreateObraRequest(
+        authorityCannotCreate = Authorities.builder()
+                .obras(PermissionsDefault.builder()
+                        .canCreateAndEdit(false)
+                        .build())
+                .build();
+
+        request = new CreateObraRequest(
                 "Obra Teste",
                 "João Silva",
-                "Contratante Teste",
+                "Contratante ABC",
                 TipoContratoDeObra.CONTRATADA,
                 LocalDate.of(2025, 1, 1),
                 LocalDate.of(2025, 12, 31),
@@ -226,133 +144,237 @@ class CreateObraServiceTest {
                 "Observações de teste",
                 TipoMaoDeObra.PERSONALIZADA,
                 StatusObra.EM_ANDAMENTO,
-                grupoId
+                1L,
+                modeloId
         );
+    }
 
-        ObraEntity savedObraComGrupo = ObraEntity.builder()
-                .id(1L)
-                .idExterno("obra-id-ext-123")
-                .nome("Obra Teste")
-                .responsavel("João Silva")
-                .contratante("Contratante Teste")
-                .tipoContrato(TipoContratoDeObra.CONTRATADA)
-                .dataInicio(LocalDate.of(2025, 1, 1))
-                .dataPrevistaFim(LocalDate.of(2025, 12, 31))
-                .numeroContrato("CONT-2025-001")
-                .endereco("Rua Teste, 123")
-                .observacoes("Observações de teste")
-                .capaUrl("http://capa.url")
-                .tipoMaoDeObra(TipoMaoDeObra.PERSONALIZADA)
-                .status(StatusObra.EM_ANDAMENTO)
-                .ativo(true)
-                .grupo(grupo)
-                .build();
-        savedObraComGrupo.setTenantId(1L);
-
-        UserTenantEntity userTenant = UserTenantEntity.builder()
-                .user(UserEntity.builder().id(1L).build())
-                .tenantId(1L)
-                .build();
-        userTenant.setUserObraPermitidaEntities(
-                Set.of(
-                        UserObraPermitidaEntity.builder()
-                                .userTenant(userTenant)
-                                .obraId(savedObraComGrupo.getId())
-                                .build()
-                )
-        );
-        userTenant.setAuthorities(authorityCreateObra);
-
+    @Test
+    void deveCriarObraComSucesso() {
+        UserTenantEntity userTenant = createUserTenant(authorityCanCreate);
         userTenants = List.of(userTenant);
 
-        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
-        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
-        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(0);
-        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
-        when(getGrupoDeObraByIdAndTenantIdService.execute(grupoId, tenantId)).thenReturn(grupo);
-        when(obraRepository.save(any(ObraEntity.class))).thenReturn(savedObraComGrupo);
+        ObraEntity obraSalva = ObraEntity.builder()
+                .id(1L)
+                .idExterno("obra-ext-001")
+                .nome(request.nome())
+                .responsavel(request.responsavel())
+                .contratante(request.contratante())
+                .tipoContrato(request.tipoContrato())
+                .dataInicio(request.dataInicio())
+                .dataPrevistaFim(request.dataPrevistaFim())
+                .numeroContrato(request.numeroContrato())
+                .endereco(request.endereco())
+                .observacoes(request.observacoes())
+                .tipoMaoDeObra(request.tipoMaoDeObra())
+                .status(request.status())
+                .configuracaoRelatorios(ConfiguracaoRelatoriosEntity.by(modeloDeRelatorio))
+                .ativo(true)
+                .build();
+        obraSalva.setTenantId(tenantId);
 
-        CreateObraResponse response = createObraService.execute(
-                requestComGrupo,
-                tenantExternalId,
-                userTenants
-        );
+        when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenant);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
+        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(5);
+        when(getModeloDeRelatorioByIdAndTenantIdService.execute(modeloId, tenantId))
+                .thenReturn(modeloDeRelatorio);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraSalva);
+
+        CreateObraResponse response = createObraService.execute(request, tenantExternalId, userTenants);
 
         assertNotNull(response);
-        assertEquals("obra-id-ext-123", response.id());
-        assertEquals(requestComGrupo.nome(), response.nome());
+        assertEquals("obra-ext-001", response.id());
+        assertEquals("Obra Teste", response.nome());
+        assertEquals("João Silva", response.responsavel());
+        assertEquals("Contratante ABC", response.contratante());
+        assertEquals(StatusObra.EM_ANDAMENTO, response.status());
+
+        verify(getTenantByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(getAssinaturaActiveByTenantIdService, times(1)).execute(tenantId);
+        verify(obraRepository, times(1)).countByTenantIdAndAtivoIsTrue(tenantId);
+        verify(getModeloDeRelatorioByIdAndTenantIdService, times(1)).execute(modeloId, tenantId);
+        verify(obraRepository, times(1)).save(any(ObraEntity.class));
     }
 
     @Test
-    void deveLancarBadRequestExceptionQuandoLimiteDeObrasAtingido() {
-        UserTenantEntity userTenant = UserTenantEntity.builder()
-                .user(UserEntity.builder().id(1L).build())
-                .tenantId(1L)
-                .build();
-        userTenant.setUserObraPermitidaEntities(
-                Set.of(
-                        UserObraPermitidaEntity.builder()
-                                .userTenant(userTenant)
-                                .obraId(savedObra.getId())
-                                .build()
-                )
-        );
-        userTenant.setAuthorities(authorityCreateObra);
+    void deveLancarForbiddenExceptionQuandoUsuarioNaoTemPermissaoParaCriar() {
+        UserTenantEntity userTenant = createUserTenant(authorityCannotCreate);
+        userTenants = List.of(userTenant);
 
-        userTenants = List.of(
-                userTenant
-        );
-
-        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
-        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
-        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(50);
-        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
-
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
-                () -> createObraService.execute(
-                        createObraRequest,
-                        tenantExternalId,
-                        userTenants
-                )
-        );
-
-        assertNotNull(exception);
-        assertEquals("Limite de obras atingido", exception.getReason());
-    }
-
-    @Test
-    void deveLancarForbiddenExceptionQuandoUsuarioNaoTemPermissaoPraCriarObra() {
-        UserTenantEntity userTenant = UserTenantEntity.builder()
-                .user(UserEntity.builder().id(1L).build())
-                .tenantId(1L)
-                .build();
-        userTenant.setUserObraPermitidaEntities(
-                Set.of(
-                        UserObraPermitidaEntity.builder()
-                                .userTenant(userTenant)
-                                .obraId(savedObra.getId())
-                                .build()
-                )
-        );
-        userTenant.setAuthorities(authorityNoCreateObra);
-
-        userTenants = List.of(
-                userTenant
-        );
-
-        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
+        when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenant);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
 
         ForbiddenException exception = assertThrows(
                 ForbiddenException.class,
-                () -> createObraService.execute(
-                        createObraRequest,
-                        tenantExternalId,
-                        userTenants
-                )
+                () -> createObraService.execute(request, tenantExternalId, userTenants)
         );
 
         assertNotNull(exception);
+        verify(getTenantByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(obraRepository, never()).save(any(ObraEntity.class));
+    }
+
+    @Test
+    void deveLancarBadRequestExceptionQuandoLimiteDeObrasAtingido() {
+        UserTenantEntity userTenant = createUserTenant(authorityCanCreate);
+        userTenants = List.of(userTenant);
+
+        when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenant);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
+        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(10);
+
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
+                () -> createObraService.execute(request, tenantExternalId, userTenants)
+        );
+
+        assertEquals("Limite de obras atingido", exception.getReason());
+        verify(getTenantByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(getAssinaturaActiveByTenantIdService, times(1)).execute(tenantId);
+        verify(obraRepository, times(1)).countByTenantIdAndAtivoIsTrue(tenantId);
+        verify(obraRepository, never()).save(any(ObraEntity.class));
+    }
+
+    @Test
+    void deveCriarObraComGrupoQuandoGrupoIdFornecido() {
+        CreateObraRequest requestComGrupo = createRequestComGrupo(grupoId);
+        UserTenantEntity userTenant = createUserTenant(authorityCanCreate);
+        userTenants = List.of(userTenant);
+
+        ObraEntity obraSalva = ObraEntity.builder()
+                .id(1L)
+                .idExterno("obra-ext-002")
+                .nome(requestComGrupo.nome())
+                .grupo(grupo)
+                .ativo(true)
+                .build();
+        obraSalva.setTenantId(tenantId);
+
+        when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenant);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
+        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(3);
+        when(getGrupoDeObraByIdAndTenantIdService.execute(grupoId, tenantId)).thenReturn(grupo);
+        when(getModeloDeRelatorioByIdAndTenantIdService.execute(modeloId, tenantId))
+                .thenReturn(modeloDeRelatorio);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraSalva);
+
+        CreateObraResponse response = createObraService.execute(requestComGrupo, tenantExternalId, userTenants);
+
+        assertNotNull(response);
+        assertEquals("obra-ext-002", response.id());
+        verify(getGrupoDeObraByIdAndTenantIdService, times(1)).execute(grupoId, tenantId);
+        verify(obraRepository, times(1)).save(argThat(obra ->
+                obra.getGrupo() != null && obra.getGrupo().getId().equals(grupoId)
+        ));
+    }
+
+    @Test
+    void deveDefinirDataFimRealQuandoObraForCriadaComStatusConcluida() {
+        CreateObraRequest requestConcluida = createRequestConcluida();
+        UserTenantEntity userTenant = createUserTenant(authorityCanCreate);
+        userTenants = List.of(userTenant);
+
+        when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenant);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
+        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(2);
+        when(getModeloDeRelatorioByIdAndTenantIdService.execute(modeloId, tenantId))
+                .thenReturn(modeloDeRelatorio);
+        when(obraRepository.save(any(ObraEntity.class))).thenAnswer(invocation -> {
+            ObraEntity obra = invocation.getArgument(0);
+            obra.setId(1L);
+            obra.setIdExterno("obra-ext-003");
+            return obra;
+        });
+
+        CreateObraResponse response = createObraService.execute(requestConcluida, tenantExternalId, userTenants);
+
+        assertNotNull(response);
+        verify(obraRepository, times(1)).save(argThat(obra ->
+                obra.getStatus() == StatusObra.CONCLUIDA &&
+                        obra.getDataFimReal() != null &&
+                        obra.getDataFimReal().equals(LocalDate.now())
+        ));
+    }
+
+    @Test
+    void deveCriarObraSemGrupoQuandoGrupoIdForNull() {
+        UserTenantEntity userTenant = createUserTenant(authorityCanCreate);
+        userTenants = List.of(userTenant);
+
+        ObraEntity obraSalva = ObraEntity.builder()
+                .id(1L)
+                .idExterno("obra-ext-004")
+                .nome(request.nome())
+                .grupo(null)
+                .ativo(true)
+                .build();
+        obraSalva.setTenantId(tenantId);
+
+        when(getTenantByIdExternoService.execute(tenantExternalId)).thenReturn(tenant);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(getAssinaturaActiveByTenantIdService.execute(tenantId)).thenReturn(assinatura);
+        when(obraRepository.countByTenantIdAndAtivoIsTrue(tenantId)).thenReturn(1);
+        when(getModeloDeRelatorioByIdAndTenantIdService.execute(modeloId, tenantId))
+                .thenReturn(modeloDeRelatorio);
+        when(obraRepository.save(any(ObraEntity.class))).thenReturn(obraSalva);
+
+        CreateObraResponse response = createObraService.execute(request.withGrupoId(null), tenantExternalId, userTenants);
+
+        assertNotNull(response);
+        assertEquals("obra-ext-004", response.id());
+        verify(getGrupoDeObraByIdAndTenantIdService, never()).execute(anyLong(), anyLong());
+        verify(obraRepository, times(1)).save(argThat(obra -> obra.getGrupo() == null));
+    }
+
+    private UserTenantEntity createUserTenant(Authorities authorities) {
+        return UserTenantEntity.builder()
+                .user(UserEntity.builder().id(1L).build())
+                .tenantId(tenantId)
+                .authorities(authorities)
+                .build();
+    }
+
+    private CreateObraRequest createRequestComGrupo(Long grupoId) {
+        return new CreateObraRequest(
+                request.nome(),
+                request.responsavel(),
+                request.contratante(),
+                request.tipoContrato(),
+                request.dataInicio(),
+                request.dataPrevistaFim(),
+                request.numeroContrato(),
+                request.endereco(),
+                request.observacoes(),
+                request.tipoMaoDeObra(),
+                request.status(),
+                grupoId,
+                modeloId
+        );
+    }
+
+    private CreateObraRequest createRequestConcluida() {
+        return new CreateObraRequest(
+                "Obra Concluída",
+                request.responsavel(),
+                request.contratante(),
+                request.tipoContrato(),
+                LocalDate.now().minusMonths(6),
+                LocalDate.now(),
+                request.numeroContrato(),
+                request.endereco(),
+                request.observacoes(),
+                request.tipoMaoDeObra(),
+                StatusObra.CONCLUIDA,
+                1L,
+                modeloId
+        );
     }
 }
+

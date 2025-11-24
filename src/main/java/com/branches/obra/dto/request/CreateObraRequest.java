@@ -5,9 +5,11 @@ import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.With;
 
 import java.time.LocalDate;
 
+@With
 public record CreateObraRequest(
         @NotBlank(message = "O campo 'nome' é obrigatório")
         String nome,

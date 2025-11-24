@@ -21,7 +21,7 @@ public class ListAllObrasService {
     private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
 
-    public List<ObraByListAllResponse>  execute(String tenantExternalId, List<UserTenantEntity> userTenants) {
+    public List<ObraByListAllResponse> execute(String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);

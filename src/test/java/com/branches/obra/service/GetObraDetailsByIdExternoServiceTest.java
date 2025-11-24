@@ -1,11 +1,15 @@
 package com.branches.obra.service;
 
-import com.branches.obra.domain.ObraEntity;
+import com.branches.exception.ForbiddenException;
+import com.branches.exception.NotFoundException;
+import com.branches.obra.domain.GrupoDeObraEntity;
 import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.domain.enums.TipoContratoDeObra;
-import com.branches.obra.dto.response.GetObraDetailsByIdExternoResponse;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
-import com.branches.exception.ForbiddenException;
+import com.branches.obra.dto.response.GetObraDetailsByIdExternoResponse;
+import com.branches.obra.repository.ObraRepository;
+import com.branches.obra.repository.projections.ObraDetailsProjection;
+import com.branches.relatorio.repository.RelatorioRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.*;
 import com.branches.usertenant.domain.*;
@@ -20,10 +24,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GetObraDetailsByIdExternoServiceTest {
@@ -31,50 +36,180 @@ class GetObraDetailsByIdExternoServiceTest {
     @Mock
     private GetTenantIdByIdExternoService getTenantIdByIdExternoService;
 
-    @InjectMocks
-    private GetObraDetailsByIdExternoService service;
-
     @Mock
     private GetCurrentUserTenantService getCurrentUserTenantService;
 
     @Mock
-    private GetObraByIdExternoAndTenantIdService getObraByIdExternoAndTenantIdService;
+    private RelatorioRepository relatorioRepository;
+
+    @Mock
+    private ObraRepository obraRepository;
+
+    @InjectMocks
+    private GetObraDetailsByIdExternoService service;
 
     private String obraIdExterno;
     private String tenantExternalId;
     private Long tenantId;
-    private ObraEntity obraEntity;
-    private List<UserTenantEntity> userTenants;
+    private Long obraId;
 
     @BeforeEach
     void setUp() {
         obraIdExterno = "obra-ext-123";
         tenantExternalId = "tenant-ext-123";
-
         tenantId = 1L;
+        obraId = 1L;
+    }
 
-        obraEntity = ObraEntity.builder()
-                .id(1L)
-                .idExterno(obraIdExterno)
-                .nome("Obra Teste")
-                .responsavel("João Silva")
-                .contratante("Contratante Teste")
-                .tipoContrato(TipoContratoDeObra.CONTRATADA)
-                .dataInicio(LocalDate.of(2025, 1, 1))
-                .dataPrevistaFim(LocalDate.of(2025, 12, 31))
-                .numeroContrato("CONT-2025-001")
-                .endereco("Rua Teste, 123")
-                .observacoes("Observações de teste")
-                .capaUrl("http://capa.url")
-                .tipoMaoDeObra(TipoMaoDeObra.PERSONALIZADA)
-                .status(StatusObra.EM_ANDAMENTO)
-                .ativo(true)
-                .build();
-        obraEntity.setTenantId(1L);
+    private ObraDetailsProjection createObraDetailsProjection(
+            Long id,
+            String idExterno,
+            String nome,
+            String responsavel,
+            String contratante,
+            TipoContratoDeObra tipoContrato,
+            LocalDate dataInicio,
+            LocalDate dataPrevistaFim,
+            LocalDate dataFimReal,
+            String numeroContrato,
+            String endereco,
+            String observacoes,
+            String capaUrl,
+            TipoMaoDeObra tipoMaoDeObra,
+            StatusObra status,
+            Long quantidadeRelatorios,
+            Long quantidadeAtividades,
+            Long quantidadeOcorrencias,
+            Long quantidadeComentarios
+    ) {
+        return new ObraDetailsProjection() {
+            @Override
+            public Long getId() {
+                return id;
+            }
+
+            @Override
+            public String getIdExterno() {
+                return idExterno;
+            }
+
+            @Override
+            public String getNome() {
+                return nome;
+            }
+
+            @Override
+            public String getResponsavel() {
+                return responsavel;
+            }
+
+            @Override
+            public String getContratante() {
+                return contratante;
+            }
+
+            @Override
+            public TipoContratoDeObra getTipoContrato() {
+                return tipoContrato;
+            }
+
+            @Override
+            public LocalDate getDataInicio() {
+                return dataInicio;
+            }
+
+            @Override
+            public LocalDate getDataPrevistaFim() {
+                return dataPrevistaFim;
+            }
+
+            @Override
+            public LocalDate getDataFimReal() {
+                return dataFimReal;
+            }
+
+            @Override
+            public String getNumeroContrato() {
+                return numeroContrato;
+            }
+
+            @Override
+            public String getEndereco() {
+                return endereco;
+            }
+
+            @Override
+            public String getObservacoes() {
+                return observacoes;
+            }
+
+            @Override
+            public String getCapaUrl() {
+                return capaUrl;
+            }
+
+            @Override
+            public StatusObra getStatus() {
+                return status;
+            }
+
+            @Override
+            public TipoMaoDeObra getTipoMaoDeObra() {
+                return tipoMaoDeObra;
+            }
+
+            @Override
+            public GrupoDeObraEntity getGrupoDeObra() {
+                return null;
+            }
+
+            @Override
+            public Long getQuantidadeRelatorios() {
+                return quantidadeRelatorios;
+            }
+
+            @Override
+            public Long getQuantidadeAtividades() {
+                return quantidadeAtividades;
+            }
+
+            @Override
+            public Long getQuantidadeOcorrencias() {
+                return quantidadeOcorrencias;
+            }
+
+            @Override
+            public Long getQuantidadeComentarios() {
+                return quantidadeComentarios;
+            }
+        };
     }
 
     @Test
     void deveRetornarObraQuandoUsuarioTiverPerfilAdministrador() {
+        // Arrange
+        ObraDetailsProjection obraDetailsProjection = createObraDetailsProjection(
+                obraId,
+                obraIdExterno,
+                "Obra Teste",
+                "João Silva",
+                "Contratante Teste",
+                TipoContratoDeObra.CONTRATADA,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                null,
+                "CONT-2025-001",
+                "Rua Teste, 123",
+                "Observações de teste",
+                "http://capa.url",
+                TipoMaoDeObra.PERSONALIZADA,
+                StatusObra.EM_ANDAMENTO,
+                5L,
+                10L,
+                2L,
+                3L
+        );
+
         UserTenantEntity userTenant = UserTenantEntity.builder()
                 .id(UserTenantKey.from(1L, tenantId))
                 .tenantId(tenantId)
@@ -82,22 +217,26 @@ class GetObraDetailsByIdExternoServiceTest {
                 .perfil(PerfilUserTenant.ADMINISTRADOR)
                 .build();
 
-        userTenant.setUserObraPermitidaEntities(Set.of(new UserObraPermitidaEntity(UserObraPermitidaKey.from(userTenant, obraEntity.getId()), userTenant, obraEntity.getId())));
+        userTenant.setUserObraPermitidaEntities(Set.of(
+                new UserObraPermitidaEntity(UserObraPermitidaKey.from(userTenant, obraId), userTenant, obraId)
+        ));
 
-        userTenants = List.of(
-                userTenant
-        );
+        List<UserTenantEntity> userTenants = List.of(userTenant);
 
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
-        when(getObraByIdExternoAndTenantIdService.execute(obraIdExterno, tenantId)).thenReturn(obraEntity);
+        when(obraRepository.findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId))
+                .thenReturn(Optional.of(obraDetailsProjection));
+        when(relatorioRepository.findTop5ByObraIdProjection(obraId)).thenReturn(List.of());
 
+        // Act
         GetObraDetailsByIdExternoResponse response = service.execute(
                 obraIdExterno,
                 tenantExternalId,
                 userTenants
         );
 
+        // Assert
         assertNotNull(response);
         assertEquals(obraIdExterno, response.idExterno());
         assertEquals("Obra Teste", response.nome());
@@ -111,10 +250,38 @@ class GetObraDetailsByIdExternoServiceTest {
         assertEquals("Rua Teste, 123", response.endereco());
         assertEquals("Observações de teste", response.observacoes());
         assertEquals(TipoMaoDeObra.PERSONALIZADA, response.tipoMaoDeObra());
+
+        verify(getTenantIdByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(obraRepository, times(1)).findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId);
+        verify(relatorioRepository, times(1)).findTop5ByObraIdProjection(obraId);
     }
 
     @Test
     void deveRetornarObraQuandoUsuarioTemPermissaoNaObra() {
+        // Arrange
+        ObraDetailsProjection obraDetailsProjection = createObraDetailsProjection(
+                obraId,
+                obraIdExterno,
+                "Obra Teste",
+                "João Silva",
+                "Contratante Teste",
+                TipoContratoDeObra.CONTRATADA,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                null,
+                "CONT-2025-001",
+                "Rua Teste, 123",
+                "Observações de teste",
+                "http://capa.url",
+                TipoMaoDeObra.PERSONALIZADA,
+                StatusObra.EM_ANDAMENTO,
+                5L,
+                10L,
+                2L,
+                3L
+        );
+
         UserTenantEntity userTenant = UserTenantEntity.builder()
                 .id(UserTenantKey.from(1L, tenantId))
                 .tenantId(tenantId)
@@ -122,29 +289,61 @@ class GetObraDetailsByIdExternoServiceTest {
                 .perfil(PerfilUserTenant.CLIENTE_OBRA)
                 .build();
 
-        userTenant.setUserObraPermitidaEntities(Set.of(new UserObraPermitidaEntity(UserObraPermitidaKey.from(userTenant, obraEntity.getId()), userTenant, obraEntity.getId())));
+        userTenant.setUserObraPermitidaEntities(Set.of(
+                new UserObraPermitidaEntity(UserObraPermitidaKey.from(userTenant, obraId), userTenant, obraId)
+        ));
 
-        userTenants = List.of(
-                userTenant
-        );
+        List<UserTenantEntity> userTenants = List.of(userTenant);
 
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
-        when(getObraByIdExternoAndTenantIdService.execute(obraIdExterno, tenantId)).thenReturn(obraEntity);
+        when(obraRepository.findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId))
+                .thenReturn(Optional.of(obraDetailsProjection));
+        when(relatorioRepository.findTop5ByObraIdProjection(obraId)).thenReturn(List.of());
 
+        // Act
         GetObraDetailsByIdExternoResponse response = service.execute(
                 obraIdExterno,
                 tenantExternalId,
                 userTenants
         );
 
+        // Assert
         assertNotNull(response);
         assertEquals(obraIdExterno, response.idExterno());
         assertEquals("Obra Teste", response.nome());
+
+        verify(getTenantIdByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(obraRepository, times(1)).findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId);
+        verify(relatorioRepository, times(1)).findTop5ByObraIdProjection(obraId);
     }
 
     @Test
     void deveLancarForbiddenExceptionQuandoUsuarioNaoTemPermissaoNaObra() {
+        // Arrange
+        ObraDetailsProjection obraDetailsProjection = createObraDetailsProjection(
+                obraId,
+                obraIdExterno,
+                "Obra Teste",
+                "João Silva",
+                "Contratante Teste",
+                TipoContratoDeObra.CONTRATADA,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                null,
+                "CONT-2025-001",
+                "Rua Teste, 123",
+                "Observações de teste",
+                "http://capa.url",
+                TipoMaoDeObra.PERSONALIZADA,
+                StatusObra.EM_ANDAMENTO,
+                5L,
+                10L,
+                2L,
+                3L
+        );
+
         UserTenantEntity userTenant = UserTenantEntity.builder()
                 .id(UserTenantKey.from(1L, tenantId))
                 .tenantId(tenantId)
@@ -152,16 +351,17 @@ class GetObraDetailsByIdExternoServiceTest {
                 .perfil(PerfilUserTenant.CLIENTE_OBRA)
                 .build();
 
-        userTenant.setUserObraPermitidaEntities(Set.of()); // Sem permissões para obras
+        userTenant.setUserObraPermitidaEntities(Set.of());
 
-        userTenants = List.of(
-                userTenant
-        );
+        List<UserTenantEntity> userTenants = List.of(userTenant);
 
         when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
         when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
-        when(getObraByIdExternoAndTenantIdService.execute(obraIdExterno, tenantId)).thenReturn(obraEntity);
+        when(obraRepository.findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId))
+                .thenReturn(Optional.of(obraDetailsProjection));
+        when(relatorioRepository.findTop5ByObraIdProjection(obraId)).thenReturn(List.of());
 
+        // Act & Assert
         ForbiddenException exception = assertThrows(
                 ForbiddenException.class,
                 () -> service.execute(
@@ -172,6 +372,46 @@ class GetObraDetailsByIdExternoServiceTest {
         );
 
         assertNotNull(exception);
+
+        verify(getTenantIdByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(obraRepository, times(1)).findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId);
+        verify(relatorioRepository, times(1)).findTop5ByObraIdProjection(obraId);
+    }
+
+    @Test
+    void deveLancarNotFoundExceptionQuandoObraNaoEncontrada() {
+        // Arrange
+        UserTenantEntity userTenant = UserTenantEntity.builder()
+                .id(UserTenantKey.from(1L, tenantId))
+                .tenantId(tenantId)
+                .user(UserEntity.builder().id(1L).build())
+                .perfil(PerfilUserTenant.ADMINISTRADOR)
+                .build();
+
+        List<UserTenantEntity> userTenants = List.of(userTenant);
+
+        when(getTenantIdByIdExternoService.execute(tenantExternalId)).thenReturn(tenantId);
+        when(getCurrentUserTenantService.execute(userTenants, tenantId)).thenReturn(userTenant);
+        when(obraRepository.findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> service.execute(
+                        obraIdExterno,
+                        tenantExternalId,
+                        userTenants
+                )
+        );
+
+        assertNotNull(exception);
+
+        verify(getTenantIdByIdExternoService, times(1)).execute(tenantExternalId);
+        verify(getCurrentUserTenantService, times(1)).execute(userTenants, tenantId);
+        verify(obraRepository, times(1)).findObraDetailsByIdExternoAndTenantId(obraIdExterno, tenantId);
+        verify(relatorioRepository, never()).findTop5ByObraIdProjection(anyLong());
     }
 }
 

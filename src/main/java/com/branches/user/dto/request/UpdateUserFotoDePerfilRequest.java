@@ -1,7 +1,9 @@
 package com.branches.user.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record UpdateUserFotoDePerfilRequest(
-        String base64Image,
-        String fileName
+        @NotBlank(message = "O campo 'base64Image' é obrigatório")
+        String base64Image
 ) {
 }

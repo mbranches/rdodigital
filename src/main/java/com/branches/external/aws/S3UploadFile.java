@@ -1,6 +1,7 @@
 package com.branches.external.aws;
 
 import com.branches.exception.InternalServerError;
+import com.branches.utils.FileContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class S3UploadFile {
     @Value("${aws.s3.bucketName}")
     private String bucketName;
 
-    public String execute(String fileName, String path, byte[] fileContent, String contentType) {
+    public String execute(String fileName, String path, byte[] fileContent, FileContentType contentType) {
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
 
         try(S3Client s3Client = S3Client.builder()
@@ -30,12 +31,13 @@ public class S3UploadFile {
                 .build()) {
             log.info("Subindo arquivo {} para o S3 na pasta {}", fileName, path);
 
-            String fullFileName = path + "/" + fileName;
+            String formattedFileName = fileName.replaceAll("\\.[^.]+$", "." + contentType.getExtension()).replaceAll(" ", "_");
+            String fullFileName = path + "/" + formattedFileName;
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fullFileName)
-                    .contentType(contentType)
+                    .contentType(contentType.getMimeType())
                     .build();
 
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileContent));

@@ -19,7 +19,7 @@ import java.util.List;
 public class UpdateMaterialDeRelatorioController {
     private final UpdateMaterialDeRelatorioService updateMaterialDeRelatorioService;
 
-    @PutMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/comentarios/{id}")
+    @PutMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/materiais/{id}")
     public ResponseEntity<Void> execute(@RequestBody @Valid UpdateMaterialDeRelatorioRequest request, @PathVariable String tenantExternalId, @PathVariable String relatorioExternalId, @PathVariable Long id) {
         List<UserTenantEntity> userTenants = UserTenantsContext.getUserTenants();
 

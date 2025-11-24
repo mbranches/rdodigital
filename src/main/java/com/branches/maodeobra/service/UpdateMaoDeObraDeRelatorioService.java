@@ -58,7 +58,7 @@ public class UpdateMaoDeObraDeRelatorioService {
         entity.setMaoDeObra(maoDeObra);
         entity.setFuncao(maoDeObra.getFuncao());
 
-        if (tipoMaoDeObra.equals(TipoMaoDeObra.PERSONALIZADA) && request.presenca().equals(PresencaMaoDeObra.PRESENTE)) {
+        if (request.presenca().equals(PresencaMaoDeObra.PRESENTE)) {
             entity.setHoraInicio(request.horaInicio());
             entity.setHoraFim(request.horaFim());
             entity.setHorasIntervalo(request.horasIntervalo());

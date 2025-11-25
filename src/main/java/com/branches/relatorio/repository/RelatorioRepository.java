@@ -4,6 +4,7 @@ import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.domain.enums.StatusRelatorio;
 import com.branches.relatorio.repository.projections.RelatorioDetailsProjection;
 import com.branches.relatorio.repository.projections.RelatorioProjection;
+import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -127,4 +128,15 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         AND r.ativo IS TRUE
 """)
     List<RelatorioProjection> findAllByObraIdProjection(Long obraId, Pageable pageable);
+
+    @Query("""
+        SELECT r as relatorio,
+               o as obra
+        FROM RelatorioEntity r
+            JOIN ObraEntity o ON o.id = r.obraId
+        WHERE r.idExterno = :relatorioExternalId
+          AND r.tenantId = :tenantId
+    """)
+    Optional<RelatorioWithObraProjection> findRelatorioWithObraByIdExternoAndTenantId(String relatorioExternalId, Long tenantId);
+
 }

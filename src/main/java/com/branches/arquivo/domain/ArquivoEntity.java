@@ -1,6 +1,7 @@
 package com.branches.arquivo.domain;
 
 import com.branches.arquivo.domain.enums.TipoArquivo;
+import com.branches.relatorio.domain.RelatorioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,11 +20,15 @@ public class ArquivoEntity {
     private String nomeArquivo;
 
     @Column(nullable = false)
-    private String urlArquivo;
+    private String url;
 
     private String descricao;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoArquivo tipoArquivo;
+
+    @ManyToOne
+    @JoinColumn(name = "relatorio_id")
+    private RelatorioEntity relatorio;
 }

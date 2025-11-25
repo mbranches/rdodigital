@@ -1,0 +1,58 @@
+package com.branches.arquivo.service;
+
+import com.branches.arquivo.domain.ArquivoEntity;
+import com.branches.arquivo.domain.enums.TipoArquivo;
+import com.branches.arquivo.dto.request.CreateFotoDeRelatorioRequest;
+import com.branches.arquivo.dto.response.CreateFotoDeRelatorioResponse;
+import com.branches.exception.NotFoundException;
+import com.branches.external.aws.S3UploadFile;
+import com.branches.relatorio.repository.RelatorioRepository;
+import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
+import com.branches.tenant.service.GetTenantIdByIdExternoService;
+import com.branches.usertenant.domain.UserTenantEntity;
+import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.CompressImage;
+import com.branches.utils.FileContentType;
+import com.branches.utils.ImageOutPutFormat;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
+public class CreateFotoDeRelatorioService {
+    private final CompressImage compressImage;
+    private final S3UploadFile s3UploadFile;
+    private final RelatorioRepository relatorioRepository;
+    private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
+    private final GetCurrentUserTenantService getCurrentUserTenantService;
+    private final CheckIfConfiguracaoDeRelatorioDaObraPermiteFoto checkIfConfiguracaoDeRelatorioDaObraPermiteFoto;
+    private final CheckIfUserCanViewFotosService checkIfUserCanViewFotosService;
+
+    public CreateFotoDeRelatorioResponse execute(CreateFotoDeRelatorioRequest request, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
+        Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
+
+        UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
+
+        RelatorioWithObraProjection relatorio = relatorioRepository.findRelatorioWithObraByIdExternoAndTenantId(relatorioExternalId, tenantId)
+                .orElseThrow(() -> new NotFoundException("Relatório não encontrado com o id: " + relatorioExternalId));
+
+        checkIfConfiguracaoDeRelatorioDaObraPermiteFoto.execute(relatorio);
+        checkIfUserCanViewFotosService.execute(currentUserTenant);
+
+        byte[] imageBytes = compressImage.execute(request.base64Image(), 800, 800, 0.8, ImageOutPutFormat.JPEG);
+
+        String fotoUrl = s3UploadFile.execute(request.fileName(), "tenants/%s/obras/%s/relatorios/%s/fotos".formatted(tenantExternalId, relatorio.getObra().getIdExterno(), relatorioExternalId), imageBytes, FileContentType.JPEG);
+
+        ArquivoEntity arquivo = ArquivoEntity.builder()
+                .descricao(request.descricao())
+                .nomeArquivo(request.fileName())
+                .url(fotoUrl)
+                .tipoArquivo(TipoArquivo.FOTO)
+                .relatorio(relatorio.getRelatorio())
+                .build();
+
+        return CreateFotoDeRelatorioResponse.from(arquivo);
+    }
+}

@@ -1,17 +1,19 @@
 package com.branches.arquivo.domain;
 
 import com.branches.arquivo.domain.enums.TipoArquivo;
+import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.relatorio.domain.RelatorioEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ArquivoEntity {
+public class ArquivoEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

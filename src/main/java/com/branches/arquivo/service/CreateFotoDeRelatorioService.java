@@ -51,6 +51,7 @@ public class CreateFotoDeRelatorioService {
                 .url(fotoUrl)
                 .tipoArquivo(TipoArquivo.FOTO)
                 .relatorio(relatorio.getRelatorio())
+                .tenantId(tenantId)
                 .build();
 
         ArquivoEntity saved = arquivoRepository.save(arquivo);

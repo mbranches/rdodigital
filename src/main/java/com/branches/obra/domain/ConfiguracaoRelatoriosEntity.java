@@ -24,6 +24,16 @@ public class ConfiguracaoRelatoriosEntity {
     @Enumerated(EnumType.STRING)
     private RecorrenciaRelatorio recorrenciaRelatorio;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "logo_de_relatorio_1_id")
+    private LogoDeRelatorioEntity logoDeRelatorio1;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "logo_de_relatorio_2_id")
+    private LogoDeRelatorioEntity logoDeRelatorio2;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "logo_de_relatorio_3_id")
+    private LogoDeRelatorioEntity logoDeRelatorio3;
+
     @Column(nullable = false)
     private Boolean showCondicaoClimatica;
     @Column(nullable = false)
@@ -45,10 +55,17 @@ public class ConfiguracaoRelatoriosEntity {
     @Column(nullable = false)
     private Boolean showVideos;
 
-    public static ConfiguracaoRelatoriosEntity by(ModeloDeRelatorioEntity modeloDeRelatorioDefault) {
+    public static ConfiguracaoRelatoriosEntity by(ModeloDeRelatorioEntity modeloDeRelatorioDefault, String urlLogoTenant) {
+        LogoDeRelatorioEntity logoDeRelatorioDefault = LogoDeRelatorioEntity.builder()
+                .url(urlLogoTenant)
+                .exibir(urlLogoTenant != null && !urlLogoTenant.isBlank())
+                .isLogoDoTenant(true)
+                .build();
+
         return ConfiguracaoRelatoriosEntity.builder()
                 .modeloDeRelatorio(modeloDeRelatorioDefault)
                 .recorrenciaRelatorio(modeloDeRelatorioDefault.getRecorrenciaRelatorio())
+                .logoDeRelatorio1(logoDeRelatorioDefault)
                 .showCondicaoClimatica(modeloDeRelatorioDefault.getShowCondicaoClimatica())
                 .showMaoDeObra(modeloDeRelatorioDefault.getShowMaoDeObra())
                 .showEquipamentos(modeloDeRelatorioDefault.getShowEquipamentos())

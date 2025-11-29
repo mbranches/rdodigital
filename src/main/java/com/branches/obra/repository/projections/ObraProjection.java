@@ -8,4 +8,5 @@ public interface ObraProjection {
     String getCapaUrl();
     StatusObra getStatus();
     Long getQuantityOfRelatorios();
+    Long getQuantityOfFotos();
 }

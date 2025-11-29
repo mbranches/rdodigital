@@ -8,7 +8,8 @@ public record ObraByListAllResponse(
         String nome,
         StatusObra status,
         String capaUrl,
-        Long quantityOfRelatorios
+        Long quantityOfRelatorios,
+        Long quantityOfFotos
 ) {
     public static ObraByListAllResponse from(ObraProjection obra) {
         return new ObraByListAllResponse(
@@ -16,7 +17,8 @@ public record ObraByListAllResponse(
                 obra.getNome(),
                 obra.getStatus(),
                 obra.getCapaUrl(),
-                obra.getQuantityOfRelatorios()
+                obra.getQuantityOfRelatorios(),
+                obra.getQuantityOfFotos()
         );
     }
 }

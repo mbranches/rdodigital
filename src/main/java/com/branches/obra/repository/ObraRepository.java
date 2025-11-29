@@ -30,7 +30,13 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
             SELECT COUNT(1)
             FROM RelatorioEntity r
             WHERE r.obraId = o.id AND r.ativo IS TRUE
-        ) AS quantityOfRelatorios
+        ) AS quantityOfRelatorios,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.relatorio.obraId = o.id
+            AND a.tipoArquivo = 'FOTO'
+        ) AS quantityOfFotos
     FROM ObraEntity o
     WHERE o.tenantId = :tenantId AND o.ativo IS TRUE
 """)
@@ -45,7 +51,13 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
             SELECT COUNT(1)
             FROM RelatorioEntity r
             WHERE r.obraId = o.id AND r.ativo IS TRUE
-        ) AS quantityOfRelatorios
+        ) AS quantityOfRelatorios,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.relatorio.obraId = o.id
+            AND a.tipoArquivo = 'FOTO'
+        ) AS quantityOfFotos
     FROM ObraEntity o
     WHERE o.id IN :userAllowedObrasIds
         AND o.tenantId = :tenantId

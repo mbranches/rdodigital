@@ -26,6 +26,7 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
         o.nome AS nome,
         o.status AS status,
         o.capaUrl AS capaUrl,
+        o.dataInicio AS dataInicio,
         (
             SELECT COUNT(1)
             FROM RelatorioEntity r
@@ -47,6 +48,7 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
         o.nome AS nome,
         o.status AS status,
         o.capaUrl AS capaUrl,
+        o.dataInicio AS dataInicio,
         (
             SELECT COUNT(1)
             FROM RelatorioEntity r

@@ -1,7 +1,6 @@
 package com.branches.obra.service;
 
 import com.branches.obra.domain.GrupoDeObraEntity;
-import com.branches.exception.ForbiddenException;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.dto.request.UpdateObraRequest;
@@ -23,6 +22,7 @@ public class UpdateObraService {
     private final GetGrupoDeObraByIdAndTenantIdService getGrupoDeObraByIdAndTenantIdService;
     private final GetObraByIdExternoAndTenantIdService getObraByIdExternoAndTenantIdService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
+    private final CheckIfUserCanEditObraService checkIfUserCanEditObraService;
 
     public void execute(UpdateObraRequest request, String obraExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -31,7 +31,7 @@ public class UpdateObraService {
 
         ObraEntity obra = getObraByIdExternoAndTenantIdService.execute(obraExternalId, tenantId);
 
-        checkIfUserCanUpdateObra(obra.getId(), currentUserTenant);
+        checkIfUserCanEditObraService.execute(currentUserTenant, obra.getId());
 
         obra.setNome(request.nome());
         obra.setResponsavel(request.responsavel());
@@ -63,11 +63,5 @@ public class UpdateObraService {
             obra.setGrupo(grupo);
         }
         obraRepository.save(obra);
-    }
-
-    private void checkIfUserCanUpdateObra(Long id, UserTenantEntity userTenant) {
-        if (!userTenant.getAuthorities().getObras().getCanCreateAndEdit() || !userTenant.getObrasPermitidasIds().contains(id)) {
-            throw new ForbiddenException();
-        }
     }
 }

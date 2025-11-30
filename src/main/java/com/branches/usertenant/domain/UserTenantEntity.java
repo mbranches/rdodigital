@@ -69,4 +69,8 @@ public class UserTenantEntity {
     public int hashCode() {
         return Objects.hash(user, tenantId);
     }
+
+    public boolean isAdministrador() {
+        return this.perfil == PerfilUserTenant.ADMINISTRADOR;
+    }
 }

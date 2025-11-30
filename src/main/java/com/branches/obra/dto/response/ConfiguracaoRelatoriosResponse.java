@@ -2,8 +2,12 @@ package com.branches.obra.dto.response;
 
 import com.branches.configuradores.domain.enums.RecorrenciaRelatorio;
 import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
+import com.branches.relatorio.dto.response.LogoDeRelatorioResponse;
 
-public record ConfiguracaoRelatoriosResponse(RecorrenciaRelatorio recorrenciaRelatorio,
+public record ConfiguracaoRelatoriosResponse(LogoDeRelatorioResponse logo1,
+                                             LogoDeRelatorioResponse logo2,
+                                             LogoDeRelatorioResponse logo3,
+                                             RecorrenciaRelatorio recorrenciaRelatorio,
                                              Boolean showCondicaoClimatica,
                                              Boolean showMaoDeObra,
                                              Boolean showEquipamentos,
@@ -16,6 +20,9 @@ public record ConfiguracaoRelatoriosResponse(RecorrenciaRelatorio recorrenciaRel
                                              Boolean showVideos) {
     public static ConfiguracaoRelatoriosResponse from(ConfiguracaoRelatoriosEntity configuracaoRelatorios) {
         return new ConfiguracaoRelatoriosResponse(
+                LogoDeRelatorioResponse.from(configuracaoRelatorios.getLogoDeRelatorio1()),
+                LogoDeRelatorioResponse.from(configuracaoRelatorios.getLogoDeRelatorio2()),
+                LogoDeRelatorioResponse.from(configuracaoRelatorios.getLogoDeRelatorio3()),
                 configuracaoRelatorios.getRecorrenciaRelatorio(),
                 configuracaoRelatorios.getShowCondicaoClimatica(),
                 configuracaoRelatorios.getShowMaoDeObra(),

@@ -71,6 +71,8 @@ public class ConfiguracaoRelatoriosEntity {
                 .modeloDeRelatorio(modeloDeRelatorioDefault)
                 .recorrenciaRelatorio(modeloDeRelatorioDefault.getRecorrenciaRelatorio())
                 .logoDeRelatorio1(logoDeRelatorioDefault)
+                .logoDeRelatorio2(createLogoDeRelatorioEmpty())
+                .logoDeRelatorio3(createLogoDeRelatorioEmpty())
                 .showCondicaoClimatica(modeloDeRelatorioDefault.getShowCondicaoClimatica())
                 .showMaoDeObra(modeloDeRelatorioDefault.getShowMaoDeObra())
                 .showEquipamentos(modeloDeRelatorioDefault.getShowEquipamentos())
@@ -98,5 +100,13 @@ public class ConfiguracaoRelatoriosEntity {
         config.setConfiguracoesDeAssinaturaDeRelatorio(assinaturasDefault);
 
         return config;
+    }
+
+    private static LogoDeRelatorioEntity createLogoDeRelatorioEmpty() {
+        return LogoDeRelatorioEntity.builder()
+                .url(null)
+                .exibir(false)
+                .isLogoDoTenant(false)
+                .build();
     }
 }

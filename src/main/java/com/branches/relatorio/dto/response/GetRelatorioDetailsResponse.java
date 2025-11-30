@@ -1,5 +1,8 @@
 package com.branches.relatorio.dto.response;
 
+import com.branches.arquivo.domain.ArquivoEntity;
+import com.branches.arquivo.dto.response.FileResponse;
+import com.branches.arquivo.dto.response.FotoDeRelatorioResponse;
 import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
 import com.branches.atividade.dto.response.AtividadeDeRelatorioResponse;
 import com.branches.comentarios.dto.response.ComentarioDeRelatorioResponse;
@@ -58,13 +61,14 @@ public record GetRelatorioDetailsResponse(
         List<ComentarioDeRelatorioResponse> comentarios,
         List<MaterialDeRelatorioResponse> materiais,
         List<AssinaturaDeRelatorioResponse> assinaturas,
-        //todo:adicionar fotos
+        List<FotoDeRelatorioResponse> fotos,
+        List<FileResponse> videos,
         StatusRelatorio status,
         ModifyerByRelatorioResponse criadoPor,
         ModifyerByRelatorioResponse ultimaModificacao
 
 ) {
-    public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails, List<OcorrenciaDeRelatorioEntity> ocorrencias, List<AtividadeDeRelatorioEntity> atividades, List<EquipamentoDeRelatorioEntity> equipamentos, List<MaoDeObraDeRelatorioEntity> maoDeObra, List<ComentarioDeRelatorioEntity> comentarios, List<MaterialDeRelatorioEntity> materiais, List<AssinaturaDeRelatorioEntity> assinaturas, Boolean canViewCondicaoDoClima, Boolean canViewHorarioDeTrabalho) {
+    public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails, List<OcorrenciaDeRelatorioEntity> ocorrencias, List<AtividadeDeRelatorioEntity> atividades, List<EquipamentoDeRelatorioEntity> equipamentos, List<MaoDeObraDeRelatorioEntity> maoDeObra, List<ComentarioDeRelatorioEntity> comentarios, List<MaterialDeRelatorioEntity> materiais, List<AssinaturaDeRelatorioEntity> assinaturas, List<ArquivoEntity> fotos, List<ArquivoEntity> videos, Boolean canViewCondicaoDoClima, Boolean canViewHorarioDeTrabalho) {
         ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorioDetails.getObraIdExterno(), relatorioDetails.getObraNome(), relatorioDetails.getObraEndereco(), relatorioDetails.getObraContratante(), relatorioDetails.getObraResponsavel(), relatorioDetails.getObraNumeroContrato());
 
         String dayOfWeekResponse = relatorioDetails.getDataFim().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"));
@@ -107,6 +111,11 @@ public record GetRelatorioDetailsResponse(
         var logo3 = relatorioDetails.getLogoDeRelatorio3() != null ?
                 LogoDeRelatorioResponse.from(relatorioDetails.getLogoDeRelatorio3()) : null;
 
+        var fotosResponse = fotos != null ?
+                fotos.stream().map(FotoDeRelatorioResponse::from).toList() : null;
+        var videosResponse = videos != null ?
+                videos.stream().map(FileResponse::from).toList() : null;
+
         return new GetRelatorioDetailsResponse(
                 relatorioDetails.getIdExterno(),
                 logo1,
@@ -136,6 +145,8 @@ public record GetRelatorioDetailsResponse(
                 comentariosResponse,
                 materiaisResponse,
                 assinaturasResponse,
+                fotosResponse,
+                videosResponse,
                 relatorioDetails.getStatus(),
                 new ModifyerByRelatorioResponse(relatorioDetails.getCriadoPor(), relatorioDetails.getCriadoEm()),
                 new ModifyerByRelatorioResponse(relatorioDetails.getUltimaModificacaoPor(), relatorioDetails.getUltimaModificacaoEm())

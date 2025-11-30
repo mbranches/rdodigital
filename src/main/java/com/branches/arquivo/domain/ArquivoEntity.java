@@ -33,4 +33,12 @@ public class ArquivoEntity extends AuditableTenantOwned {
     @ManyToOne
     @JoinColumn(name = "relatorio_id")
     private RelatorioEntity relatorio;
+
+    public boolean getIsFoto() {
+        return this.tipoArquivo == TipoArquivo.FOTO;
+    }
+
+    public boolean getIsVideo() {
+        return this.tipoArquivo == TipoArquivo.VIDEO;
+    }
 }

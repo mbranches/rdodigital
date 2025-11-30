@@ -1,7 +1,7 @@
 package com.branches.arquivo.controller;
 
 import com.branches.arquivo.dto.request.CreateFotoDeRelatorioRequest;
-import com.branches.arquivo.dto.response.CreateFotoDeRelatorioResponse;
+import com.branches.arquivo.dto.response.FotoDeRelatorioResponse;
 import com.branches.arquivo.service.CreateFotoDeRelatorioService;
 import com.branches.config.security.UserTenantsContext;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -22,14 +22,14 @@ public class CreateFotoDeRelatorioController {
     private final CreateFotoDeRelatorioService createFotoDeRelatorioService;
 
     @PostMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/fotos")
-    public ResponseEntity<CreateFotoDeRelatorioResponse> execute(
+    public ResponseEntity<FotoDeRelatorioResponse> execute(
             @RequestBody @Valid CreateFotoDeRelatorioRequest request,
             @PathVariable String tenantExternalId,
             @PathVariable String relatorioExternalId
     ) {
         List<UserTenantEntity> userTenants = UserTenantsContext.getUserTenants();
 
-        CreateFotoDeRelatorioResponse response = createFotoDeRelatorioService.execute(
+        FotoDeRelatorioResponse response = createFotoDeRelatorioService.execute(
                 request,
                 tenantExternalId,
                 relatorioExternalId,

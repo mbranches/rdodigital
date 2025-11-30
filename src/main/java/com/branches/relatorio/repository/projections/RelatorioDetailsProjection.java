@@ -34,6 +34,8 @@ public interface RelatorioDetailsProjection {
     Boolean getShowOcorrencias();
     Boolean getShowMateriais();
     Boolean getShowHorarioDeTrabalho();
+    Boolean getShowFotos();
+    Boolean getShowVideos();
 
     LocalDate getDataInicio();
     LocalDate getDataFim();

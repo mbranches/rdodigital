@@ -1,5 +1,7 @@
 package com.branches.relatorio.service;
 
+import com.branches.arquivo.domain.ArquivoEntity;
+import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
 import com.branches.atividade.repository.AtividadeDeRelatorioRepository;
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
@@ -41,6 +43,7 @@ public class GetRelatorioDetailsService {
     private final ComentarioDeRelatorioRepository comentarioDeRelatorioRepository;
     private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
     private final AssinaturaDeRelatorioRepository assinaturaDeRelatorioRepository;
+    private final ArquivoRepository arquivoRepository;
 
     public GetRelatorioDetailsResponse execute(String tenantExternalId,
                                                String relatorioExternalId,
@@ -63,7 +66,8 @@ public class GetRelatorioDetailsService {
         boolean canViewMaoDeObra = relatorioDetails.getShowMaoDeObra() && permissionsOfItensRelatorio.getMaoDeObra();
         boolean canViewComentarios = relatorioDetails.getShowComentarios() && permissionsOfItensRelatorio.getComentarios();
         boolean canViewMateriais = relatorioDetails.getShowMateriais() && permissionsOfItensRelatorio.getMateriais();
-//        TODO: ADICIONAR FOTOS Boolean viewFotos = currentUserTenant.getAuthorities().getItensDeRelatorio().getFotos();
+        boolean canViewFotos = relatorioDetails.getShowFotos() && permissionsOfItensRelatorio.getFotos();
+        boolean canViewVideos = relatorioDetails.getShowVideos() && permissionsOfItensRelatorio.getVideos();
 
         Long relatorioId = relatorioDetails.getId();
 
@@ -75,6 +79,10 @@ public class GetRelatorioDetailsService {
         List<MaterialDeRelatorioEntity> materiais = canViewMateriais ? materialDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
         List<AssinaturaDeRelatorioEntity> assinaturas = assinaturaDeRelatorioRepository.findAllByRelatorioId(relatorioId);
 
+        List<ArquivoEntity> arquivos = arquivoRepository.findAllByRelatorioId(relatorioId);
+        List<ArquivoEntity> fotos = canViewFotos ? arquivos.stream().filter(ArquivoEntity::getIsFoto).toList() : null;
+        List<ArquivoEntity> videos = canViewVideos ? arquivos.stream().filter(ArquivoEntity::getIsVideo).toList() : null;
+
         return GetRelatorioDetailsResponse.from(
                 relatorioDetails,
                 ocorrencias,
@@ -84,6 +92,8 @@ public class GetRelatorioDetailsService {
                 comentarios,
                 materiais,
                 assinaturas,
+                fotos,
+                videos,
                 canViewCondicaoDoClima,
                 canViewHorarioDeTrabalho
         );

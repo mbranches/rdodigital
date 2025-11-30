@@ -3,7 +3,7 @@ package com.branches.arquivo.service;
 import com.branches.arquivo.domain.ArquivoEntity;
 import com.branches.arquivo.domain.enums.TipoArquivo;
 import com.branches.arquivo.dto.request.CreateFotoDeRelatorioRequest;
-import com.branches.arquivo.dto.response.CreateFotoDeRelatorioResponse;
+import com.branches.arquivo.dto.response.FotoDeRelatorioResponse;
 import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.external.aws.S3UploadFile;
 import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
@@ -33,7 +33,7 @@ public class CreateFotoDeRelatorioService {
     private final ArquivoRepository arquivoRepository;
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
 
-    public CreateFotoDeRelatorioResponse execute(CreateFotoDeRelatorioRequest request, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
+    public FotoDeRelatorioResponse execute(CreateFotoDeRelatorioRequest request, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
@@ -59,6 +59,6 @@ public class CreateFotoDeRelatorioService {
 
         ArquivoEntity saved = arquivoRepository.save(arquivo);
 
-        return CreateFotoDeRelatorioResponse.from(saved);
+        return FotoDeRelatorioResponse.from(saved);
     }
 }

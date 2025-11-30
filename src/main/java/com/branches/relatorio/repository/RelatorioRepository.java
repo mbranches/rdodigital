@@ -43,6 +43,8 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         cr.showOcorrencias AS showOcorrencias,
         cr.showMateriais AS showMateriais,
         cr.showHorarioDeTrabalho AS showHorarioDeTrabalho,
+        cr.showFotos AS showFotos,
+        cr.showVideos AS showVideos,
         r.dataInicio AS dataInicio,
         r.dataFim AS dataFim,
         r.numero AS numero,

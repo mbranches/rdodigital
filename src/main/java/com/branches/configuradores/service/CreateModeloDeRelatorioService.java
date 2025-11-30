@@ -42,6 +42,8 @@ public class CreateModeloDeRelatorioService {
                 .showComentarios(request.showComentarios())
                 .showMateriais(request.showMateriais())
                 .showHorarioDeTrabalho(request.showHorarioDeTrabalho())
+                .showFotos(request.showFotos())
+                .showVideos(request.showVideos())
                 .isDefault(false)
                 .build();
 

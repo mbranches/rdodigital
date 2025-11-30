@@ -24,6 +24,10 @@ public record CreateModeloDeRelatorioRequest(
         @NotNull(message = "O campo 'showMateriais' é obrigatório")
         Boolean showMateriais,
         @NotNull(message = "O campo 'showHorarioDeTrabalho' é obrigatório")
-        Boolean showHorarioDeTrabalho
+        Boolean showHorarioDeTrabalho,
+        @NotNull(message = "O campo 'showFotos' é obrigatório")
+        Boolean showFotos,
+        @NotNull(message = "O campo 'showVideos' é obrigatório")
+        Boolean showVideos
 ) {
 }

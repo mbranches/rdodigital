@@ -27,6 +27,7 @@ public record CreateObraRequest(
         @NotNull(message = "O campo 'tipoMaoDeObra é obrigatório") TipoMaoDeObra tipoMaoDeObra,
         @NotNull(message = "O campo 'status' é obrigatório")
         StatusObra status,
+        @NotNull(message = "O campo 'modeloDeRelatorioId' é obrigatório")
         Long modeloDeRelatorioId,
         Long grupoId
 ) {}

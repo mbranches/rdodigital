@@ -71,7 +71,7 @@ public class ObraEntity extends AuditableTenantOwned {
     @Column(nullable = false)
     private Boolean ativo = true;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "configuracao_relatorios_id", nullable = false)
     private ConfiguracaoRelatoriosEntity configuracaoRelatorios;
 

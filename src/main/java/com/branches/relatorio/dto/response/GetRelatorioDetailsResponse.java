@@ -71,7 +71,7 @@ public record GetRelatorioDetailsResponse(
     public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails, List<OcorrenciaDeRelatorioEntity> ocorrencias, List<AtividadeDeRelatorioEntity> atividades, List<EquipamentoDeRelatorioEntity> equipamentos, List<MaoDeObraDeRelatorioEntity> maoDeObra, List<ComentarioDeRelatorioEntity> comentarios, List<MaterialDeRelatorioEntity> materiais, List<AssinaturaDeRelatorioEntity> assinaturas, List<ArquivoEntity> fotos, List<ArquivoEntity> videos, Boolean canViewCondicaoDoClima, Boolean canViewHorarioDeTrabalho) {
         ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorioDetails.getObraIdExterno(), relatorioDetails.getObraNome(), relatorioDetails.getObraEndereco(), relatorioDetails.getObraContratante(), relatorioDetails.getObraResponsavel(), relatorioDetails.getObraNumeroContrato());
 
-        String dayOfWeekResponse = relatorioDetails.getDataFim().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"));
+        String dayOfWeekResponse = relatorioDetails.getDataInicio().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"));
 
         var caracteristicaManha = canViewCondicaoDoClima ?
                 CaracteristicaDePeriodoDoDiaResponse.from(relatorioDetails.getCaracteristicasManha()) : null;

@@ -36,7 +36,7 @@ public class ConfiguracaoRelatoriosEntity {
     @JoinColumn(name = "logo_de_relatorio_3_id")
     private LogoDeRelatorioEntity logoDeRelatorio3;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "configuracaoRelatorios")
     private List<ConfiguracaoDeAssinaturaDeRelatorioEntity> configuracoesDeAssinaturaDeRelatorio;
 
     @Column(nullable = false)
@@ -82,6 +82,7 @@ public class ConfiguracaoRelatoriosEntity {
                 .showMateriais(modeloDeRelatorioDefault.getShowMateriais())
                 .showHorarioDeTrabalho(modeloDeRelatorioDefault.getShowHorarioDeTrabalho())
                 .showFotos(modeloDeRelatorioDefault.getShowFotos())
+                .showVideos(modeloDeRelatorioDefault.getShowVideos())
                 .build();
 
         boolean clienteNameIsNotEmpty = nomeClienteObra != null && !nomeClienteObra.isBlank();

@@ -14,7 +14,6 @@ public class LogoDeRelatorioEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String url;
 
     @Builder.Default

@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PermissionsRelatorio extends PermissionsDefault {
@@ -18,8 +17,18 @@ public class PermissionsRelatorio extends PermissionsDefault {
     private Boolean canAddFotos;
     private Boolean canAddComentarios;
 
+    public PermissionsRelatorio(Boolean canCreateAndEdit, Boolean canDelete, Boolean canAprovar, Boolean canViewOnlyAprovados, Boolean canAddFotos, Boolean canAddComentarios) {
+        super(canCreateAndEdit, canDelete);
+        this.canAprovar = canAprovar;
+        this.canViewOnlyAprovados = canViewOnlyAprovados;
+        this.canAddFotos = canAddFotos;
+        this.canAddComentarios = canAddComentarios;
+    }
+
     public static PermissionsRelatorio fullPermissions() {
         return new PermissionsRelatorio(
+                true,
+                true,
                 true,
                 false,
                 true,

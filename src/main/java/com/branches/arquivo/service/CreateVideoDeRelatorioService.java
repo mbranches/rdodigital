@@ -17,6 +17,9 @@ import com.branches.utils.FileContentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
 
@@ -58,18 +61,21 @@ public class CreateVideoDeRelatorioService {
 
         FileContentType contentType = getContentTypeFromString(request.contentType());
 
+        String fileName = "%s-%s".formatted(Instant.now(), request.fileName());
         String videoUrl = s3UploadFile.execute(
-                request.fileName(),
+                fileName,
                 "tenants/%s/obras/%s/relatorios/%s/videos".formatted(tenantExternalId, relatorioWithObra.getObra().getIdExterno(), relatorioExternalId),
                 videoBytes,
                 contentType
         );
 
+        BigDecimal fileLengthInMb = BigDecimal.valueOf(videoBytes.length).divide(BigDecimal.valueOf(1024 * 1024), RoundingMode.HALF_UP);
         ArquivoEntity arquivo = ArquivoEntity.builder()
-                .nomeArquivo(request.fileName())
+                .nomeArquivo(fileName)
                 .url(videoUrl)
                 .tipoArquivo(TipoArquivo.VIDEO)
                 .relatorio(relatorioWithObra.getRelatorio())
+                .tamanhoEmMb(fileLengthInMb)
                 .tenantId(tenantId)
                 .build();
 

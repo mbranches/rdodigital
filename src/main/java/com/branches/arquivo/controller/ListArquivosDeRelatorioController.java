@@ -17,7 +17,7 @@ public class ListArquivosDeRelatorioController {
 
     private final ListArquivosDeRelatorioService listArquivosDeRelatorioService;
 
-    @PutMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/arquivos")
+    @GetMapping("/api/tenants/{tenantExternalId}/relatorios/{relatorioExternalId}/arquivos")
     public ResponseEntity<List<ArquivoResponse>> execute(@PathVariable String tenantExternalId,
                                                          @PathVariable String relatorioExternalId,
                                                          @RequestParam TipoArquivo tipo) {

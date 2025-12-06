@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @SuperBuilder
@@ -33,6 +35,9 @@ public class ArquivoEntity extends AuditableTenantOwned {
     @ManyToOne
     @JoinColumn(name = "relatorio_id")
     private RelatorioEntity relatorio;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal tamanhoEmMb;
 
     public boolean getIsFoto() {
         return this.tipoArquivo == TipoArquivo.FOTO;

@@ -18,6 +18,9 @@ import com.branches.utils.ImageOutPutFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,14 +49,17 @@ public class CreateFotoDeRelatorioService {
 
         byte[] imageBytes = compressImage.execute(request.base64Image(), 800, 800, 0.8, ImageOutPutFormat.JPEG);
 
-        String fotoUrl = s3UploadFile.execute(request.fileName(), "tenants/%s/obras/%s/relatorios/%s/fotos".formatted(tenantExternalId, relatorioWithObra.getObra().getIdExterno(), relatorioExternalId), imageBytes, FileContentType.JPEG);
+        String filename = "%s-%s".formatted(Instant.now(), request.fileName());
+        String fotoUrl = s3UploadFile.execute(filename, "tenants/%s/obras/%s/relatorios/%s/fotos".formatted(tenantExternalId, relatorioWithObra.getObra().getIdExterno(), relatorioExternalId), imageBytes, FileContentType.JPEG);
 
+        BigDecimal fileLengthInMb = BigDecimal.valueOf(imageBytes.length).divide(BigDecimal.valueOf(1024 * 1024), RoundingMode.HALF_UP);
         ArquivoEntity arquivo = ArquivoEntity.builder()
                 .descricao(request.descricao())
-                .nomeArquivo(request.fileName())
+                .nomeArquivo(filename)
                 .url(fotoUrl)
                 .tipoArquivo(TipoArquivo.FOTO)
                 .relatorio(relatorioWithObra.getRelatorio())
+                .tamanhoEmMb(fileLengthInMb)
                 .tenantId(tenantId)
                 .build();
 

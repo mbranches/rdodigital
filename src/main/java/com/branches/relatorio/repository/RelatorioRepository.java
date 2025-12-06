@@ -24,6 +24,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     @Query("""
     SELECT r.id AS id,
         r.idExterno AS idExterno,
+        t.id AS tenantId,
         o.idExterno AS obraIdExterno,
         o.nome AS obraNome,
         o.endereco AS obraEndereco,
@@ -55,6 +56,10 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.caracteristicasTarde AS caracteristicasTarde,
         r.caracteristicasNoite AS caracteristicasNoite,
         r.indiciePluviometrico AS indicePluviometrico,
+        r.horaInicioTrabalhos AS horaInicioTrabalhos,
+        r.horaFimTrabalhos AS horaFimTrabalhos,
+        r.horasIntervalo AS horasIntervalo,
+        r.horasTrabalhadas AS horasTrabalhadas,
         r.status AS status,
         u.nome AS criadoPor,
         r.enversCreatedDate AS criadoEm,
@@ -76,12 +81,69 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     Optional<RelatorioDetailsProjection> findDetailsByIdExternoAndTenantId(String relatorioExternalId, Long tenantId);
 
     @Query("""
+    SELECT r.id AS id,
+        r.idExterno AS idExterno,
+        t.id AS tenantId,
+        o.idExterno AS obraIdExterno,
+        o.nome AS obraNome,
+        o.endereco AS obraEndereco,
+        o.contratante AS obraContratante,
+        o.responsavel AS obraResponsavel,
+        o.numeroContrato AS obraNumeroContrato,
+        lr1 AS logoDeRelatorio1,
+        lr2 AS logoDeRelatorio2,
+        lr3 AS logoDeRelatorio3,
+        cr.recorrenciaRelatorio AS recorrenciaRelatorio,
+        cr.modeloDeRelatorio.titulo AS tituloModeloDeRelatorio,
+        cr.showAtividades AS showAtividades,
+        cr.showCondicaoClimatica AS showCondicaoClimatica,
+        cr.showComentarios AS showComentarios,
+        cr.showEquipamentos AS showEquipamentos,
+        cr.showMaoDeObra AS showMaoDeObra,
+        cr.showOcorrencias AS showOcorrencias,
+        cr.showMateriais AS showMateriais,
+        cr.showHorarioDeTrabalho AS showHorarioDeTrabalho,
+        cr.showFotos AS showFotos,
+        cr.showVideos AS showVideos,
+        r.dataInicio AS dataInicio,
+        r.dataFim AS dataFim,
+        r.numero AS numero,
+        r.prazoContratualObra AS prazoContratual,
+        r.prazoDecorridoObra AS prazoDecorrido,
+        r.prazoPraVencerObra AS prazoPraVencer,
+        r.caracteristicasManha AS caracteristicasManha,
+        r.caracteristicasTarde AS caracteristicasTarde,
+        r.caracteristicasNoite AS caracteristicasNoite,
+        r.indiciePluviometrico AS indicePluviometrico,
+        r.horaInicioTrabalhos AS horaInicioTrabalhos,
+        r.horaFimTrabalhos AS horaFimTrabalhos,
+        r.horasIntervalo AS horasIntervalo,
+        r.horasTrabalhadas AS horasTrabalhadas,
+        r.status AS status,
+        u.nome AS criadoPor,
+        r.enversCreatedDate AS criadoEm,
+        u2.nome AS ultimaModificacaoPor,
+        r.enversLastModifiedDate AS ultimaModificacaoEm
+    FROM RelatorioEntity r
+        JOIN TenantEntity t ON r.tenantId = t.id
+        JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
+        JOIN o.configuracaoRelatorios cr
+        LEFT JOIN cr.logoDeRelatorio1 lr1
+        LEFT JOIN cr.logoDeRelatorio2 lr2
+        LEFT JOIN cr.logoDeRelatorio3 lr3
+        JOIN UserEntity u ON u.id = r.enversCreator
+        JOIN UserEntity u2 ON u2.id = r.enversModifier
+    WHERE r.id = :id
+      AND t.ativo IS TRUE
+""")
+    Optional<RelatorioDetailsProjection> findDetailsById(Long id);
+
+    @Query("""
     SELECT r.idExterno AS idExterno,
         r.dataInicio AS dataInicio,
         r.dataFim AS dataFim,
         r.numero AS numero,
         r.status AS status,
-        r.pdfUrl AS pdfUrl,
         o.idExterno AS obraIdExterno,
         o.nome AS obraNome,
         o.endereco AS obraEndereco,
@@ -102,7 +164,6 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.dataFim AS dataFim,
         r.numero AS numero,
         r.status AS status,
-        r.pdfUrl AS pdfUrl,
         o.idExterno AS obraIdExterno,
         o.nome AS obraNome,
         o.endereco AS obraEndereco,
@@ -123,7 +184,6 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.dataFim AS dataFim,
         r.numero AS numero,
         r.status AS status,
-        r.pdfUrl AS pdfUrl,
         o.idExterno AS obraIdExterno,
         o.nome AS obraNome,
         o.endereco AS obraEndereco,

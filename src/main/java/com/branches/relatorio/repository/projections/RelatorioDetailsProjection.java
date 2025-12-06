@@ -16,7 +16,9 @@ public interface RelatorioDetailsProjection {
     LogoDeRelatorioEntity getLogoDeRelatorio1();
     LogoDeRelatorioEntity getLogoDeRelatorio2();
     LogoDeRelatorioEntity getLogoDeRelatorio3();
+    Long getTenantId();
 
+    Long getObraId();
     String getObraIdExterno();
     String getObraNome();
     String getObraEndereco();

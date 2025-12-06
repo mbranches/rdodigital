@@ -47,8 +47,6 @@ public class RelatorioEntity extends AuditableTenantOwned {
     @Column(nullable = false)
     private Long prazoPraVencerObra;
 
-    private String pdfUrl;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusRelatorio status;
@@ -73,14 +71,12 @@ public class RelatorioEntity extends AuditableTenantOwned {
     @JoinColumn(name = "caracteristicas_noite_id")
     private CondicaoClimaticaEntity caracteristicasNoite;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "relatorio")
     private List<AssinaturaDeRelatorioEntity> assinaturas;
 
     @Builder.Default
     @Column(nullable = false)
     private Boolean ativo = true;
-
-    //todo: adicionar videos e anexos
 
     public void setInativo() {
         this.ativo = false;

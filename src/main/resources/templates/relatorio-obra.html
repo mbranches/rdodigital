@@ -679,6 +679,17 @@
     <section th:if="${comentarios != null and !comentarios.isEmpty()}">
         <div class="section-title">Comentários</div>
         <div th:each="item : ${comentarios}" class="comment-box">
+            <!-- Cabeçalho com autor e data -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #ddd;">
+                <div style="font-weight: bold; font-size: 9pt; color: #333;">
+                    <span th:text="${item.autor != null and item.autor.nome != null ? item.autor.nome : 'Autor desconhecido'}">Nome do Autor</span>
+                </div>
+                <div style="font-size: 8pt; color: #666; font-style: italic;">
+                    <span th:text="${item.dataCriacao != null ? #temporals.format(item.dataCriacao, 'dd/MM/yyyy HH:mm') : '-'}">05/12/2024 14:30</span>
+                </div>
+            </div>
+
+            <!-- Texto do comentário -->
             <p class="comment-text" th:text="${item.descricao != null ? item.descricao : ''}">Texto do comentário</p>
 
             <!-- Campos personalizados -->

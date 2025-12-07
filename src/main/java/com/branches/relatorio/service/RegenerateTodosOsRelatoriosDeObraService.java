@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GenerateTodosOsRelatoriosDeObraService {
+public class RegenerateTodosOsRelatoriosDeObraService {
     private final RelatorioRepository relatorioRepository;
     private final OcorrenciaDeRelatorioRepository ocorrenciaDeRelatorioRepository;
     private final AtividadeDeRelatorioRepository atividadeDeRelatorioRepository;

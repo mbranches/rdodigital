@@ -2,11 +2,14 @@ package com.branches.comentarios.service;
 
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
 import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
+import com.branches.exception.ForbiddenException;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
+import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
+import com.branches.usertenant.domain.enums.PerfilUserTenant;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,13 +36,22 @@ public class DeleteComentarioDeRelatorioService {
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
 
         checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
-
         checkIfConfiguracaoDeRelatorioDaObraPermiteComentarioService.execute(relatorio.getObraId(), tenantId);
-
         checkIfUserCanViewComentariosService.execute(userTenant);
 
         ComentarioDeRelatorioEntity comentario = getComentarioDeRelatorioByIdAndRelatorioIdService.execute(id, relatorio.getId());
 
+        checkIfUserCanDeleteComentario(userTenant, comentario);
+
         comentarioDeRelatorioRepository.delete(comentario);
+    }
+
+    private void checkIfUserCanDeleteComentario(UserTenantEntity userTenant, ComentarioDeRelatorioEntity comentario) {
+        UserEntity user = userTenant.getUser();
+        PerfilUserTenant perfil = userTenant.getPerfil();
+
+        if (comentario.getAutor().equals(user) || perfil.equals(PerfilUserTenant.ADMINISTRADOR)) return;
+
+        throw new ForbiddenException();
     }
 }

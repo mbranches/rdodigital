@@ -1,6 +1,7 @@
 package com.branches.comentarios.service;
 
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
+import com.branches.exception.ForbiddenException;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import com.branches.comentarios.dto.request.UpdateComentarioDeRelatorioRequest;
@@ -8,6 +9,7 @@ import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
+import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,9 @@ public class UpdateComentarioDeRelatorioService {
         checkIfUserCanViewComentariosService.execute(userTenant);
 
         ComentarioDeRelatorioEntity entity = getComentarioDeRelatorioByIdAndRelatorioIdService.execute(id, relatorio.getId());
+
+        checkIfUserCanUpdateComentario(userTenant, entity);
+
         entity.setDescricao(request.descricao());
 
         List<CampoPersonalizadoRequest> campoPersonalizadoRequest = request.camposPersonalizados() != null
@@ -52,5 +57,13 @@ public class UpdateComentarioDeRelatorioService {
         );
 
         comentarioDeRelatorioRepository.save(entity);
+    }
+
+    private void checkIfUserCanUpdateComentario(UserTenantEntity userTenant, ComentarioDeRelatorioEntity entity) {
+        UserEntity user = userTenant.getUser();
+
+        if (entity.getAutor().equals(user)) return;
+
+        throw new ForbiddenException();
     }
 }

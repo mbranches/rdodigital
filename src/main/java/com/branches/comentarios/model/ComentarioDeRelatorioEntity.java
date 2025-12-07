@@ -2,9 +2,12 @@ package com.branches.comentarios.model;
 
 import com.branches.relatorio.domain.CampoPersonalizadoEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
+import com.branches.user.domain.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -29,4 +32,12 @@ public class ComentarioDeRelatorioEntity {
         inverseJoinColumns = @JoinColumn(name = "campo_personalizado_id")
     )
     private List<CampoPersonalizadoEntity> camposPersonalizados;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity autor;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime dataCriacao;
 }

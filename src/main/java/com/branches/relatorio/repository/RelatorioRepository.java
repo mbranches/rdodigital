@@ -229,6 +229,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     WHERE r.tenantId = :tenantId
       AND r.status = 'APROVADO'
       AND (:perfilIsAdministrador = true OR o.id IN :obrasIdAllowed)
+      AND r.ativo IS TRUE
        
 """)
     Page<RelatorioProjection> findAllByTenantIdAndIsAprovadoAndUserAccessToTheObraPai(Long tenantId, Long userId, List<Long> obrasIdAllowed, boolean perfilIsAdministrador, Pageable pageable);
@@ -251,6 +252,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     JOIN ArquivoDeRelatorioDeUsuarioEntity a ON a.userId = :userId AND a.relatorioId = r.id
     WHERE r.tenantId = :tenantId
         AND (:perfilIsAdministrador = true OR o.id IN :obrasIdAllowed)
+        AND r.ativo IS TRUE
 """)
     Page<RelatorioProjection> findAllByTenantIdAndUserAccessToTheObraPai(Long tenantId, Long userId, List<Long> obrasIdAllowed, boolean perfilIsAdministrador, Pageable pageable);
 }

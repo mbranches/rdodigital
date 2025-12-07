@@ -49,89 +49,58 @@ public class ProcessRelatorioFileToUsersService {
         List<ArquivoDeRelatorioDeUsuarioEntity> arquivoDeRelatorioDeUsuarioToSaveList = new ArrayList<>();
 
         List<CompletableFuture<Void>> geracoesDosRelatoriosAsync = userTenants.stream()
-                .map(userTenant -> CompletableFuture.runAsync(() ->
-                        generateFile(
-                                details,
-                                userTenant,
-                                ocorrencias,
-                                atividades,
-                                equipamentos,
-                                maoDeObra,
-                                comentarios,
-                                materiais,
-                                fotos,
-                                videos,
-                                assinaturas,
-                                relatorioId,
-                                mapUserIdAndArquivoDeRelatorio,
-                                arquivoDeRelatorioDeUsuarioToSaveList
-                        )
+                .map(userTenant -> CompletableFuture.runAsync(() -> {
+                            var userPermissionsItensDeRelatorio = userTenant.getAuthorities().getItensDeRelatorio();
+
+                            boolean userCanViewOcorrencias = userPermissionsItensDeRelatorio.getOcorrencias();
+                            boolean userCanViewAtividades = userPermissionsItensDeRelatorio.getAtividades();
+                            boolean userCanViewEquipamentos = userPermissionsItensDeRelatorio.getEquipamentos();
+                            boolean userCanViewMaoDeObra = userPermissionsItensDeRelatorio.getMaoDeObra();
+                            boolean userCanViewComentarios = userPermissionsItensDeRelatorio.getComentarios();
+                            boolean userCanViewMateriais = userPermissionsItensDeRelatorio.getMateriais();
+                            boolean userCanViewFotos = userPermissionsItensDeRelatorio.getFotos();
+                            boolean userCanViewVideos = userPermissionsItensDeRelatorio.getVideos();
+
+                            List<OcorrenciaDeRelatorioEntity> ocorrenciasDoRelatorio = userCanViewOcorrencias ? ocorrencias : Collections.emptyList();
+                            List<AtividadeDeRelatorioEntity> atividadesDoRelatorio = userCanViewAtividades ? atividades : Collections.emptyList();
+                            List<EquipamentoDeRelatorioEntity> equipamentosDoRelatorio = userCanViewEquipamentos ? equipamentos : Collections.emptyList();
+                            List<MaoDeObraDeRelatorioEntity> maoDeObraDoRelatorio = userCanViewMaoDeObra ? maoDeObra : Collections.emptyList();
+                            List<ComentarioDeRelatorioEntity> comentariosDoRelatorio = userCanViewComentarios ? comentarios : Collections.emptyList();
+                            List<MaterialDeRelatorioEntity> materiaisDoRelatorio = userCanViewMateriais ? materiais : Collections.emptyList();
+                            List<ArquivoEntity> fotosDoRelatorio = userCanViewFotos ? fotos : Collections.emptyList();
+                            List<ArquivoEntity> videosDoRelatorio = userCanViewVideos ? videos : Collections.emptyList();
+
+                            String url = generateRelatorioToUserService.execute(
+                                    details,
+                                    userTenant,
+                                    ocorrenciasDoRelatorio,
+                                    atividadesDoRelatorio,
+                                    equipamentosDoRelatorio,
+                                    maoDeObraDoRelatorio,
+                                    comentariosDoRelatorio,
+                                    materiaisDoRelatorio,
+                                    fotosDoRelatorio,
+                                    videosDoRelatorio,
+                                    assinaturas
+                            );
+
+                            if (mapUserIdAndArquivoDeRelatorio.containsKey(userTenant.getUser().getId())) return;
+
+                            ArquivoDeRelatorioDeUsuarioEntity toSave = ArquivoDeRelatorioDeUsuarioEntity.builder()
+                                    .arquivoUrl(url)
+                                    .relatorioId(relatorioId)
+                                    .userId(userTenant.getUser().getId())
+                                    .build();
+
+                            synchronized (arquivoDeRelatorioDeUsuarioToSaveList) {
+                                arquivoDeRelatorioDeUsuarioToSaveList.add(toSave);
+                            }
+                        }
                 ))
                 .toList();
 
         CompletableFuture.allOf(geracoesDosRelatoriosAsync.toArray(new CompletableFuture[0])).join();
 
         return arquivoDeRelatorioDeUsuarioToSaveList;
-    }
-
-    private void generateFile(
-            RelatorioDetailsProjection details,
-            UserTenantEntity userTenant,
-            List<OcorrenciaDeRelatorioEntity> ocorrencias,
-            List<AtividadeDeRelatorioEntity> atividades,
-            List<EquipamentoDeRelatorioEntity> equipamentos,
-            List<MaoDeObraDeRelatorioEntity> maoDeObra,
-            List<ComentarioDeRelatorioEntity> comentarios,
-            List<MaterialDeRelatorioEntity> materiais,
-            List<ArquivoEntity> fotos,
-            List<ArquivoEntity> videos,
-            List<AssinaturaDeRelatorioEntity> assinaturas,
-            Long relatorioId,
-            Map<Long, ArquivoDeRelatorioDeUsuarioEntity> mapUserIdAndArquivoDeRelatorio,
-            List<ArquivoDeRelatorioDeUsuarioEntity> arquivoDeRelatorioDeUsuarioToSaveList
-    ) {
-        var userPermissionsItensDeRelatorio = userTenant.getAuthorities().getItensDeRelatorio();
-
-        boolean userCanViewOcorrencias = userPermissionsItensDeRelatorio.getOcorrencias();
-        boolean userCanViewAtividades = userPermissionsItensDeRelatorio.getAtividades();
-        boolean userCanViewEquipamentos = userPermissionsItensDeRelatorio.getEquipamentos();
-        boolean userCanViewMaoDeObra = userPermissionsItensDeRelatorio.getMaoDeObra();
-        boolean userCanViewComentarios = userPermissionsItensDeRelatorio.getComentarios();
-        boolean userCanViewMateriais = userPermissionsItensDeRelatorio.getMateriais();
-        boolean userCanViewFotos = userPermissionsItensDeRelatorio.getFotos();
-        boolean userCanViewVideos = userPermissionsItensDeRelatorio.getVideos();
-
-        List<OcorrenciaDeRelatorioEntity> ocorrenciasDoRelatorio = userCanViewOcorrencias ? ocorrencias : Collections.emptyList();
-        List<AtividadeDeRelatorioEntity> atividadesDoRelatorio = userCanViewAtividades ? atividades : Collections.emptyList();
-        List<EquipamentoDeRelatorioEntity> equipamentosDoRelatorio = userCanViewEquipamentos ? equipamentos : Collections.emptyList();
-        List<MaoDeObraDeRelatorioEntity> maoDeObraDoRelatorio = userCanViewMaoDeObra ? maoDeObra : Collections.emptyList();
-        List<ComentarioDeRelatorioEntity> comentariosDoRelatorio = userCanViewComentarios ? comentarios : Collections.emptyList();
-        List<MaterialDeRelatorioEntity> materiaisDoRelatorio = userCanViewMateriais ? materiais : Collections.emptyList();
-        List<ArquivoEntity> fotosDoRelatorio = userCanViewFotos ? fotos : Collections.emptyList();
-        List<ArquivoEntity> videosDoRelatorio = userCanViewVideos ? videos : Collections.emptyList();
-
-        String url = generateRelatorioToUserService.execute(
-                details,
-                userTenant,
-                ocorrenciasDoRelatorio,
-                atividadesDoRelatorio,
-                equipamentosDoRelatorio,
-                maoDeObraDoRelatorio,
-                comentariosDoRelatorio,
-                materiaisDoRelatorio,
-                fotosDoRelatorio,
-                videosDoRelatorio,
-                assinaturas
-        );
-
-        if (mapUserIdAndArquivoDeRelatorio.containsKey(userTenant.getUser().getId())) return;
-
-        ArquivoDeRelatorioDeUsuarioEntity toSave = ArquivoDeRelatorioDeUsuarioEntity.builder()
-                .arquivoUrl(url)
-                .relatorioId(relatorioId)
-                .userId(userTenant.getUser().getId())
-                .build();
-
-        arquivoDeRelatorioDeUsuarioToSaveList.add(toSave);
     }
 }

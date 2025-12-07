@@ -25,7 +25,6 @@ import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.repository.UserTenantRepository;
 import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -33,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Async
 @RequiredArgsConstructor
 @Service
 public class GenerateRelatorioFileToUsersService {

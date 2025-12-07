@@ -11,7 +11,7 @@ public record RelatorioResponse(
         LocalDate data,
         Long numero,
         StatusRelatorio status,
-//        Long quantidadeFotos //todo: implementar
+        Long quantidadeFotos,
         String pdfUrl,
         ObraByRelatorioResponse obra
 ) {
@@ -23,6 +23,7 @@ public record RelatorioResponse(
                 relatorio.getDataInicio(),
                 relatorio.getNumero(),
                 relatorio.getStatus(),
+                relatorio.getQuantidadeFotos(),
                 relatorio.getPdfUrl(),
                 obra
         );

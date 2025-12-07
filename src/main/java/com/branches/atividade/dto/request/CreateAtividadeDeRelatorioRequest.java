@@ -28,6 +28,5 @@ public record CreateAtividadeDeRelatorioRequest(
         List<Long> maoDeObraIds,
         @Valid
         List<CampoPersonalizadoRequest> camposPersonalizados
-        //todo: adicionar fotos quando for implementado
 ) {
 }

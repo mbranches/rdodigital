@@ -28,4 +28,6 @@ public interface RelatorioProjection {
     String getObraResponsavel();
 
     String getObraNumeroContrato();
+
+    Long getQuantidadeFotos();
 }

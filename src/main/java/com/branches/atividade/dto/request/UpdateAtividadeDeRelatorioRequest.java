@@ -26,6 +26,5 @@ public record UpdateAtividadeDeRelatorioRequest(
         List<UpdateMaoDeObraDeAtividadeRequest> maoDeObra,
         @Valid
         List<CampoPersonalizadoRequest> camposPersonalizados
-        //todo: adicionar fotos quando for implementado
 ) {
 }

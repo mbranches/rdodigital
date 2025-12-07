@@ -1,7 +1,9 @@
 package com.branches.arquivo.dto.response;
 
 import com.branches.arquivo.domain.ArquivoEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ArquivoResponse(
         Long id,
         String nomeArquivo,

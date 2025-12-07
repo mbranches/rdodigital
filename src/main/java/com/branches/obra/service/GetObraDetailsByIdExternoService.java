@@ -1,5 +1,7 @@
 package com.branches.obra.service;
 
+import com.branches.arquivo.domain.ArquivoEntity;
+import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.exception.NotFoundException;
 import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
 import com.branches.obra.dto.response.GetObraDetailsByIdExternoResponse;
@@ -23,6 +25,7 @@ public class GetObraDetailsByIdExternoService {
     private final RelatorioRepository relatorioRepository;
     private final ObraRepository obraRepository;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
+    private final ArquivoRepository arquivoRepository;
 
     public GetObraDetailsByIdExternoResponse execute(String idExterno, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantDaObraId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -34,8 +37,10 @@ public class GetObraDetailsByIdExternoService {
 
         List<RelatorioProjection> relatoriosRecentes = relatorioRepository.findTop5ByObraIdProjection(obra.getId());
 
+        List<ArquivoEntity> fotosRecentes = arquivoRepository.findTop5FotosDeRelatoriosByObraId(obra.getId());
+
         checkIfUserHasAccessToObraService.execute(currentUserTenant, obra.getId());
 
-        return GetObraDetailsByIdExternoResponse.from(obra, relatoriosRecentes);
+        return GetObraDetailsByIdExternoResponse.from(obra, relatoriosRecentes, fotosRecentes);
     }
 }

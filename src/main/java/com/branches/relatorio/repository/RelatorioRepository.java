@@ -151,7 +151,13 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         o.nome AS obraNome,
         o.endereco AS obraEndereco,
         o.contratante AS obraContratante,
-        o.responsavel AS obraResponsavel
+        o.responsavel AS obraResponsavel,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.tipoArquivo = 'FOTO'
+                AND a.relatorio.id = r.id
+        ) AS quantidadeFotos
     FROM RelatorioEntity r
         JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
     WHERE r.obraId = :id
@@ -172,7 +178,13 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         o.endereco AS obraEndereco,
         o.contratante AS obraContratante,
         o.responsavel AS obraResponsavel,
-        o.numeroContrato AS obraNumeroContrato
+        o.numeroContrato AS obraNumeroContrato,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.tipoArquivo = 'FOTO'
+                AND a.relatorio.id = r.id
+        ) AS quantidadeFotos
     FROM RelatorioEntity r
     JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
     WHERE r.obraId = :obraId
@@ -192,7 +204,13 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         o.endereco AS obraEndereco,
         o.contratante AS obraContratante,
         o.responsavel AS obraResponsavel,
-        o.numeroContrato AS obraNumeroContrato
+        o.numeroContrato AS obraNumeroContrato,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.tipoArquivo = 'FOTO'
+                AND a.relatorio.id = r.id
+        ) AS quantidadeFotos
     FROM RelatorioEntity r
     JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
     WHERE r.obraId = :obraId
@@ -207,6 +225,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
             JOIN ObraEntity o ON o.id = r.obraId
         WHERE r.idExterno = :relatorioExternalId
           AND r.tenantId = :tenantId
+          AND r.ativo IS TRUE
     """)
     Optional<RelatorioWithObraProjection> findRelatorioWithObraByIdExternoAndTenantId(String relatorioExternalId, Long tenantId);
 
@@ -223,7 +242,13 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         o.endereco AS obraEndereco,
         o.contratante AS obraContratante,
         o.responsavel AS obraResponsavel,
-        o.numeroContrato AS obraNumeroContrato
+        o.numeroContrato AS obraNumeroContrato,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.tipoArquivo = 'FOTO'
+                AND a.relatorio.id = r.id
+        ) AS quantidadeFotos
     FROM RelatorioEntity r
     JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
     WHERE r.tenantId = :tenantId
@@ -246,7 +271,13 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         o.endereco AS obraEndereco,
         o.contratante AS obraContratante,
         o.responsavel AS obraResponsavel,
-        o.numeroContrato AS obraNumeroContrato
+        o.numeroContrato AS obraNumeroContrato,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.tipoArquivo = 'FOTO'
+                AND a.relatorio.id = r.id
+        ) AS quantidadeFotos
     FROM RelatorioEntity r
     JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
     JOIN ArquivoDeRelatorioDeUsuarioEntity a ON a.userId = :userId AND a.relatorioId = r.id

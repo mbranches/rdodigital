@@ -1,5 +1,7 @@
 package com.branches.obra.dto.response;
 
+import com.branches.arquivo.domain.ArquivoEntity;
+import com.branches.arquivo.dto.response.ArquivoResponse;
 import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.domain.enums.TipoContratoDeObra;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
@@ -36,11 +38,11 @@ public record GetObraDetailsByIdExternoResponse(
         Long quantidadeAtividades,
         Long quantidadeOcorrencias,
         Long quantidadeComentarios,
-        //todo: Long quantidadeFotos,
-        List<RelatorioResponse> relatoriosRecentes //todo: limitar a 5 mais recentes
-//    List<FotoObraResponse> fotosRecentes //todo: implementar e  limitar a 5 mais recentes
+        Long quantidadeFotos,
+        List<RelatorioResponse> relatoriosRecentes,
+        List<ArquivoResponse> fotosRecentes
 ) {
-    public static GetObraDetailsByIdExternoResponse from(ObraDetailsProjection obra, List<RelatorioProjection> relatoriosRecentesProjections) {
+    public static GetObraDetailsByIdExternoResponse from(ObraDetailsProjection obra, List<RelatorioProjection> relatoriosRecentesProjections, List<ArquivoEntity> fotosRecentes) {
         long prazoContratual = ChronoUnit.DAYS.between(obra.getDataInicio(), obra.getDataPrevistaFim());
 
         long diferencaEntreHojeEDataFim = ChronoUnit.DAYS.between(LocalDate.now(), obra.getDataPrevistaFim());
@@ -78,8 +80,12 @@ public record GetObraDetailsByIdExternoResponse(
             obra.getQuantidadeAtividades(),
             obra.getQuantidadeOcorrencias(),
             obra.getQuantidadeComentarios(),
+            obra.getQuantidadeFotos(),
             relatoriosRecentesProjections.stream()
                     .map(RelatorioResponse::from)
+                    .toList(),
+            fotosRecentes.stream()
+                    .map(ArquivoResponse::from)
                     .toList()
         );
     }

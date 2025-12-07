@@ -28,4 +28,5 @@ public interface ObraDetailsProjection {
     Long getQuantidadeAtividades();
     Long getQuantidadeOcorrencias();
     Long getQuantidadeComentarios();
+    Long getQuantidadeFotos();
 }

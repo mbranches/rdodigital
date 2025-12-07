@@ -28,7 +28,6 @@ public record UpdateRelatorioRequest(
         @NotNull(message = "O campo 'prazoPraVencer' é obrigatório")
         Long prazoPraVencer,
 
-        //todo: adicionar campo de fotos quando for implementado
         @NotNull(message = "O campo 'status' é obrigatório")
         StatusRelatorio status
 ) {

@@ -117,7 +117,14 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
             SELECT COUNT(1)
             FROM ComentarioDeRelatorioEntity cdr
             WHERE cdr.relatorio.obraId = o.id AND cdr.relatorio.ativo IS TRUE
-        ) AS quantidadeComentarios
+        ) AS quantidadeComentarios,
+        (
+            SELECT COUNT(1)
+            FROM ArquivoEntity a
+            WHERE a.tipoArquivo = 'FOTO'
+                AND a.relatorio.obraId = o.id
+                AND a.relatorio.ativo IS TRUE
+        ) AS quantidadeFotos
     FROM ObraEntity o
     LEFT JOIN o.grupo
     WHERE o.idExterno = :idExterno

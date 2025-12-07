@@ -4,6 +4,7 @@ import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +13,6 @@ public interface OcorrenciaDeRelatorioRepository extends JpaRepository<Ocorrenci
     List<OcorrenciaDeRelatorioEntity> findAllByRelatorioId(Long relatorioId);
 
     Optional<OcorrenciaDeRelatorioEntity> findByIdAndRelatorioId(Long id, Long relatorioId);
+
+    List<OcorrenciaDeRelatorioEntity> findAllByRelatorioIdIn(Collection<Long> relatorioIds);
 }

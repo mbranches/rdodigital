@@ -13,4 +13,6 @@ public interface ArquivoDeRelatorioDeUsuarioRepository extends JpaRepository<Arq
     List<ArquivoDeRelatorioDeUsuarioEntity> findAllByRelatorioIdAndUserIdIn(Long relatorioId, Collection<Long> userIds);
 
     Optional<ArquivoDeRelatorioDeUsuarioEntity> findByUserIdAndRelatorioId(Long userId, Long relatorioId);
+
+    List<ArquivoDeRelatorioDeUsuarioEntity> findAllByRelatorioIdInAndUserIdIn(Collection<Long> relatorioIds, Collection<Long> userIds);
 }

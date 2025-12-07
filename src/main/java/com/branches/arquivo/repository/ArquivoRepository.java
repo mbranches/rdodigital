@@ -5,6 +5,7 @@ import com.branches.arquivo.domain.enums.TipoArquivo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,4 +28,6 @@ public interface ArquivoRepository extends JpaRepository<ArquivoEntity, Long> {
     LIMIT 5
 """)
     List<ArquivoEntity> findTop5FotosDeRelatoriosByObraId(Long id);
+
+    List<ArquivoEntity> findAllByRelatorioIdIn(Collection<Long> relatorioIds);
 }

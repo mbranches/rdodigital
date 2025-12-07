@@ -4,11 +4,9 @@ import com.branches.condicaoclimatica.domain.CondicaoClimaticaEntity;
 import com.branches.condicaoclimatica.dto.request.CondicaoClimaticaRequest;
 import com.branches.condicaoclimatica.dto.request.UpdateCondicaoClimaticaDeRelatorioRequest;
 import com.branches.exception.ForbiddenException;
-import com.branches.exception.NotFoundException;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdAndTenantIdService;
 import com.branches.relatorio.domain.RelatorioEntity;
-import com.branches.condicaoclimatica.repository.CondicaoClimaticaRepository;
 import com.branches.relatorio.repository.RelatorioRepository;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
@@ -30,7 +28,6 @@ public class UpdateCondicaoClimaticaDeRelatorioService {
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final GetObraByIdAndTenantIdService getObraByIdAndTenantIdService;
-    private final CondicaoClimaticaRepository condicaoClimaticaRepository;
     private final RelatorioRepository relatorioRepository;
     private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
@@ -47,9 +44,9 @@ public class UpdateCondicaoClimaticaDeRelatorioService {
 
         checkIfUserCanViewCondicaoClimatica(userTenant);
 
-        relatorio.setCaracteristicasManha(getUpdatedCaracteristicaEntity(request.condicaoClimaticaManha(), tenantId));
-        relatorio.setCaracteristicasTarde(getUpdatedCaracteristicaEntity(request.condicaoClimaticaTarde(), tenantId));
-        relatorio.setCaracteristicasNoite(getUpdatedCaracteristicaEntity(request.condicaoClimaticaNoite(), tenantId));
+        updateCondicaoClimatica(request.condicaoClimaticaManha(), relatorio.getCaracteristicasManha());
+        updateCondicaoClimatica(request.condicaoClimaticaTarde(), relatorio.getCaracteristicasTarde());
+        updateCondicaoClimatica(request.condicaoClimaticaNoite(), relatorio.getCaracteristicasNoite());
         relatorio.setIndiciePluviometrico(request.indicePluviometrico());
 
         relatorioRepository.save(relatorio);
@@ -57,17 +54,10 @@ public class UpdateCondicaoClimaticaDeRelatorioService {
         generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.CONDICAO_CLIMATICA);
     }
 
-    private CondicaoClimaticaEntity getUpdatedCaracteristicaEntity(CondicaoClimaticaRequest request, Long tenantId) {
-        var id = request.id();
-
-        var entity = condicaoClimaticaRepository.findByIdAndTenantId(id, tenantId)
-                .orElseThrow(() -> new NotFoundException("Caracteristica de periodo do dia não encontrada com o id: " + id));
-
-        entity.setClima(request.clima());
-        entity.setCondicaoDoTempo(request.condicaoDoTempo());
-        entity.setAtivo(request.ativo());
-
-        return entity;
+    private void updateCondicaoClimatica(CondicaoClimaticaRequest request, CondicaoClimaticaEntity toUpdate) {
+        toUpdate.setClima(request.clima());
+        toUpdate.setCondicaoDoTempo(request.condicaoDoTempo());
+        toUpdate.setAtivo(request.ativo());
     }
 
     private void checkIfUserCanViewCondicaoClimatica(UserTenantEntity userTenant) {

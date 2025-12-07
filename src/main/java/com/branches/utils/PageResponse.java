@@ -9,8 +9,8 @@ public record PageResponse<T> (
     int pageNumber,
     long totalElements,
     List<T> content,
-    boolean isFirst,
-    boolean isLast
+    boolean isFirstPage,
+    boolean isLastPage
 ) {
     public static <T> PageResponse<T> from(Page<T> page) {
         return new PageResponse<>(

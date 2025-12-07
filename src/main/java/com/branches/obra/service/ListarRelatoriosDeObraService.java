@@ -7,7 +7,10 @@ import com.branches.relatorio.repository.projections.RelatorioProjection;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.PageResponse;
+import com.branches.utils.PageableRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,7 @@ public class ListarRelatoriosDeObraService {
     private final RelatorioRepository relatorioRepository;
     private final GetObraIdByIdExternoService getObraIdByIdExternoAndTenantService;
 
-    public List<RelatorioResponse> execute(String obraExternalId, String tenantExternalId, List<UserTenantEntity> userTenants, PageRequest pageRequest) {
+    public PageResponse<RelatorioResponse> execute(String obraExternalId, String tenantExternalId, List<UserTenantEntity> userTenants, PageableRequest pageableRequest) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
@@ -30,11 +33,13 @@ public class ListarRelatoriosDeObraService {
 
         Boolean canViewOnlyAprovados = currentUserTenant.getAuthorities().getRelatorios().getCanViewOnlyAprovados();
 
-        List<RelatorioProjection> relatorios = canViewOnlyAprovados ? relatorioRepository.findAllByObraIdAndStatusProjection(obraId, StatusRelatorio.APROVADO, pageRequest) :
+        PageRequest pageRequest = PageRequest.of(pageableRequest.pageNumber(), pageableRequest.pageSize(), pageableRequest.sortDirection(), "dataInicio");
+
+        Page<RelatorioProjection> relatorios = canViewOnlyAprovados ? relatorioRepository.findAllByObraIdAndStatusProjection(obraId, StatusRelatorio.APROVADO, pageRequest) :
                 relatorioRepository.findAllByObraIdProjection(obraId, pageRequest);
 
-        return relatorios.stream()
-                .map(RelatorioResponse::from)
-                .toList();
+        Page<RelatorioResponse> response = relatorios.map(RelatorioResponse::from);
+
+        return PageResponse.from(response);
     }
 }

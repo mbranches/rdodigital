@@ -179,7 +179,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         AND r.status = :statusRelatorio
         AND r.ativo IS TRUE
 """)
-    List<RelatorioProjection> findAllByObraIdAndStatusProjection(Long obraId, StatusRelatorio statusRelatorio, Pageable pageable);
+    Page<RelatorioProjection> findAllByObraIdAndStatusProjection(Long obraId, StatusRelatorio statusRelatorio, Pageable pageable);
 
     @Query("""
     SELECT r.idExterno AS idExterno,
@@ -198,7 +198,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     WHERE r.obraId = :obraId
         AND r.ativo IS TRUE
 """)
-    List<RelatorioProjection> findAllByObraIdProjection(Long obraId, Pageable pageable);
+    Page<RelatorioProjection> findAllByObraIdProjection(Long obraId, Pageable pageable);
 
     @Query("""
         SELECT r as relatorio,

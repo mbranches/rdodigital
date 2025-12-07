@@ -80,8 +80,7 @@ public record GetRelatorioDetailsResponse(
                                                    List<ArquivoEntity> fotos,
                                                    List<ArquivoEntity> videos,
                                                    Boolean canViewCondicaoDoClima,
-                                                   Boolean canViewHorarioDeTrabalho,
-                                                   String pdfUrl) {
+                                                   Boolean canViewHorarioDeTrabalho) {
         ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorioDetails.getObraIdExterno(), relatorioDetails.getObraNome(), relatorioDetails.getObraEndereco(), relatorioDetails.getObraContratante(), relatorioDetails.getObraResponsavel(), relatorioDetails.getObraNumeroContrato());
 
         String dayOfWeekResponse = relatorioDetails.getDataInicio().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"));
@@ -163,7 +162,7 @@ public record GetRelatorioDetailsResponse(
                 relatorioDetails.getStatus(),
                 new ModifyerByRelatorioResponse(relatorioDetails.getCriadoPor(), relatorioDetails.getCriadoEm()),
                 new ModifyerByRelatorioResponse(relatorioDetails.getUltimaModificacaoPor(), relatorioDetails.getUltimaModificacaoEm()),
-                pdfUrl
+                relatorioDetails.getPdfUrl()
         );
     }
 }

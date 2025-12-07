@@ -35,8 +35,9 @@ public class ListarRelatoriosDeObraService {
 
         PageRequest pageRequest = PageRequest.of(pageableRequest.pageNumber(), pageableRequest.pageSize(), pageableRequest.sortDirection(), "dataInicio");
 
-        Page<RelatorioProjection> relatorios = canViewOnlyAprovados ? relatorioRepository.findAllByObraIdAndStatusProjection(obraId, StatusRelatorio.APROVADO, pageRequest) :
-                relatorioRepository.findAllByObraIdProjection(obraId, pageRequest);
+        Long userId = currentUserTenant.getUser().getId();
+        Page<RelatorioProjection> relatorios = canViewOnlyAprovados ? relatorioRepository.findAllByObraIdAndStatusProjection(obraId, StatusRelatorio.APROVADO, userId, pageRequest) :
+                relatorioRepository.findAllByObraIdProjection(obraId, userId, pageRequest);
 
         Page<RelatorioResponse> response = relatorios.map(RelatorioResponse::from);
 

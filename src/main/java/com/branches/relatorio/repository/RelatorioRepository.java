@@ -63,6 +63,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.horasIntervalo AS horasIntervalo,
         r.horasTrabalhadas AS horasTrabalhadas,
         r.status AS status,
+        a.arquivoUrl AS pdfUrl,
         u.nome AS criadoPor,
         r.enversCreatedDate AS criadoEm,
         u2.nome AS ultimaModificacaoPor,
@@ -76,11 +77,12 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         LEFT JOIN cr.logoDeRelatorio3 lr3
         JOIN UserEntity u ON u.id = r.enversCreator
         JOIN UserEntity u2 ON u2.id = r.enversModifier
+        JOIN ArquivoDeRelatorioDeUsuarioEntity a ON a.userId = :userId AND a.relatorioId = r.id
     WHERE r.idExterno = :relatorioExternalId
       AND r.tenantId = :tenantId
       AND t.ativo IS TRUE
 """)
-    Optional<RelatorioDetailsProjection> findDetailsByIdExternoAndTenantId(String relatorioExternalId, Long tenantId);
+    Optional<RelatorioDetailsProjection> findDetailsByIdExternoAndTenantId(String relatorioExternalId, Long tenantId, Long userId);
 
     @Query("""
     SELECT r.id AS id,
@@ -139,7 +141,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     WHERE r.id = :id
       AND t.ativo IS TRUE
 """)
-    Optional<RelatorioDetailsProjection> findDetailsById(Long id);
+    Optional<RelatorioDetailsProjection> findDetailsWithoutPdfLinkById(Long id);
 
     @Query("""
     SELECT r.idExterno AS idExterno,
@@ -147,6 +149,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.dataFim AS dataFim,
         r.numero AS numero,
         r.status AS status,
+        a.arquivoUrl AS pdfUrl,
         o.idExterno AS obraIdExterno,
         o.nome AS obraNome,
         o.endereco AS obraEndereco,
@@ -160,12 +163,13 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         ) AS quantidadeFotos
     FROM RelatorioEntity r
         JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
+        JOIN ArquivoDeRelatorioDeUsuarioEntity a ON a.userId = :userId AND a.relatorioId = r.id
     WHERE r.obraId = :id
       AND r.ativo IS TRUE
     ORDER BY r.dataInicio DESC
     LIMIT 5
 """)
-    List<RelatorioProjection> findTop5ByObraIdProjection(Long id);
+    List<RelatorioProjection> findTop5ByObraIdProjection(Long id, Long userId);
 
     @Query("""
     SELECT r.idExterno AS idExterno,
@@ -173,6 +177,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.dataFim AS dataFim,
         r.numero AS numero,
         r.status AS status,
+        a.arquivoUrl AS pdfUrl,
         o.idExterno AS obraIdExterno,
         o.nome AS obraNome,
         o.endereco AS obraEndereco,
@@ -187,11 +192,12 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         ) AS quantidadeFotos
     FROM RelatorioEntity r
     JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
+    JOIN ArquivoDeRelatorioDeUsuarioEntity a ON a.userId = :userId AND a.relatorioId = r.id
     WHERE r.obraId = :obraId
         AND r.status = :statusRelatorio
         AND r.ativo IS TRUE
 """)
-    Page<RelatorioProjection> findAllByObraIdAndStatusProjection(Long obraId, StatusRelatorio statusRelatorio, Pageable pageable);
+    Page<RelatorioProjection> findAllByObraIdAndStatusProjection(Long obraId, StatusRelatorio statusRelatorio, Long userId, Pageable pageable);
 
     @Query("""
     SELECT r.idExterno AS idExterno,
@@ -199,6 +205,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.dataFim AS dataFim,
         r.numero AS numero,
         r.status AS status,
+        a.arquivoUrl AS pdfUrl,
         o.idExterno AS obraIdExterno,
         o.nome AS obraNome,
         o.endereco AS obraEndereco,
@@ -213,10 +220,11 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         ) AS quantidadeFotos
     FROM RelatorioEntity r
     JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
+    JOIN ArquivoDeRelatorioDeUsuarioEntity a ON a.userId = :userId AND a.relatorioId = r.id
     WHERE r.obraId = :obraId
         AND r.ativo IS TRUE
 """)
-    Page<RelatorioProjection> findAllByObraIdProjection(Long obraId, Pageable pageable);
+    Page<RelatorioProjection> findAllByObraIdProjection(Long obraId, Long userId, Pageable pageable);
 
     @Query("""
         SELECT r as relatorio,

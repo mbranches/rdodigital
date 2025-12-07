@@ -44,7 +44,6 @@ public class GetRelatorioDetailsService {
     private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
     private final AssinaturaDeRelatorioRepository assinaturaDeRelatorioRepository;
     private final ArquivoRepository arquivoRepository;
-    private final GetUrlDeRelatorioByUserIdService getUrlDeRelatorioByUserIdService;
 
     public GetRelatorioDetailsResponse execute(String tenantExternalId,
                                                String relatorioExternalId,
@@ -53,7 +52,7 @@ public class GetRelatorioDetailsService {
 
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
-        RelatorioDetailsProjection relatorioDetails = relatorioRepository.findDetailsByIdExternoAndTenantId(relatorioExternalId, tenantId)
+        RelatorioDetailsProjection relatorioDetails = relatorioRepository.findDetailsByIdExternoAndTenantId(relatorioExternalId, tenantId, currentUserTenant.getUser().getId())
                 .orElseThrow(() -> new NotFoundException("Relatório não encontrado com o id: " + relatorioExternalId));
 
         checkIfUserCanViewRelatorio(currentUserTenant, relatorioDetails.getStatus());
@@ -84,8 +83,6 @@ public class GetRelatorioDetailsService {
         List<ArquivoEntity> fotos = canViewFotos ? arquivos.stream().filter(ArquivoEntity::getIsFoto).toList() : null;
         List<ArquivoEntity> videos = canViewVideos ? arquivos.stream().filter(ArquivoEntity::getIsVideo).toList() : null;
 
-        String pdfUrl = getUrlDeRelatorioByUserIdService.execute(relatorioId, currentUserTenant.getUser().getId());
-
         return GetRelatorioDetailsResponse.from(
                 relatorioDetails,
                 ocorrencias,
@@ -98,8 +95,7 @@ public class GetRelatorioDetailsService {
                 fotos,
                 videos,
                 canViewCondicaoDoClima,
-                canViewHorarioDeTrabalho,
-                pdfUrl
+                canViewHorarioDeTrabalho
         );
     }
 

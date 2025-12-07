@@ -58,7 +58,7 @@ public class GenerateRelatorioFileToUsersService {
     private final ArquivoDeRelatorioDeUsuarioRepository arquivoDeRelatorioDeUsuarioRepository;
 
     public void execute(Long relatorioId) {
-        RelatorioDetailsProjection details = relatorioRepository.findDetailsById(relatorioId)
+        RelatorioDetailsProjection details = relatorioRepository.findDetailsWithoutPdfLinkById(relatorioId)
                 .orElseThrow(() -> new NotFoundException("Relatório não encontrado com o id: " + relatorioId));
 
         ObraEntity obra = getObraByIdAndTenantIdService.execute(details.getObraId(), details.getTenantId());

@@ -28,6 +28,8 @@ public interface RelatorioDetailsProjection {
 
     String getTituloModeloDeRelatorio();
 
+    String getPdfUrl();
+
     Boolean getShowAtividades();
     Boolean getShowCondicaoClimatica();
     Boolean getShowComentarios();

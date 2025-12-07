@@ -5,12 +5,14 @@ import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
 import com.branches.exception.ForbiddenException;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.domain.enums.PerfilUserTenant;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ public class DeleteComentarioDeRelatorioService {
     private final CheckIfUserCanViewComentariosService checkIfUserCanViewComentariosService;
     private final GetComentarioDeRelatorioByIdAndRelatorioIdService getComentarioDeRelatorioByIdAndRelatorioIdService;
     private final ComentarioDeRelatorioRepository comentarioDeRelatorioRepository;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public void execute(Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -44,6 +47,8 @@ public class DeleteComentarioDeRelatorioService {
         checkIfUserCanDeleteComentario(userTenant, comentario);
 
         comentarioDeRelatorioRepository.delete(comentario);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.COMENTARIOS);
     }
 
     private void checkIfUserCanDeleteComentario(UserTenantEntity userTenant, ComentarioDeRelatorioEntity comentario) {

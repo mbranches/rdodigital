@@ -11,10 +11,12 @@ import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.condicaoclimatica.repository.CondicaoClimaticaRepository;
 import com.branches.relatorio.repository.RelatorioRepository;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ public class UpdateCondicaoClimaticaDeRelatorioService {
     private final GetObraByIdAndTenantIdService getObraByIdAndTenantIdService;
     private final CondicaoClimaticaRepository condicaoClimaticaRepository;
     private final RelatorioRepository relatorioRepository;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public void execute(UpdateCondicaoClimaticaDeRelatorioRequest request, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -50,6 +53,8 @@ public class UpdateCondicaoClimaticaDeRelatorioService {
         relatorio.setIndiciePluviometrico(request.indicePluviometrico());
 
         relatorioRepository.save(relatorio);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.CONDICAO_CLIMATICA);
     }
 
     private CondicaoClimaticaEntity getUpdatedCaracteristicaEntity(CondicaoClimaticaRequest request, Long tenantId) {

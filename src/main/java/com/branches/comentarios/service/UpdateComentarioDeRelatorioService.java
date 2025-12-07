@@ -7,11 +7,13 @@ import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import com.branches.comentarios.dto.request.UpdateComentarioDeRelatorioRequest;
 import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ public class UpdateComentarioDeRelatorioService {
     private final GetComentarioDeRelatorioByIdAndRelatorioIdService getComentarioDeRelatorioByIdAndRelatorioIdService;
     private final CheckIfUserCanViewComentariosService checkIfUserCanViewComentariosService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteComentarioService checkIfConfiguracaoDeRelatorioDaObraPermiteComentarioService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public void execute(UpdateComentarioDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -57,6 +60,8 @@ public class UpdateComentarioDeRelatorioService {
         );
 
         comentarioDeRelatorioRepository.save(entity);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.COMENTARIOS);
     }
 
     private void checkIfUserCanUpdateComentario(UserTenantEntity userTenant, ComentarioDeRelatorioEntity entity) {

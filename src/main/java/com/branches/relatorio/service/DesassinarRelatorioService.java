@@ -4,6 +4,7 @@ import com.branches.exception.NotFoundException;
 import com.branches.external.aws.S3DeleteFile;
 import com.branches.relatorio.domain.AssinaturaDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
+import com.branches.relatorio.repository.AssinaturaDeRelatorioRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
@@ -22,6 +23,8 @@ public class DesassinarRelatorioService {
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final S3DeleteFile s3DeleteFile;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
+    private final AssinaturaDeRelatorioRepository assinaturaDeRelatorioRepository;
 
     public void execute(Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -41,5 +44,9 @@ public class DesassinarRelatorioService {
         s3DeleteFile.execute(assinaturaUrl);
 
         assinaturaDeRelatorioEntity.setAssinaturaUrl(null);
+
+        assinaturaDeRelatorioRepository.save(assinaturaDeRelatorioEntity);
+
+        generateRelatorioFileToUsersService.execute(relatorio.getId());
     }
 }

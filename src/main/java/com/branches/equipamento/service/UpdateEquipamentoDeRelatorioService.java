@@ -6,10 +6,12 @@ import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.equipamento.dto.request.UpdateEquipamentoDeRelatorioRequest;
 import com.branches.equipamento.repository.EquipamentoDeRelatorioRepository;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class UpdateEquipamentoDeRelatorioService {
     private final GetEquipamentoByIdAndTenantIdService getEquipamentoByIdAndTenantIdService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteEquipamentoService checkIfConfiguracaoDeRelatorioDaObraPermiteEquipamentoService;
     private final CheckIfUserCanViewEquipamentosService checkIfUserCanViewEquipamentosService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public void execute(UpdateEquipamentoDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -52,5 +55,7 @@ public class UpdateEquipamentoDeRelatorioService {
         entity.setQuantidade(request.quantidade());
 
         equipamentoDeRelatorioRepository.save(entity);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.EQUIPAMENTOS);
     }
 }

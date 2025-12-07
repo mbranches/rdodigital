@@ -5,6 +5,7 @@ import com.branches.maodeobra.service.GetMaoDeObraListByIdInAndTenantIdAndTypeSe
 import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.maodeobra.service.GetMaoDeObraDeAtividadeListByAtividadeIdAndIdInService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -17,6 +18,7 @@ import com.branches.atividade.dto.request.UpdateAtividadeDeRelatorioRequest;
 import com.branches.maodeobra.dto.request.UpdateMaoDeObraDeAtividadeRequest;
 import com.branches.atividade.repository.AtividadeDeRelatorioRepository;
 import com.branches.maodeobra.repository.MaoDeObraDeAtividadeDeRelatorioRepository;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,7 @@ public class UpdateAtividadeDeRelatorioService {
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteAtividade checkIfConfiguracaoDeRelatorioDaObraPermiteAtividade;
     private final CheckIfUserCanViewAtividadesService checkIfUserCanViewAtividadesService;
     private final GetMaoDeObraListByIdInAndTenantIdAndTypeService getMaoDeObraListByIdInAndTenantIdAndTypeService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public void execute(UpdateAtividadeDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -76,6 +79,8 @@ public class UpdateAtividadeDeRelatorioService {
         entity.setMaoDeObra(updateMaoDeObraDeAtividade(request.maoDeObra(), entity, maoDeObraEntityMap));
 
         atividadeDeRelatorioRepository.save(entity);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.ATIVIDADES);
     }
 
     private List<MaoDeObraDeAtividadeDeRelatorioEntity> updateMaoDeObraDeAtividade(List<UpdateMaoDeObraDeAtividadeRequest> requestList, AtividadeDeRelatorioEntity atividade, Map<Long, MaoDeObraEntity> maoDeObraEntityMap) {

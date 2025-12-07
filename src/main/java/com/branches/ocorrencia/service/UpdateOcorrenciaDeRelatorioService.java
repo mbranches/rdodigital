@@ -4,6 +4,7 @@ import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
 import com.branches.atividade.service.GetAtividadeDeRelatorioByIdAndRelatorioIdService;
 import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -14,6 +15,7 @@ import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.ocorrencia.dto.request.UpdateOcorrenciaDeRelatorioRequest;
 import com.branches.ocorrencia.repository.OcorrenciaDeRelatorioRepository;
 import com.branches.ocorrencia.domain.TipoDeOcorrenciaEntity;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,7 @@ public class UpdateOcorrenciaDeRelatorioService {
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteOcorrenciaService checkIfConfiguracaoDeRelatorioDaObraPermiteOcorrenciaService;
     private final CheckIfUserCanViewOcorrenciasService checkIfUserCanViewOcorrenciasService;
     private final GetAtividadeDeRelatorioByIdAndRelatorioIdService getAtividadeDeRelatorioByIdAndRelatorioIdService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public void execute(UpdateOcorrenciaDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -75,6 +78,8 @@ public class UpdateOcorrenciaDeRelatorioService {
         );
 
         ocorrenciaDeRelatorioRepository.save(entity);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.OCORRENCIAS);
     }
 
     private List<TipoDeOcorrenciaEntity> getTiposDeOcorrenciaList(List<Long> ids, Long tenantId) {

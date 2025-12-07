@@ -8,6 +8,7 @@ import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.external.aws.S3UploadFile;
 import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioWithObraByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -15,6 +16,7 @@ import com.branches.usertenant.service.GetCurrentUserTenantService;
 import com.branches.utils.CompressImage;
 import com.branches.utils.FileContentType;
 import com.branches.utils.ImageOutPutFormat;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ public class CreateFotoDeRelatorioService {
     private final ArquivoRepository arquivoRepository;
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final CheckIfUserCanAddFotosToRelatorioService checkIfUserCanAddFotosToRelatorioService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public FotoDeRelatorioResponse execute(CreateFotoDeRelatorioRequest request, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -66,6 +69,8 @@ public class CreateFotoDeRelatorioService {
                 .build();
 
         ArquivoEntity saved = arquivoRepository.save(arquivo);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorioWithObra.getRelatorio().getId(), ItemRelatorio.FOTOS);
 
         return FotoDeRelatorioResponse.from(saved);
     }

@@ -7,10 +7,12 @@ import com.branches.equipamento.dto.response.CreateEquipamentoDeRelatorioRespons
 import com.branches.equipamento.repository.EquipamentoDeRelatorioRepository;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ public class CreateEquipamentoDeRelatorioService {
     private final CheckIfUserCanViewEquipamentosService checkIfUserCanViewEquipamentosService;
     private final EquipamentoDeRelatorioRepository equipamentoDeRelatorioRepository;
     private final GetEquipamentoByIdAndTenantIdService getEquipamentoByIdAndTenantIdService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public CreateEquipamentoDeRelatorioResponse execute(CreateEquipamentoDeRelatorioRequest request, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -50,6 +53,8 @@ public class CreateEquipamentoDeRelatorioService {
                 .build();
 
         EquipamentoDeRelatorioEntity saved = equipamentoDeRelatorioRepository.save(toSave);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.EQUIPAMENTOS);
 
         return CreateEquipamentoDeRelatorioResponse.from(saved);
     }

@@ -4,6 +4,7 @@ import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.maodeobra.domain.MaoDeObraEntity;
 import com.branches.maodeobra.domain.enums.PresencaMaoDeObra;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -13,6 +14,7 @@ import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.maodeobra.dto.request.UpdateMaoDeObraDeRelatorioRequest;
 import com.branches.maodeobra.repository.MaoDeObraDeRelatorioRepository;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,7 @@ public class UpdateMaoDeObraDeRelatorioService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObraService checkIfConfiguracaoDeRelatorioDaObraPermiteMaoDeObraService;
     private final CheckIfUserCanViewMaoDeObraService checkIfUserCanViewMaoDeObraService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public void execute(UpdateMaoDeObraDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -67,5 +70,7 @@ public class UpdateMaoDeObraDeRelatorioService {
         }
 
         maoDeObraDeRelatorioRepository.save(entity);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.MAO_DE_OBRA);
     }
 }

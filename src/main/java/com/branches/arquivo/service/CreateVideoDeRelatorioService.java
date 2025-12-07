@@ -9,11 +9,13 @@ import com.branches.exception.BadRequestException;
 import com.branches.external.aws.S3UploadFile;
 import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioWithObraByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import com.branches.utils.FileContentType;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ public class CreateVideoDeRelatorioService {
 
     private static final long MAX_VIDEO_SIZE_BYTES = 100 * 1024 * 1024; // 100 MB
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public CreateVideoDeRelatorioResponse execute(CreateVideoDeRelatorioRequest request, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -80,6 +83,8 @@ public class CreateVideoDeRelatorioService {
                 .build();
 
         ArquivoEntity saved = arquivoRepository.save(arquivo);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorioWithObra.getRelatorio().getId(), ItemRelatorio.VIDEOS);
 
         return CreateVideoDeRelatorioResponse.from(saved);
     }

@@ -5,6 +5,7 @@ import com.branches.external.aws.S3UploadFile;
 import com.branches.relatorio.domain.AssinaturaDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.dto.request.AssinarRelatorioRequest;
+import com.branches.relatorio.repository.AssinaturaDeRelatorioRepository;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
@@ -27,6 +28,8 @@ public class AssinarRelatorioService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final S3UploadFile s3UploadFile;
     private final CompressImage compressImage;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
+    private final AssinaturaDeRelatorioRepository assinaturaDeRelatorioRepository;
 
     public void execute(AssinarRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -49,5 +52,9 @@ public class AssinarRelatorioService {
         String signatureUrl = s3UploadFile.execute(fileName, path, signatureBytes, FileContentType.PNG);
 
         assinaturaDeRelatorioEntity.setAssinaturaUrl(signatureUrl);
+
+        assinaturaDeRelatorioRepository.save(assinaturaDeRelatorioEntity);
+
+        generateRelatorioFileToUsersService.execute(relatorio.getId());
     }
 }

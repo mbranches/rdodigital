@@ -7,10 +7,12 @@ import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
 import com.branches.relatorio.domain.CampoPersonalizadoEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
+import com.branches.relatorio.service.GenerateRelatorioFileToUsersService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
+import com.branches.utils.ItemRelatorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ public class CreateComentarioDeRelatorioService {
     private final CheckIfUserCanViewComentariosService checkIfUserCanViewComentariosService;
     private final ComentarioDeRelatorioRepository comentarioDeRelatorioRepository;
     private final CheckIfUserCanAddComentariosToRelatorioService checkIfUserCanAddComentariosToRelatorioService;
+    private final GenerateRelatorioFileToUsersService generateRelatorioFileToUsersService;
 
     public CreateComentarioDeRelatorioResponse execute(CreateComentarioDeRelatorioRequest request, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -54,6 +57,8 @@ public class CreateComentarioDeRelatorioService {
                 .build();
 
         ComentarioDeRelatorioEntity saved = comentarioDeRelatorioRepository.save(toSave);
+
+        generateRelatorioFileToUsersService.executeOnlyToNecessaryUsers(relatorio.getId(), ItemRelatorio.COMENTARIOS);
 
         return CreateComentarioDeRelatorioResponse.from(saved);
     }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CheckIfUserCanEditObraService {
     public void execute(UserTenantEntity userTenant, Long obraId) {
-        if (!userTenant.getAuthorities().getObras().getCanCreateAndEdit() || !(userTenant.isAdministrador() || userTenant.getObrasPermitidasIds().contains(obraId))) {
+        if (!userTenant.getAuthorities().getObras().getCanCreateAndEdit() && !(userTenant.isAdministrador() || userTenant.getObrasPermitidasIds().contains(obraId))) {
             throw new ForbiddenException();
         }
     }

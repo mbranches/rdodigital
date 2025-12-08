@@ -20,6 +20,7 @@ import com.branches.usertenant.domain.enums.PerfilUserTenant;
 import com.branches.usertenant.dto.request.AddUserToTenantRequest;
 import com.branches.usertenant.repository.UserTenantRepository;
 import com.branches.utils.FullNameFormatter;
+import com.branches.utils.ValidateFullName;
 import com.branches.utils.ValidatePassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,6 +48,7 @@ public class AddUserToTenantService {
     private final GetTenantByIdExternoService getTenantByIdExternoService;
     private final ValidatePassword validatePassword;
     private final FullNameFormatter fullNameFormatter;
+    private final ValidateFullName validateFullName;
 
     public void execute(AddUserToTenantRequest request, String tenantExternalId, List<UserTenantEntity> userTenants) {
         TenantEntity tenant = getTenantByIdExternoService.execute(tenantExternalId);
@@ -109,10 +111,7 @@ public class AddUserToTenantService {
         checkRequiredFieldsForNewUser(request);
 
         validatePassword.execute(request.password());
-
-        if (request.nome().split(" ").length < 2) {
-            throw new BadRequestException("O nome completo deve conter pelo menos nome e sobrenome");
-        }
+        validateFullName.execute(request.nome());
 
         String formattedEmail = request.email().trim().toLowerCase();
         String formattedNome = fullNameFormatter.execute(request.nome());

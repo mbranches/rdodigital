@@ -8,7 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface ModeloDeRelatorioRepository extends JpaRepository<ModeloDeRelatorioEntity, Long> {
-    boolean existsByTituloAndTenantId(String titulo, Long tenantId);
+    boolean existsByTituloAndTenantIdAndAtivoIsTrue(String titulo, Long tenantId);
 
     Optional<ModeloDeRelatorioEntity> findByIdAndTenantIdAndAtivoIsTrue(Long id, Long tenantId);
+
+    boolean existsByTituloAndTenantIdAndIdIsNotAndAtivoIsTrue(String titulo, Long tenantId, Long id);
 }

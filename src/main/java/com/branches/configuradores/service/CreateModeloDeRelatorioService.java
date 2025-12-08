@@ -27,7 +27,6 @@ public class CreateModeloDeRelatorioService {
         UserTenantEntity userTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
         checkIfUserHasAccessToModeloDeRelatorioService.execute(userTenant);
-
         checkIfAlreadyExistsAnotherModeloWithTheTituloService.execute(request.titulo(), tenantId);
 
         ModeloDeRelatorioEntity toSave = ModeloDeRelatorioEntity.builder()

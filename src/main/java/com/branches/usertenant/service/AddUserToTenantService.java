@@ -77,6 +77,7 @@ public class AddUserToTenantService {
                 .user(user)
                 .tenantId(tenantId)
                 .perfil(perfil)
+                .cargo(request.cargo())
                 .authorities(isAdminPerfil ? Authorities.adminAuthorities() : request.authorities())
                 .ativo(true)
                 .build();
@@ -120,7 +121,6 @@ public class AddUserToTenantService {
                 .email(formattedEmail)
                 .nome(formattedNome)
                 .password(passwordEncoder.encode(request.password()))
-                .cargo(request.cargo())
                 .role(Role.USER)
                 .build();
 

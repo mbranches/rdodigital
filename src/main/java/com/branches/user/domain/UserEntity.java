@@ -28,8 +28,6 @@ public class UserEntity {
     private String email;
     @Column(length = 100, nullable = false)
     private String password;
-    @Column(length = 100, nullable = false)
-    private String cargo;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;

@@ -27,6 +27,9 @@ public class UserTenantEntity {
     @Column(name = "tenant_id", insertable = false, updatable = false)
     private Long tenantId;
 
+    @Column(length = 100, nullable = false)
+    private String cargo;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PerfilUserTenant perfil;

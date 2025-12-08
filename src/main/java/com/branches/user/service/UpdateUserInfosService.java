@@ -21,7 +21,6 @@ public class UpdateUserInfosService {
         validateFullName.execute(request.nome());
         String formattedName = fullNameFormatter.execute(userEntity.getNome());
         userEntity.setNome(formattedName);
-        userEntity.setCargo(request.cargo());
 
         if (request.password() != null && !request.password().isBlank()) {
             userEntity.setPassword(passwordEncoder.encode(request.password()));

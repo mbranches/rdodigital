@@ -24,7 +24,7 @@ public record UserTenantResponse(
         return new UserTenantResponse(
                 userTenant.getUser().getIdExterno(),
                 userTenant.getUser().getEmail(),
-                userTenant.getUser().getCargo(),
+                userTenant.getCargo(),
                 userTenant.getUser().getFotoUrl(),
                 userTenant.getUser().getAtivo(),
                 userTenant.getPerfil(),

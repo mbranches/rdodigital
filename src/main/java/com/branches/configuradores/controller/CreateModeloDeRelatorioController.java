@@ -2,7 +2,7 @@ package com.branches.configuradores.controller;
 
 import com.branches.config.security.UserTenantsContext;
 import com.branches.configuradores.dto.request.CreateModeloDeRelatorioRequest;
-import com.branches.configuradores.dto.response.CreateModeloDeRelatorioResponse;
+import com.branches.configuradores.dto.response.ModeloDeRelatorioResponse;
 import com.branches.configuradores.service.CreateModeloDeRelatorioService;
 import com.branches.usertenant.domain.UserTenantEntity;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +21,11 @@ public class CreateModeloDeRelatorioController {
     private final CreateModeloDeRelatorioService createModeloDeRelatorioService;
 
     @PostMapping("/api/tenants/{tenantExternalId}/configuradores/modelos-de-relatorio")
-    public ResponseEntity<CreateModeloDeRelatorioResponse> execute(@PathVariable String tenantExternalId,
-                                                                   @RequestBody CreateModeloDeRelatorioRequest request) {
+    public ResponseEntity<ModeloDeRelatorioResponse> execute(@PathVariable String tenantExternalId,
+                                                             @RequestBody CreateModeloDeRelatorioRequest request) {
         List<UserTenantEntity> userTenants = UserTenantsContext.getUserTenants();
 
-        CreateModeloDeRelatorioResponse response = createModeloDeRelatorioService.execute(request, tenantExternalId, userTenants);
+        ModeloDeRelatorioResponse response = createModeloDeRelatorioService.execute(request, tenantExternalId, userTenants);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

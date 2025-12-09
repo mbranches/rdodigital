@@ -4,7 +4,6 @@ import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,5 +13,5 @@ public interface MaoDeObraDeRelatorioRepository extends JpaRepository<MaoDeObraD
 
     Optional<MaoDeObraDeRelatorioEntity> findByIdAndRelatorioId(Long id, Long relatorioId);
 
-    List<MaoDeObraDeRelatorioEntity> findAllByRelatorioIdIn(Collection<Long> relatorioIds);
+    boolean existsByRelatorioIdAndMaoDeObraId(Long relatorioId, Long maoDeObraId);
 }

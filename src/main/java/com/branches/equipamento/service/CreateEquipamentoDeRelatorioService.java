@@ -5,6 +5,7 @@ import com.branches.equipamento.domain.EquipamentoEntity;
 import com.branches.equipamento.dto.request.CreateEquipamentoDeRelatorioRequest;
 import com.branches.equipamento.dto.response.CreateEquipamentoDeRelatorioResponse;
 import com.branches.equipamento.repository.EquipamentoDeRelatorioRepository;
+import com.branches.exception.BadRequestException;
 import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
@@ -36,6 +37,12 @@ public class CreateEquipamentoDeRelatorioService {
         UserTenantEntity userTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
+
+        boolean equipamentoAlreadyAdded = equipamentoDeRelatorioRepository.existsByRelatorioIdAndEquipamentoId(relatorio.getId(), request.equipamentoId());
+
+        if (equipamentoAlreadyAdded) {
+            throw new BadRequestException("Equipamento já adicionado ao relatório");
+        }
 
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
         checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());

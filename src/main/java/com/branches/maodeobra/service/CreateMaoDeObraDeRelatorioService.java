@@ -1,5 +1,6 @@
 package com.branches.maodeobra.service;
 
+import com.branches.exception.BadRequestException;
 import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.maodeobra.domain.MaoDeObraEntity;
 import com.branches.maodeobra.domain.enums.PresencaMaoDeObra;
@@ -39,6 +40,12 @@ public class CreateMaoDeObraDeRelatorioService {
         UserTenantEntity userTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
+
+        boolean maoDeObraAlreadyAdded = maoDeObraDeRelatorioRepository.existsByRelatorioIdAndMaoDeObraId(relatorio.getId(), request.maoDeObraId());
+
+        if (maoDeObraAlreadyAdded) {
+            throw new BadRequestException("Mão de obra já adicionada ao relatório");
+        }
 
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
         checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());

@@ -4,6 +4,7 @@ import com.branches.arquivo.domain.ArquivoEntity;
 import com.branches.arquivo.domain.enums.TipoArquivo;
 import com.branches.arquivo.dto.response.ArquivoResponse;
 import com.branches.arquivo.repository.ArquivoRepository;
+import com.branches.exception.InternalServerError;
 import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
@@ -26,6 +27,8 @@ public class ListArquivosDeRelatorioService {
     private final CheckIfUserCanViewFotosService checkIfUserCanViewFotosService;
     private final ArquivoRepository arquivoRepository;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
+    private final CheckIfConfiguracaoDeRelatorioDaObraPermiteVideo checkIfConfiguracaoDeRelatorioDaObraPermiteVideo;
+    private final CheckIfUserCanViewVideosService checkIfUserCanViewVideosService;
 
     public List<ArquivoResponse> execute(String relatorioExternalId, String tenantExternalId, TipoArquivo tipo, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -36,8 +39,20 @@ public class ListArquivosDeRelatorioService {
         RelatorioEntity relatorio = relatorioWithObra.getRelatorio();
 
         checkIfUserHasAccessToObraService.execute(currentUserTenant, relatorio.getObraId());
-        checkIfConfiguracaoDeRelatorioDaObraPermiteFoto.execute(relatorioWithObra);
-        checkIfUserCanViewFotosService.execute(currentUserTenant);
+        switch (tipo) {
+            case FOTO -> {
+                checkIfConfiguracaoDeRelatorioDaObraPermiteFoto.execute(relatorioWithObra);
+                checkIfUserCanViewFotosService.execute(currentUserTenant);
+            }
+            case VIDEO -> {
+                checkIfConfiguracaoDeRelatorioDaObraPermiteVideo.execute(relatorioWithObra);
+                checkIfUserCanViewVideosService.execute(currentUserTenant);
+            }
+
+            default -> throw new InternalServerError("Tipo ainda não implementado para exclusão de arquivo de relatorio: " + tipo);
+
+            //todo: quando implementar novos tipos de arquivo, adicionar os devidos cases aqui
+        }
 
         List<ArquivoEntity> response = arquivoRepository.findAllByRelatorioIdAndTipoArquivoOrderByEnversCreatedDateDesc(relatorio.getId(), tipo);
 

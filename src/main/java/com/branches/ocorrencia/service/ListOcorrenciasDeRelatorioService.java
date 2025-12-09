@@ -4,7 +4,6 @@ import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
 import com.branches.ocorrencia.dto.response.OcorrenciaDeRelatorioResponse;
 import com.branches.ocorrencia.repository.OcorrenciaDeRelatorioRepository;
 import com.branches.relatorio.domain.RelatorioEntity;
-import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -20,7 +19,6 @@ public class ListOcorrenciasDeRelatorioService {
     private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
-    private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteOcorrenciaService checkIfConfiguracaoDeRelatorioDaObraPermiteOcorrenciaService;
     private final CheckIfUserCanViewOcorrenciasService checkIfUserCanViewOcorrenciasService;
     private final OcorrenciaDeRelatorioRepository equipamentoDeRelatorioRepository;
@@ -34,7 +32,6 @@ public class ListOcorrenciasDeRelatorioService {
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
 
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
-        checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
         checkIfConfiguracaoDeRelatorioDaObraPermiteOcorrenciaService.execute(relatorio.getObraId(), tenantId);
         checkIfUserCanViewOcorrenciasService.execute(userTenant);
 

@@ -4,7 +4,6 @@ import com.branches.comentarios.dto.response.ComentarioDeRelatorioResponse;
 import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
 import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
-import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -20,7 +19,6 @@ public class ListComentariosDeRelatorioService {
     private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
-    private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteComentarioService checkIfConfiguracaoDeRelatorioDaObraPermiteComentarioService;
     private final CheckIfUserCanViewComentariosService checkIfUserCanViewComentariosService;
     private final ComentarioDeRelatorioRepository comentarioDeRelatorioRepository;
@@ -34,7 +32,6 @@ public class ListComentariosDeRelatorioService {
         RelatorioEntity relatorio = getRelatorioByIdExternoAndTenantIdService.execute(relatorioExternalId, tenantId);
 
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
-        checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
         checkIfConfiguracaoDeRelatorioDaObraPermiteComentarioService.execute(relatorio.getObraId(), tenantId);
         checkIfUserCanViewComentariosService.execute(userTenant);
 

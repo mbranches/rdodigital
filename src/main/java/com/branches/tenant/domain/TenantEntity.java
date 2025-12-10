@@ -23,7 +23,7 @@ public class TenantEntity extends Auditable {
 
     @Column(length = 100, nullable = false)
     private String nome;
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String razaoSocial;
 
     @Column(length = 14, nullable = false, unique = true)

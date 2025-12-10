@@ -88,7 +88,7 @@ class GetUserTenantInfoServiceTest {
         when(tenantInfoProjection.getIdExterno()).thenReturn(tenantExternalId);
         when(tenantInfoProjection.getRazaoSocial()).thenReturn("Empresa Teste LTDA");
         when(tenantInfoProjection.getNome()).thenReturn("Empresa Teste");
-        when(tenantInfoProjection.getCpfCnpj()).thenReturn("12.345.678/0001-99");
+        when(tenantInfoProjection.getCnpj()).thenReturn("12.345.678/0001-99");
         when(tenantInfoProjection.getTelefone()).thenReturn("(11) 1234-5678");
         when(tenantInfoProjection.getLogoUrl()).thenReturn("https://example.com/logo.jpg");
         when(tenantInfoProjection.getNomeUsuarioResponsavel()).thenReturn("João Silva");
@@ -116,7 +116,7 @@ class GetUserTenantInfoServiceTest {
         assertEquals(tenantExternalId, result.tenant().id());
         assertEquals("Empresa Teste LTDA", result.tenant().razaoSocial());
         assertEquals("Empresa Teste", result.tenant().nome());
-        assertEquals("12.345.678/0001-99", result.tenant().cpfCnpj());
+        assertEquals("12.345.678/0001-99", result.tenant().cnpj());
         assertEquals("(11) 1234-5678", result.tenant().telefone());
         assertEquals("https://example.com/logo.jpg", result.tenant().logoUrl());
         assertEquals("João Silva", result.tenant().responsavelNome());

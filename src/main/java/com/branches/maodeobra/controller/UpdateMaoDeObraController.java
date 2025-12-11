@@ -4,6 +4,10 @@ import com.branches.config.security.UserTenantsContext;
 import com.branches.maodeobra.dto.request.UpdateMaoDeObraRequest;
 import com.branches.maodeobra.service.UpdateMaoDeObraService;
 import com.branches.usertenant.domain.UserTenantEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +20,20 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "MaoDeObra")
 public class UpdateMaoDeObraController {
     private final UpdateMaoDeObraService updateMaoDeObraService;
 
     @PutMapping("/api/tenants/{tenantExternalId}/mao-de-obra/{id}")
+    @Operation(summary = "Update mao de obra", description = "Atualiza uma mão de obra")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Mão de obra atualizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado"),
+            @ApiResponse(responseCode = "404", description = "Mão de obra não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     public ResponseEntity<Void> execute(@RequestBody @Valid UpdateMaoDeObraRequest request, @PathVariable Long id, @PathVariable String tenantExternalId) {
         List<UserTenantEntity> userTenants = UserTenantsContext.getUserTenants();
 

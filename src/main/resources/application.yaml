@@ -18,7 +18,6 @@ spring:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: trace
-
 jwt:
     secret: ${ENV_JWT_SECRET}
     expiration: ${ENV_JWT_EXPIRATION}
@@ -28,3 +27,6 @@ aws:
   accessKeyId: ${ENV_AWS_ACCESS_KEY}
   s3:
     bucketName: ${ENV_AWS_S3_BUCKET_NAME}
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

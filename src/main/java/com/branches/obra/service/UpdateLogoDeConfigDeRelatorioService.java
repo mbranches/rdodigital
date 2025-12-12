@@ -47,15 +47,18 @@ public class UpdateLogoDeConfigDeRelatorioService {
             default -> throw new BadRequestException("Tipo de logo inválido para edição");
         }
 
-        byte[] bytes = compressImage.execute(request.logoBase64(), 1000, 400, 0.7, ImageOutPutFormat.PNG);
+        if (!request.base64Image().isEmpty()) {
+            byte[] bytes = compressImage.execute(request.base64Image(), 1000, 400, 0.7, ImageOutPutFormat.PNG);
 
-        String path = "tenants/%s/obras/%s/configuracao-relatorios/logos".formatted(tenantExternalId, obraExternalId);
-        String fileName = "logo-relatorio-%s-%s.png".formatted(tipoLogo.name().toLowerCase(), obraExternalId);
+            String path = "tenants/%s/obras/%s/configuracao-relatorios/logos".formatted(tenantExternalId, obraExternalId);
+            String fileName = "logo-relatorio-%s-%s.png".formatted(tipoLogo.name().toLowerCase(), obraExternalId);
 
-        String logoUrl = s3UploadFile.execute(fileName, path, bytes, FileContentType.PNG);
+            String logoUrl = s3UploadFile.execute(fileName, path, bytes, FileContentType.PNG);
+
+            logoToEdit.setUrl(logoUrl);
+        }
 
         logoToEdit.setExibir(request.exibir());
-        logoToEdit.setUrl(logoUrl);
 
         logoDeRelatorioRepository.save(logoToEdit);
     }

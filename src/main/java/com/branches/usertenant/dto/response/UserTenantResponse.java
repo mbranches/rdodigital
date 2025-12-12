@@ -9,6 +9,7 @@ import java.util.List;
 
 public record UserTenantResponse(
         String userExternalId,
+        String nome,
         String email,
         String cargo,
         String fotoUrl,
@@ -23,6 +24,7 @@ public record UserTenantResponse(
 
         return new UserTenantResponse(
                 userTenant.getUser().getIdExterno(),
+                userTenant.getUser().getNome(),
                 userTenant.getUser().getEmail(),
                 userTenant.getCargo(),
                 userTenant.getUser().getFotoUrl(),

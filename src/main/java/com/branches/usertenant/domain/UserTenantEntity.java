@@ -69,4 +69,8 @@ public class UserTenantEntity {
     public boolean isAdministrador() {
         return this.perfil == PerfilUserTenant.ADMINISTRADOR;
     }
+
+    public void removeObraPermitida(UserObraPermitidaEntity userObraPermitida) {
+        this.userObraPermitidaEntities.remove(userObraPermitida);
+    }
 }

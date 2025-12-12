@@ -13,6 +13,12 @@ import java.util.Optional;
 public interface UserTenantRepository extends JpaRepository<UserTenantEntity, UserTenantKey> {
     long countByTenantIdAndAtivoIsTrue(Long tenantId);
 
+    @Query("""
+    SELECT ut
+    FROM UserTenantEntity ut
+    WHERE ut.user.idExterno = :userIdExterno
+    AND ut.tenantId = :tenantId
+""")
     Optional<UserTenantEntity> findByUserIdExternoAndTenantId(String userIdExterno, Long tenantId);
 
     List<UserTenantEntity> findAllByTenantId(Long tenantId);
@@ -20,8 +26,9 @@ public interface UserTenantRepository extends JpaRepository<UserTenantEntity, Us
     @Query("""
     SELECT DISTINCT ut
     FROM UserTenantEntity ut
-    JOIN ut.userObraPermitidaEntities op
-    where op.obraId = :id
+    LEFT JOIN ut.userObraPermitidaEntities op
+    WHERE ut.tenantId = :tenantId
+    AND (op.obraId = :id OR ut.perfil = 'ADMINISTRADOR')
 """)
-    List<UserTenantEntity> findAllWithAccessToObra(Long id);
+    List<UserTenantEntity> findAllWithAccessToObra(Long tenantId, Long id);
 }

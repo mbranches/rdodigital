@@ -104,7 +104,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
     WHERE r.obraId = :id
       AND r.ativo IS TRUE
-    ORDER BY r.dataInicio DESC
+    ORDER BY r.dataInicio DESC, r.enversCreatedDate DESC
     LIMIT 5
 """)
     List<RelatorioProjection> findTop5ByObraIdProjection(Long id);

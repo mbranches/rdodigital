@@ -4,7 +4,6 @@ import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.dto.response.UserOfObraResponse;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;
-import com.branches.user.domain.UserEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.repository.UserTenantRepository;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
@@ -32,13 +31,9 @@ public class ListAllObraUsersService {
 
         checkIfUserHasAccessToObraService.execute(currentUserTenant, obra.getId());
 
-        List<UserTenantEntity> obraUserTenants = userTenantRepository.findAllWithAccessToObra(obra.getId());
+        List<UserTenantEntity> obraUserTenants = userTenantRepository.findAllWithAccessToObra(tenantId, obra.getId());
 
-        List<UserEntity> users = obraUserTenants.stream()
-                .map(UserTenantEntity::getUser)
-                .toList();
-
-        return users.stream()
+        return obraUserTenants.stream()
                 .map(UserOfObraResponse::from)
                 .toList();
     }

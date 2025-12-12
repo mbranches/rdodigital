@@ -33,7 +33,7 @@ public class ListarRelatoriosDeObraService {
 
         Boolean canViewOnlyAprovados = currentUserTenant.getAuthorities().getRelatorios().getCanViewOnlyAprovados();
 
-        PageRequest pageRequest = PageRequest.of(pageableRequest.pageNumber(), pageableRequest.pageSize(), pageableRequest.sortDirection(), "dataInicio");
+        PageRequest pageRequest = PageRequest.of(pageableRequest.pageNumber(), pageableRequest.pageSize(), pageableRequest.sortDirection(), "dataInicio", "enversCreatedDate");
 
         Page<RelatorioProjection> relatorios = canViewOnlyAprovados ? relatorioRepository.findAllByObraIdAndStatusProjection(obraId, StatusRelatorio.APROVADO, pageRequest) :
                 relatorioRepository.findAllByObraIdProjection(obraId, pageRequest);

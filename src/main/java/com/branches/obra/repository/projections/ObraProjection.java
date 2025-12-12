@@ -14,6 +14,7 @@ public interface ObraProjection {
 
     LocalDate getDataInicio();
     LocalDate getDataPrevistaFim();
+    LocalDate getDataFimReal();
 
     StatusObra getStatus();
 

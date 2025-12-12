@@ -39,6 +39,7 @@ public class AddUserToObraService {
                 .obraId(obraId)
                 .userTenant(userTenantToAddObra)
                 .build();
+        userObraPermitidaEntity.setarId();
 
         userObraPermitidaRepository.save(userObraPermitidaEntity);
     }

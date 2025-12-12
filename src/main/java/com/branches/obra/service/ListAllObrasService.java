@@ -1,6 +1,5 @@
 package com.branches.obra.service;
 
-import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.dto.response.ObraByListAllResponse;
 import com.branches.obra.repository.ObraRepository;
 import com.branches.obra.repository.projections.ObraProjection;
@@ -42,12 +41,14 @@ public class ListAllObrasService {
                     LocalDate startDate = o.getDataInicio();
                     LocalDate endDate = o.getDataPrevistaFim();
 
-                    BigDecimal prazoTotal = BigDecimal.valueOf(Math.max(ChronoUnit.DAYS.between(startDate, endDate), 1));
+                    long prazoTotal = Math.max(ChronoUnit.DAYS.between(startDate, endDate), 1);
 
-                    BigDecimal prazoPercentualDecorrido = o.getStatus().equals(StatusObra.CONCLUIDA) || endDate.isAfter(LocalDate.now()) ? BigDecimal.valueOf(100)
-                            : BigDecimal.valueOf(ChronoUnit.DAYS.between(startDate, LocalDate.now()))
+                    LocalDate dataFimToReferencia = o.getDataFimReal() != null ? o.getDataFimReal() : LocalDate.now();
+                    long prazoDecorrido = ChronoUnit.DAYS.between(startDate, dataFimToReferencia);
+                    BigDecimal prazoPercentualDecorrido = prazoTotal - prazoDecorrido <= 0 ? BigDecimal.valueOf(100)
+                            : BigDecimal.valueOf(prazoDecorrido)
                             .multiply(BigDecimal.valueOf(100))
-                            .divide(prazoTotal, 2, RoundingMode.HALF_UP);
+                            .divide(BigDecimal.valueOf(prazoTotal), 2, RoundingMode.HALF_UP);
 
                     return ObraByListAllResponse.from(o, prazoPercentualDecorrido);
 

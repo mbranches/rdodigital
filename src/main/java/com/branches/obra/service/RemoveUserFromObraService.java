@@ -45,6 +45,8 @@ public class RemoveUserFromObraService {
         UserObraPermitidaEntity userObraPermitida = userObraPermitidaRepository.findById(key)
                 .orElseThrow(() -> new BadRequestException("Usuário não está associado a esta obra"));
 
+        userTenantToRemove.removeObraPermitida(userObraPermitida);
+
         userObraPermitidaRepository.delete(userObraPermitida);
     }
 }

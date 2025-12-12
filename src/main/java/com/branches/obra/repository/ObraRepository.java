@@ -27,6 +27,7 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
         o.capaUrl AS capaUrl,
         o.dataInicio AS dataInicio,
         o.dataPrevistaFim AS dataPrevistaFim,
+        o.dataFimReal AS dataFimReal,
         cr AS configuracaoRelatorios,
         (
             SELECT COUNT(1)
@@ -59,6 +60,7 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
         o.capaUrl AS capaUrl,
         o.dataInicio AS dataInicio,
         o.dataPrevistaFim AS dataPrevistaFim,
+        o.dataFimReal AS dataFimReal,
         cr AS configuracaoRelatorios,
         (
             SELECT COUNT(1)
@@ -154,7 +156,7 @@ public interface ObraRepository extends JpaRepository<ObraEntity, Long> {
         o.idExterno AS idExterno,
         o.nome AS nome
     FROM ObraEntity o
-    WHERE o.id IN :todasAsObrasPermitidasIds
+    WHERE o.id IN :obrasIds
     AND o.ativo IS TRUE
     """)
     List<ObraResumeProjection> findResumedByIdInList(Collection<Long> obrasIds);

@@ -23,10 +23,7 @@ public class UserObraPermitidaEntity {
     @Column(name = "obra_id", nullable = false, insertable = false, updatable = false)
     private Long obraId;
 
-    @PrePersist
-    public void prePersist() {
-        if (id != null) return;
-
+    public void setarId() {
         this.id = UserObraPermitidaKey.from(userTenant, obraId);
     }
 }

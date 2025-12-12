@@ -53,6 +53,7 @@ public record GetObraDetailsByIdExternoResponse(
         long prazoDecorrido = ChronoUnit.DAYS.between(obra.getDataInicio(), dataPraCompararDiasDecorrido);
 
         BigDecimal porcentagemPrazoDecorrido = prazoContratual == 0 ? BigDecimal.valueOf(100) :
+                prazoDecorrido > prazoContratual ? BigDecimal.valueOf(100) :
                 BigDecimal.valueOf(prazoDecorrido)
                         .multiply(BigDecimal.valueOf(100))
                         .divide(BigDecimal.valueOf(prazoContratual), 2, RoundingMode.HALF_UP);

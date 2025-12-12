@@ -27,7 +27,7 @@ public class UpdateTipoDeOcorrenciaController {
     @PutMapping("/api/tenants/{tenantExternalId}/tipos-de-ocorrencia/{id}")
     @Operation(summary = "Update tipo de ocorrencia", description = "Atualiza um tipo de ocorrência")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tipo de ocorrência atualizado com sucesso"),
+            @ApiResponse(responseCode = "201", description = "Tipo de ocorrência atualizado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Requisição inválida"),
             @ApiResponse(responseCode = "401", description = "Não autorizado"),
             @ApiResponse(responseCode = "403", description = "Acesso negado"),
@@ -39,6 +39,6 @@ public class UpdateTipoDeOcorrenciaController {
 
         updateTipoDeOcorrenciaService.execute(id, request, tenantExternalId, userTenants);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

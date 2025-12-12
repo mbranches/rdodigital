@@ -15,17 +15,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ListAllMaoDeObraService {
-    private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final MaoDeObraRepository maoDeObraRepository;
     private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
-    private final CheckIfUserHasAccessToMaoDeObraService checkIfUserHasAccessToMaoDeObraService;
+    private final GetCurrentUserTenantService getCurrentUserTenantService;
 
     public List<MaoDeObraResponse> execute(String tenantExternalId, TipoMaoDeObra tipoMaoDeObra, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
-        UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
-
-        checkIfUserHasAccessToMaoDeObraService.execute(currentUserTenant);
+        getCurrentUserTenantService.execute(userTenants, tenantId);
 
         List<MaoDeObraEntity> maoDeObraList = maoDeObraRepository.findAllByTenantIdAndTipoAndAtivoIsTrue(tenantId, tipoMaoDeObra);
 

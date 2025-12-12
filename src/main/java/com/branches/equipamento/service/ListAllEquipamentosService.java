@@ -1,6 +1,5 @@
 package com.branches.equipamento.service;
 
-import com.branches.exception.ForbiddenException;
 import com.branches.equipamento.domain.EquipamentoEntity;
 import com.branches.equipamento.dto.response.EquipamentoResponse;
 import com.branches.equipamento.repository.EquipamentoRepository;
@@ -22,20 +21,12 @@ public class ListAllEquipamentosService {
     public List<EquipamentoResponse> execute(String externalTenantId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(externalTenantId);
 
-        UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
-
-        checkIfUserHasAccessToEquipamentos(currentUserTenant);
+        getCurrentUserTenantService.execute(userTenants, tenantId);
 
         List<EquipamentoEntity> equipamentoEntityList = equipamentoRepository.findAllByTenantIdAndAtivoIsTrue(tenantId);
 
         return equipamentoEntityList.stream()
                 .map(EquipamentoResponse::from)
                 .toList();
-    }
-
-    private void checkIfUserHasAccessToEquipamentos(UserTenantEntity currentUserTenant) {
-        if (!currentUserTenant.getAuthorities().getCadastros().getEquipamentos()) {
-            throw new ForbiddenException();
-        }
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 public class ListAllTiposDeOcorrenciaController {
     private final ListAllTiposDeOcorrenciaService listAllTiposDeOcorrenciaService;
 
-    @GetMapping("/api/tenants/{externalTenantId}/tipoDeOcorrencias")
+    @GetMapping("/api/tenants/{externalTenantId}/tipos-de-ocorrencia")
     @Operation(summary = "List all tipos de ocorrencia", description = "Lista todos os tipos de ocorrência")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de tipos de ocorrência recuperada com sucesso"),

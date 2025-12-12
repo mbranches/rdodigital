@@ -1,6 +1,5 @@
 package com.branches.ocorrencia.service;
 
-import com.branches.exception.ForbiddenException;
 import com.branches.ocorrencia.domain.TipoDeOcorrenciaEntity;
 import com.branches.ocorrencia.dto.response.TipoDeOcorrenciaResponse;
 import com.branches.ocorrencia.repository.TipoDeOcorrenciaRepository;
@@ -22,20 +21,12 @@ public class ListAllTiposDeOcorrenciaService {
     public List<TipoDeOcorrenciaResponse> execute(String externalTenantId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(externalTenantId);
 
-        UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
-
-        checkIfUserHasAccessToTipoDeOcorrencias(currentUserTenant);
+        getCurrentUserTenantService.execute(userTenants, tenantId);
 
         List<TipoDeOcorrenciaEntity> tipoDeOcorrenciaEntityList = tipoDeOcorrenciaRepository.findAllByTenantIdAndAtivoIsTrue(tenantId);
 
         return tipoDeOcorrenciaEntityList.stream()
                 .map(TipoDeOcorrenciaResponse::from)
                 .toList();
-    }
-
-    private void checkIfUserHasAccessToTipoDeOcorrencias(UserTenantEntity currentUserTenant) {
-        if (!currentUserTenant.getAuthorities().getCadastros().getTiposDeOcorrencia()) {
-            throw new ForbiddenException();
-        }
     }
 }

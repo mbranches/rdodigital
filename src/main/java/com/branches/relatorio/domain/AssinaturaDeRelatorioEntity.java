@@ -19,6 +19,7 @@ public class AssinaturaDeRelatorioEntity {
     @JoinColumn(name = "configuracao_id", nullable = false)
     private ConfiguracaoDeAssinaturaDeRelatorioEntity configuracao;
 
+    @Column(name = "assinatura_url", columnDefinition = "TEXT")
     private String assinaturaUrl;
 
     @ManyToOne

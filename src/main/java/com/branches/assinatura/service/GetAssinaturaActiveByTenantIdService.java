@@ -14,6 +14,6 @@ public class GetAssinaturaActiveByTenantIdService {
 
     public AssinaturaEntity execute(Long tenantId) {
         return assinaturaRepository.findByStatusAndTenantId(AssinaturaStatus.ATIVO, tenantId)
-                .orElseThrow(() -> new NotFoundException("Assinatura ativa não encontrada para o tenantId: " + tenantId));
+                .orElseThrow(() -> new NotFoundException("Assinatura ativa não encontrada para o tenant"));
     }
 }

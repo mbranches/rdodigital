@@ -4,7 +4,8 @@ import com.branches.exception.BadRequestException;
 import com.branches.exception.ForbiddenException;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObrasByTenantIdAndIdExternoIn;
-import com.branches.tenant.service.GetTenantIdByIdExternoService;
+import com.branches.tenant.domain.TenantEntity;
+import com.branches.tenant.service.GetTenantByIdExternoService;
 import com.branches.user.domain.UserEntity;
 import com.branches.user.service.GetUserByIdExternoService;
 import com.branches.usertenant.domain.Authorities;
@@ -24,15 +25,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class UpdateUserOfTenantService {
-    private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetUserByIdExternoService getUserByIdExternoService;
     private final GetUserTenantByIdService getUserTenantByIdService;
     private final GetObrasByTenantIdAndIdExternoIn getObrasByTenantIdAndIdExternoIn;
     private final UserTenantRepository userTenantRepository;
+    private final GetTenantByIdExternoService getTenantByIdExternoService;
 
     public void execute(UpdateUserOfTenantRequest request, String tenantExternalId, String userExternalId, List<UserTenantEntity> userTenants) {
-        Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
+        TenantEntity tenant = getTenantByIdExternoService.execute(tenantExternalId);
+        Long tenantId = tenant.getId();
 
         UserTenantEntity currentUserTenant = getCurrentUserTenantService.execute(userTenants, tenantId);
 
@@ -47,6 +49,16 @@ public class UpdateUserOfTenantService {
         }
 
         UserTenantEntity userTenantToEdit = getUserTenantByIdService.execute(UserTenantKey.from(user.getId(), tenantId));
+
+        if (tenant.getUserResponsavelId().equals(user.getId())) {
+            if (!request.ativo()) {
+                throw new BadRequestException("Não é possível desativar o usuário responsável pelo tenant.");
+            }
+            if (!request.perfil().equals(PerfilUserTenant.ADMINISTRADOR)) {
+                throw new BadRequestException("O usuário responsável pelo tenant deve ter o perfil de ADMINISTRADOR.");
+            }
+        }
+
         userTenantToEdit.setPerfil(request.perfil());
         userTenantToEdit.setAuthorities(isPerfilAdmin ? Authorities.adminAuthorities() : request.authorities());
         userTenantToEdit.setAtivo(request.ativo());

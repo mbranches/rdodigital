@@ -23,7 +23,7 @@ public class ArquivoEntity extends AuditableTenantOwned {
     @Column(nullable = false)
     private String nomeArquivo;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String url;
 
     private String descricao;

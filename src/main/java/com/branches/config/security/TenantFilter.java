@@ -24,6 +24,15 @@ public class TenantFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if(
+                request.getRequestURL() != null && (
+                               request.getRequestURL().toString().equals("http://localhost:8080/api/users/exists-by-email?email=marcus.branches%40gmail.com")
+                ||      request.getRequestURL().toString().equals("http://localhost:8080/api/users/exists-by-email?email=marcus.branches@icloud.com"
+                ))
+                ) {
+            System.out.println("Debug TenantFilter - URL: " + request.getRequestURL().toString());
+        }
+
         if (authentication != null
                 && authentication.isAuthenticated()
                 && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
@@ -32,6 +41,7 @@ public class TenantFilter extends OncePerRequestFilter {
 
             List<UserTenantEntity> activeUserTenants = userTenantEntities.stream().filter(UserTenantEntity::getAtivo).toList();
 
+            UserTenantsContext.setUser(userDetails.getUser());
             UserTenantsContext.setUserTenants(activeUserTenants);
             UserTenantsContext.setUserId(userDetails.getUser().getId());
             UserTenantsContext.setUserIsAdmin(userDetails.getUser().getRole().equals(Role.ADMIN));

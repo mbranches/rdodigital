@@ -14,6 +14,7 @@ import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.maodeobra.dto.response.MaoDeObraDeRelatorioResponse;
 import com.branches.material.domain.MaterialDeRelatorioEntity;
 import com.branches.material.dto.response.MaterialDeRelatorioResponse;
+import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.obra.dto.response.ObraByRelatorioResponse;
 import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.ocorrencia.dto.response.OcorrenciaDeRelatorioResponse;
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +41,7 @@ public record GetRelatorioDetailsResponse(
         LogoDeRelatorioResponse logo3,
         ObraByRelatorioResponse obra,
         String tituloRelatorio,
+        TipoMaoDeObra tipoMaoDeObra,
         LocalDate dataInicio,
         LocalDate dataFim,
         LocalTime horaInicioTrabalhos,
@@ -109,7 +112,7 @@ public record GetRelatorioDetailsResponse(
         var maoDeObraResponse = maoDeObra != null ?
                 maoDeObra.stream().map(MaoDeObraDeRelatorioResponse::from).toList() : null;
         var comentariosResponse = comentarios != null ?
-                comentarios.stream().map(ComentarioDeRelatorioResponse::from).toList() : null;
+                comentarios.stream().map(ComentarioDeRelatorioResponse::from).sorted(Comparator.comparing(ComentarioDeRelatorioResponse::dataCriacao).reversed()).toList() : null;
         var materiaisResponse = materiais != null ?
                 materiais.stream().map(MaterialDeRelatorioResponse::from).toList() : null;
         var assinaturasResponse = assinaturas != null ?
@@ -134,6 +137,7 @@ public record GetRelatorioDetailsResponse(
                 logo3,
                 obra,
                 relatorioDetails.getTituloModeloDeRelatorio(),
+                relatorioDetails.getTipoMaoDeObra(),
                 relatorioDetails.getDataInicio(),
                 relatorioDetails.getDataFim(),
                 horarioInicioTrabalhos,

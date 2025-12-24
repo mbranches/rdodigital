@@ -1,5 +1,6 @@
 package com.branches.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -11,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)

@@ -8,6 +8,7 @@ import java.time.LocalTime;
 public record MaoDeObraDeRelatorioResponse(
         Long id,
         Long maoDeObraId,
+        String nome,
         String funcao,
         PresencaMaoDeObra presenca,
         LocalTime horaInicio,
@@ -19,6 +20,7 @@ public record MaoDeObraDeRelatorioResponse(
         return new MaoDeObraDeRelatorioResponse(
                 entity.getId(),
                 entity.getMaoDeObra().getId(),
+                entity.getMaoDeObra().getNome(),
                 entity.getFuncao(),
                 entity.getPresenca(),
                 entity.getHoraInicio(),

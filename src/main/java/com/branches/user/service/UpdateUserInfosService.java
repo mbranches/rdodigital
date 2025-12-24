@@ -33,7 +33,7 @@ public class UpdateUserInfosService {
         UserEntity userEntity = currentUserTenant.getUser();
 
         validateFullName.execute(request.nome());
-        String formattedName = fullNameFormatter.execute(userEntity.getNome());
+        String formattedName = fullNameFormatter.execute(request.nome());
         userEntity.setNome(formattedName);
 
         if (request.password() != null && !request.password().isBlank()) {

@@ -20,6 +20,7 @@ import com.branches.atividade.repository.AtividadeDeRelatorioRepository;
 import com.branches.maodeobra.repository.MaoDeObraDeAtividadeDeRelatorioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -43,6 +44,7 @@ public class UpdateAtividadeDeRelatorioService {
     private final GetMaoDeObraListByIdInAndTenantIdAndTypeService getMaoDeObraListByIdInAndTenantIdAndTypeService;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
 
+    @Transactional
     public void execute(UpdateAtividadeDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
 
@@ -70,11 +72,12 @@ public class UpdateAtividadeDeRelatorioService {
         entity.setTotalHoras(calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), null));
 
         entity.getCamposPersonalizados().clear();
-        entity.setCamposPersonalizados(campoPersonalizadoRequest.stream().map(c -> c.toEntity(tenantId)).toList());
+        entity.getCamposPersonalizados().addAll(campoPersonalizadoRequest.stream().map(c -> c.toEntity(tenantId)).toList());
 
         Map<Long, MaoDeObraEntity> maoDeObraEntityMap = getMaoDeObraEntityMap(request.maoDeObra(), tenantId, relatorio);
+        List<MaoDeObraDeAtividadeDeRelatorioEntity> maoDeObraList = updateMaoDeObraDeAtividade(request.maoDeObra(), entity, maoDeObraEntityMap);
         entity.getMaoDeObra().clear();
-        entity.setMaoDeObra(updateMaoDeObraDeAtividade(request.maoDeObra(), entity, maoDeObraEntityMap));
+        entity.getMaoDeObra().addAll(maoDeObraList != null ? maoDeObraList : new ArrayList<>());
 
         atividadeDeRelatorioRepository.save(entity);
     }
@@ -135,6 +138,8 @@ public class UpdateAtividadeDeRelatorioService {
     }
 
     private Map<Long, MaoDeObraEntity> getMaoDeObraEntityMap(List<UpdateMaoDeObraDeAtividadeRequest> requestList, Long tenantId, RelatorioEntity relatorio) {
+        if (requestList == null || requestList.isEmpty()) return new HashMap<>();
+
         Set<Long> maoDeObraIds = requestList.stream()
                 .map(UpdateMaoDeObraDeAtividadeRequest::maoDeObraId)
                 .collect(Collectors.toSet());

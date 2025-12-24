@@ -64,6 +64,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.horasIntervalo AS horasIntervalo,
         r.horasTrabalhadas AS horasTrabalhadas,
         r.status AS status,
+        r.tipoMaoDeObra AS tipoMaoDeObra,
         u.nome AS criadoPor,
         r.enversCreatedDate AS criadoEm,
         u2.nome AS ultimaModificacaoPor,

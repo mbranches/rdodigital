@@ -43,61 +43,44 @@
             margin: 0 auto;
         }
 
-        /* Header with Logos */
-        .header-logos {
+        /* Integrated Header Styles */
+        .header-logos-cell-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
             min-height: 70px;
-            page-break-inside: avoid;
-            width: 80%;
-            margin: 0 auto 10px auto;
             gap: 20px;
+            padding: 5px;
         }
-
-        .logo-box {
+        .header-logos-cell-content .logo-box {
             flex: 1;
             display: flex;
             align-items: center;
         }
-
-        .logo-box.left {
+        .header-logos-cell-content .logo-box.left {
             justify-content: flex-start;
         }
-
-        .logo-box.center {
+        .header-logos-cell-content .logo-box.center {
             justify-content: center;
         }
-
-        .logo-box.right {
+        .header-logos-cell-content .logo-box.right {
             justify-content: flex-end;
         }
-
-        .logo-img {
+        .header-logos-cell-content .logo-img {
             max-height: 84px;
             max-width: 250px;
             object-fit: contain;
         }
-
-        /* Title Section */
-        .title-section {
+        .report-title-cell {
             text-align: center;
-            margin-bottom: 15px;
-            page-break-inside: avoid;
+            background-color: #e0e0e0;
+            padding: 4px;
         }
-
-        .title-section h1 {
-            font-size: 16pt;
+        .report-title-cell h1 {
+            font-size: 12pt;
             font-weight: bold;
             color: #000;
-            margin-bottom: 5px;
             text-transform: uppercase;
-        }
-
-        .title-section h2 {
-            font-size: 12pt;
-            font-weight: normal;
-            color: #333;
         }
 
         /* Tables */
@@ -115,21 +98,15 @@
 
         .info-table td {
             border: 1px solid #000;
-            padding: 6px 8px;
+            padding: 4px 8px;
             vertical-align: middle;
-        }
-
-        .info-table .label-cell {
-            background-color: #e0e0e0;
-            font-weight: bold;
-            width: 30%;
             font-size: 9pt;
-            text-transform: uppercase;
         }
 
-        .info-table .value-cell {
-            background-color: #fff;
-            width: 70%;
+        .info-table .label {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-right: 5px;
         }
 
         /* Section Titles */
@@ -344,97 +321,105 @@
 </head>
 <body>
 <div class="container">
-    <!-- Header with Logos -->
-    <div th:classappend="${(logoCount == 0 or logoCount == 1) ? 'center-only' : ''}" class="header-logos">
-        <!-- Left Logo -->
-        <div class="logo-box left" th:if="${logoCount >= 2}">
-            <img th:if="${logo1 != null and logo1.exibir == true and logo1.url != null}"
-                 th:src="${logo1.url}"
-                 alt="Logo 1"
-                 class="logo-img" />
-        </div>
-
-        <!-- Center Logo -->
-        <div class="logo-box center">
-            <!-- Default logo when no logos -->
-            <img th:if="${logoCount == 0}"
-                 th:src="${defaultLogoUrl}"
-                 alt="Meu Diário de Obras"
-                 class="logo-img" />
-
-            <!-- Single logo centered -->
-            <img th:if="${logoCount == 1 and logo1 != null and logo1.exibir == true and logo1.url != null}"
-                 th:src="${logo1.url}"
-                 alt="Logo"
-                 class="logo-img" />
-
-            <!-- Center logo when 3 logos -->
-            <img th:if="${logoCount == 3 and logo2 != null and logo2.exibir == true and logo2.url != null}"
-                 th:src="${logo2.url}"
-                 alt="Logo 2"
-                 class="logo-img" />
-        </div>
-
-        <!-- Right Logo -->
-        <div class="logo-box right" th:if="${logoCount >= 2}">
-            <img th:if="${logoCount == 2 and logo2 != null and logo2.exibir == true and logo2.url != null}"
-                 th:src="${logo2.url}"
-                 alt="Logo 2"
-                 class="logo-img" />
-            <img th:if="${logoCount == 3 and logo3 != null and logo3.exibir == true and logo3.url != null}"
-                 th:src="${logo3.url}"
-                 alt="Logo 3"
-                 class="logo-img" />
-        </div>
-    </div>
-
-    <!-- Title Section -->
-    <div class="title-section">
-        <h1>Relatório Diário de Obras</h1>
-        <h2 th:text="${details.tituloModeloDeRelatorio != null ? details.tituloModeloDeRelatorio : 'RDO'}">RDO</h2>
-    </div>
 
     <!-- Obra Information -->
     <table class="info-table no-break">
+        <!-- HEADER ROW -->
         <tr>
-            <td class="label-cell">Obra:</td>
-            <td class="value-cell" th:text="${details.obraNome}">Nome da Obra</td>
+            <td colspan="4">
+                <div class="header-logos-cell-content">
+                    <!-- Left Logo -->
+                    <div class="logo-box left" th:if="${logoCount >= 2}">
+                        <img th:if="${logo1 != null and logo1.exibir == true and logo1.url != null}"
+                             th:src="${logo1.url}"
+                             alt="Logo 1"
+                             class="logo-img" />
+                    </div>
+
+                    <!-- Center Logo -->
+                    <div class="logo-box center">
+                        <img th:if="${logoCount == 0}"
+                             th:src="${defaultLogoUrl}"
+                             alt="Meu Diário de Obras"
+                             class="logo-img" />
+                        <img th:if="${logoCount == 1 and logo1 != null and logo1.exibir == true and logo1.url != null}"
+                             th:src="${logo1.url}"
+                             alt="Logo"
+                             class="logo-img" />
+                        <img th:if="${logoCount == 3 and logo2 != null and logo2.exibir == true and logo2.url != null}"
+                             th:src="${logo2.url}"
+                             alt="Logo 2"
+                             class="logo-img" />
+                    </div>
+
+                    <!-- Right Logo -->
+                    <div class="logo-box right" th:if="${logoCount >= 2}">
+                        <img th:if="${logoCount == 2 and logo2 != null and logo2.exibir == true and logo2.url != null}"
+                             th:src="${logo2.url}"
+                             alt="Logo 2"
+                             class="logo-img" />
+                        <img th:if="${logoCount == 3 and logo3 != null and logo3.exibir == true and logo3.url != null}"
+                             th:src="${logo3.url}"
+                             alt="Logo 3"
+                             class="logo-img" />
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <!-- TITLE ROW -->
+        <tr>
+            <td colspan="4" class="report-title-cell">
+                <h1>Relatório Diário de Obras</h1>
+            </td>
+        </tr>
+        <!-- INFO ROWS -->
+        <tr>
+            <td colspan="2">
+                <span class="label">Obra:</span>
+                <span th:text="${details.obraNome}">-</span>
+            </td>
+            <td colspan="2">
+                <span class="label">Nº do Contrato:</span>
+                <span th:text="${details.obraNumeroContrato}">-</span>
+            </td>
         </tr>
         <tr>
-            <td class="label-cell">Número do Contrato:</td>
-            <td class="value-cell" th:text="${details.obraNumeroContrato}">000/2024</td>
-        </tr>
-        <tr th:if="${details.obraResponsavel != null}">
-            <td class="label-cell">Responsável:</td>
-            <td class="value-cell" th:text="${details.obraResponsavel}">-</td>
-        </tr>
-        <tr th:if="${details.obraContratante != null}">
-            <td class="label-cell">Contratante:</td>
-            <td class="value-cell" th:text="${details.obraContratante}">-</td>
-        </tr>
-        <tr th:if="${details.obraEndereco != null}">
-            <td class="label-cell">Endereço:</td>
-            <td class="value-cell" th:text="${details.obraEndereco}">-</td>
-        </tr>
-        <tr>
-            <td class="label-cell">Número do Relatório:</td>
-            <td class="value-cell" th:text="${details.numero}">001</td>
+            <td colspan="2">
+                <span class="label">Local:</span>
+                <span th:text="${details.obraEndereco}">-</span>
+            </td>
+            <td>
+                <span class="label">Nº RDO:</span>
+                <span th:text="${details.numero}">-</span>
+            </td>
+            <td>
+                <span class="label">Data:</span>
+                <span th:if="${details.dataFim == null}" th:text="${#temporals.format(details.dataInicio, 'dd/MM/yyyy')}"></span>
+                <span th:if="${details.dataFim != null}" th:text="${#temporals.format(details.dataInicio, 'dd/MM/yyyy') + ' - ' + #temporals.format(details.dataFim, 'dd/MM/yyyy')}"></span>
+            </td>
         </tr>
         <tr>
-            <td class="label-cell">Data:</td>
-            <td class="value-cell">
-                <span th:if="${details.dataFim == null}"
-                      th:text="${#temporals.format(details.dataInicio, 'dd/MM/yyyy')}">01/01/2024</span>
-                <span th:if="${details.dataFim != null}"
-                      th:text="${#temporals.format(details.dataInicio, 'dd/MM/yyyy') + ' - ' + #temporals.format(details.dataFim, 'dd/MM/yyyy')}">01/01/2024 - 02/01/2024</span>
+            <td colspan="2">
+                <span class="label">Contratante:</span>
+                <span th:text="${details.obraContratante}">-</span>
+            </td>
+            <td colspan="2">
+                <span class="label">Responsável Técnico:</span>
+                <span th:text="${details.obraResponsavel}">-</span>
             </td>
         </tr>
         <tr th:if="${details.prazoContratual != null}">
-            <td class="label-cell">Prazo:</td>
-            <td class="value-cell">
-                <strong>Contratual:</strong> <span th:text="${details.prazoContratual}">0</span> dias |
-                <strong>Decorrido:</strong> <span th:text="${details.prazoDecorrido != null ? details.prazoDecorrido : 0}">0</span> dias |
-                <strong>A Vencer:</strong> <span th:text="${details.prazoPraVencer != null ? details.prazoPraVencer : 0}">0</span> dias
+            <td>
+                <span class="label">Prazo Contratual:</span>
+                <span th:text="${details.prazoContratual + ' dias'}"></span>
+            </td>
+            <td colspan="2">
+                <span class="label">Prazo Decorrido:</span>
+                <span th:text="${(details.prazoDecorrido != null ? details.prazoDecorrido : 0) + ' dias'}"></span>
+            </td>
+            <td>
+                <span class="label">Prazo a Vencer:</span>
+                <span th:text="${(details.prazoPraVencer != null ? details.prazoPraVencer : 0) + ' dias'}"></span>
             </td>
         </tr>
     </table>
@@ -444,16 +429,16 @@
         <div class="section-title">Horário de Trabalho</div>
         <table class="info-table">
             <tr>
-                <td class="label-cell" style="width: 15%;">Hora Início:</td>
-                <td class="value-cell" style="width: 35%;" th:text="${details.horaInicioTrabalhos != null ? #temporals.format(details.horaInicioTrabalhos, 'HH:mm') : '-'}">-</td>
-                <td class="label-cell" style="width: 15%;">Hora Fim:</td>
-                <td class="value-cell" style="width: 35%;" th:text="${details.horaFimTrabalhos != null ? #temporals.format(details.horaFimTrabalhos, 'HH:mm') : '-'}">-</td>
+                <td style="width: 15%;"><span class="label">Hora Início:</span></td>
+                <td style="width: 35%;" th:text="${details.horaInicioTrabalhos != null ? #temporals.format(details.horaInicioTrabalhos, 'HH:mm') : '-'}">-</td>
+                <td style="width: 15%;"><span class="label">Hora Fim:</span></td>
+                <td style="width: 35%;" th:text="${details.horaFimTrabalhos != null ? #temporals.format(details.horaFimTrabalhos, 'HH:mm') : '-'}">-</td>
             </tr>
             <tr>
-                <td class="label-cell" style="width: 15%;">Intervalo:</td>
-                <td class="value-cell" style="width: 35%;" th:text="${details.horasIntervalo != null ? #temporals.format(details.horasIntervalo, 'HH:mm') : '-'}">-</td>
-                <td class="label-cell" style="width: 15%;">Total Trabalhado:</td>
-                <td class="value-cell" style="width: 35%;" th:text="${details.horasTrabalhadas != null ? #temporals.format(details.horasTrabalhadas, 'HH:mm') : '-'}">-</td>
+                <td><span class="label">Intervalo:</span></td>
+                <td th:text="${details.horasIntervalo != null ? #temporals.format(details.horasIntervalo, 'HH:mm') : '-'}">-</td>
+                <td><span class="label">Total Trabalhado:</span></td>
+                <td th:text="${details.horasTrabalhadas != null ? #temporals.format(details.horasTrabalhadas, 'HH:mm') : '-'}">-</td>
             </tr>
         </table>
     </section>
@@ -505,8 +490,8 @@
 
         <table class="info-table" th:if="${details.indicePluviometrico != null}">
             <tr>
-                <td class="label-cell">Índice Pluviométrico:</td>
-                <td class="value-cell" th:text="${details.indicePluviometrico + ' mm'}">0 mm</td>
+                <td><span class="label">Índice Pluviométrico:</span></td>
+                <td th:text="${details.indicePluviometrico + ' mm'}">0 mm</td>
             </tr>
         </table>
     </section>
@@ -767,4 +752,3 @@
 </div>
 </body>
 </html>
-

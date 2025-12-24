@@ -69,7 +69,7 @@ public class AddUserToTenantService {
         Optional<UserEntity> userByEmailOptional = findUserByEmailService.execute(request.email());
 
         UserEntity user = userByEmailOptional
-                        .orElse(saveNewUser(request));
+                        .orElseGet(() -> saveNewUser(request));
 
         checkIfUserAlreadyInTenant(user.getId(), tenantId);
 

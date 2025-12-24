@@ -60,7 +60,7 @@ public class ConfiguracaoRelatoriosEntity {
     @Column(nullable = false)
     private Boolean showVideos;
 
-    public static ConfiguracaoRelatoriosEntity by(ModeloDeRelatorioEntity modeloDeRelatorioDefault, String urlLogoTenant, String nome, String nomeClienteObra) {
+    public static ConfiguracaoRelatoriosEntity by(ModeloDeRelatorioEntity modeloDeRelatorioDefault, String urlLogoTenant, String nome, String nomeClienteObra, Long tenantId) {
         LogoDeRelatorioEntity logoDeRelatorioDefault = LogoDeRelatorioEntity.builder()
                 .url(urlLogoTenant)
                 .exibir(urlLogoTenant != null && !urlLogoTenant.isBlank())
@@ -71,8 +71,8 @@ public class ConfiguracaoRelatoriosEntity {
                 .modeloDeRelatorio(modeloDeRelatorioDefault)
                 .recorrenciaRelatorio(modeloDeRelatorioDefault.getRecorrenciaRelatorio())
                 .logoDeRelatorio1(logoDeRelatorioDefault)
-                .logoDeRelatorio2(createLogoDeRelatorioEmpty())
-                .logoDeRelatorio3(createLogoDeRelatorioEmpty())
+                .logoDeRelatorio2(createLogoDeRelatorioEmpty(tenantId))
+                .logoDeRelatorio3(createLogoDeRelatorioEmpty(tenantId))
                 .showCondicaoClimatica(modeloDeRelatorioDefault.getShowCondicaoClimatica())
                 .showMaoDeObra(modeloDeRelatorioDefault.getShowMaoDeObra())
                 .showEquipamentos(modeloDeRelatorioDefault.getShowEquipamentos())
@@ -103,10 +103,11 @@ public class ConfiguracaoRelatoriosEntity {
         return config;
     }
 
-    private static LogoDeRelatorioEntity createLogoDeRelatorioEmpty() {
+    private static LogoDeRelatorioEntity createLogoDeRelatorioEmpty(Long tenantId) {
         return LogoDeRelatorioEntity.builder()
                 .url(null)
                 .exibir(false)
+                .tenantId(tenantId)
                 .isLogoDoTenant(false)
                 .build();
     }

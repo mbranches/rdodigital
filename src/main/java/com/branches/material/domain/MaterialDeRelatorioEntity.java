@@ -3,7 +3,6 @@ package com.branches.material.domain;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.material.domain.enums.TipoMaterial;
 import jakarta.persistence.*;
-import jakarta.persistence.GenerationType;
 import lombok.*;
 
 @Setter
@@ -17,8 +16,9 @@ public class MaterialDeRelatorioEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String descricao;
+    @ManyToOne
+    @JoinColumn(name = "material_id", nullable = false)
+    private MaterialEntity material;
 
     private String quantidade;
 

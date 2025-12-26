@@ -20,13 +20,13 @@ import java.util.*;
 public class UpdateMaterialDeRelatorioService {
 
     private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
-    private final GetMaterialByIdAndRelatorioIdService getMaterialByIdAndRelatorioIdService;
+    private final GetMaterialDeRelatorioByIdAndRelatorioIdService getMaterialDeRelatorioByIdAndRelatorioIdService;
     private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteMaterialService checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService;
-    private final CheckIfUserCanViewMateriaisService checkIfUserCanViewMateriaisService;
+    private final CheckIfUserCanViewMateriaisDeRelatorioService checkIfUserCanViewMateriaisDeRelatorioService;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
 
     public void execute(UpdateMaterialDeRelatorioRequest request, Long id, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
@@ -39,12 +39,10 @@ public class UpdateMaterialDeRelatorioService {
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
         checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
         checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService.execute(relatorio.getObraId(), tenantId);
-        checkIfUserCanViewMateriaisService.execute(userTenant);
+        checkIfUserCanViewMateriaisDeRelatorioService.execute(userTenant);
 
-        MaterialDeRelatorioEntity entity = getMaterialByIdAndRelatorioIdService.execute(id, relatorio.getId());
-        entity.setDescricao(request.descricao());
+        MaterialDeRelatorioEntity entity = getMaterialDeRelatorioByIdAndRelatorioIdService.execute(id, relatorio.getId());
         entity.setQuantidade(request.quantidade());
-        entity.setTipoMaterial(request.tipoMaterial());
 
         materialDeRelatorioRepository.save(entity);
     }

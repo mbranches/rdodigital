@@ -20,7 +20,7 @@ public class ListMateriaisDeRelatorioService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteMaterialService checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService;
-    private final CheckIfUserCanViewMateriaisService checkIfUserCanViewMateriaisService;
+    private final CheckIfUserCanViewMateriaisDeRelatorioService checkIfUserCanViewMateriaisDeRelatorioService;
     private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
 
@@ -33,7 +33,7 @@ public class ListMateriaisDeRelatorioService {
 
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
         checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService.execute(relatorio.getObraId(), tenantId);
-        checkIfUserCanViewMateriaisService.execute(userTenant);
+        checkIfUserCanViewMateriaisDeRelatorioService.execute(userTenant);
 
         return materialDeRelatorioRepository.findAllByRelatorioId(relatorio.getId()).stream()
                 .map(MaterialDeRelatorioResponse::from)

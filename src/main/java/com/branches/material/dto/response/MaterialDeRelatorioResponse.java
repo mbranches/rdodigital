@@ -5,6 +5,7 @@ import com.branches.material.domain.enums.TipoMaterial;
 
 public record MaterialDeRelatorioResponse(
          Long id,
+         Long materialId,
          String descricao,
          String quantidade,
          TipoMaterial tipoMaterial
@@ -12,7 +13,8 @@ public record MaterialDeRelatorioResponse(
     public static MaterialDeRelatorioResponse from(MaterialDeRelatorioEntity entity) {
         return new MaterialDeRelatorioResponse(
                 entity.getId(),
-                entity.getDescricao(),
+                entity.getMaterial().getId(),
+                entity.getMaterial().getDescricao(),
                 entity.getQuantidade(),
                 entity.getTipoMaterial()
         );

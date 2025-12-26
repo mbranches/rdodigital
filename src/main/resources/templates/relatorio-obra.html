@@ -550,8 +550,8 @@
             </thead>
             <tbody>
             <tr th:each="item : ${materiaisUtilizados}">
-                <td th:text="${item.descricao != null ? item.descricao : '-'}">Descrição</td>
-                <td th:text="${item.quantidade != null ? item.quantidade : '-'}">-</td>
+                <td th:text="${item.getMaterial().getDescricao()}">Descrição</td>
+                <td th:text="${item.quantidade}">-</td>
             </tr>
             </tbody>
         </table>
@@ -569,7 +569,7 @@
             </thead>
             <tbody>
             <tr th:each="item : ${materiaisRecebidos}">
-                <td th:text="${item.descricao != null ? item.descricao : '-'}">Descrição</td>
+                <td th:text="${item.getMaterial().getDescricao()}">Descrição</td>
                 <td th:text="${item.quantidade != null ? item.quantidade : '-'}">-</td>
             </tr>
             </tbody>

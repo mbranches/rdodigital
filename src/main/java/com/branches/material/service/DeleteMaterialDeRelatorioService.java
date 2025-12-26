@@ -22,8 +22,8 @@ public class DeleteMaterialDeRelatorioService {
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteMaterialService checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService;
-    private final CheckIfUserCanViewMateriaisService checkIfUserCanViewMateriaisService;
-    private final GetMaterialByIdAndRelatorioIdService getMaterialByIdAndRelatorioIdService;
+    private final CheckIfUserCanViewMateriaisDeRelatorioService checkIfUserCanViewMateriaisDeRelatorioService;
+    private final GetMaterialDeRelatorioByIdAndRelatorioIdService getMaterialDeRelatorioByIdAndRelatorioIdService;
     private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
 
@@ -37,9 +37,9 @@ public class DeleteMaterialDeRelatorioService {
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
         checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
         checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService.execute(relatorio.getObraId(), tenantId);
-        checkIfUserCanViewMateriaisService.execute(userTenant);
+        checkIfUserCanViewMateriaisDeRelatorioService.execute(userTenant);
 
-        MaterialDeRelatorioEntity material = getMaterialByIdAndRelatorioIdService.execute(id, relatorio.getId());
+        MaterialDeRelatorioEntity material = getMaterialDeRelatorioByIdAndRelatorioIdService.execute(id, relatorio.getId());
 
         materialDeRelatorioRepository.delete(material);
     }

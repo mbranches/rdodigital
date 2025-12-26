@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class GetMaterialByIdAndRelatorioIdService {
+public class GetMaterialDeRelatorioByIdAndRelatorioIdService {
     private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
 
     public MaterialDeRelatorioEntity execute(Long id, Long relatorioId) {

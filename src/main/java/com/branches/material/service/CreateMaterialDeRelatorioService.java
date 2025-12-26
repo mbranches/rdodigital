@@ -1,6 +1,7 @@
 package com.branches.material.service;
 
 import com.branches.material.domain.MaterialDeRelatorioEntity;
+import com.branches.material.domain.MaterialEntity;
 import com.branches.material.dto.request.CreateMaterialDeRelatorioRequest;
 import com.branches.material.dto.response.CreateMaterialDeRelatorioResponse;
 import com.branches.material.repository.MaterialDeRelatorioRepository;
@@ -24,9 +25,10 @@ public class CreateMaterialDeRelatorioService {
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final CheckIfConfiguracaoDeRelatorioDaObraPermiteMaterialService checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService;
-    private final CheckIfUserCanViewMateriaisService checkIfUserCanViewMateriaisService;
+    private final CheckIfUserCanViewMateriaisDeRelatorioService checkIfUserCanViewMateriaisDeRelatorioService;
     private final MaterialDeRelatorioRepository materialDeRelatorioRepository;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
+    private final GetMaterialByIdAndTenantIdService getMaterialByIdAndTenantIdService;
 
     public CreateMaterialDeRelatorioResponse execute(CreateMaterialDeRelatorioRequest request, String relatorioExternalId, String tenantExternalId, List<UserTenantEntity> userTenants) {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
@@ -38,11 +40,13 @@ public class CreateMaterialDeRelatorioService {
         checkIfUserHasAccessToObraService.execute(userTenant, relatorio.getObraId());
         checkIfUserHasAccessToEditRelatorioService.execute(userTenant, relatorio.getStatus());
         checkIfConfiguracaoDeRelatorioDaObraPermiteMaterialService.execute(relatorio.getObraId(), tenantId);
-        checkIfUserCanViewMateriaisService.execute(userTenant);
+        checkIfUserCanViewMateriaisDeRelatorioService.execute(userTenant);
+
+        MaterialEntity material = getMaterialByIdAndTenantIdService.execute(request.materialId(), tenantId);
 
         MaterialDeRelatorioEntity toSave = MaterialDeRelatorioEntity.builder()
                 .relatorio(relatorio)
-                .descricao(request.descricao())
+                .material(material)
                 .quantidade(request.quantidade())
                 .tipoMaterial(request.tipoMaterial())
                 .build();

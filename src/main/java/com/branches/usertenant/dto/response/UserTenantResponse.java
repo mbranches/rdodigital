@@ -2,19 +2,21 @@ package com.branches.usertenant.dto.response;
 
 import com.branches.obra.dto.response.ObraPermitidaResponse;
 import com.branches.obra.repository.projections.ObraResumeProjection;
+import com.branches.usertenant.domain.Authorities;
 import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.domain.enums.PerfilUserTenant;
 
 import java.util.List;
 
 public record UserTenantResponse(
-        String userExternalId,
+        String id,
         String nome,
         String email,
         String cargo,
         String fotoUrl,
         Boolean ativo,
         PerfilUserTenant perfil,
+        Authorities authorities,
         List<ObraPermitidaResponse> obrasPermitidas
 ) {
     public static UserTenantResponse from(UserTenantEntity userTenant, List<ObraResumeProjection> obrasPermitidas) {
@@ -30,6 +32,7 @@ public record UserTenantResponse(
                 userTenant.getUser().getFotoUrl(),
                 userTenant.getUser().getAtivo(),
                 userTenant.getPerfil(),
+                userTenant.getAuthorities(),
                 obraPermitidaResponse
         );
     }

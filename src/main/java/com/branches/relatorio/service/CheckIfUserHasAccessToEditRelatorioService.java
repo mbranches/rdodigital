@@ -11,7 +11,10 @@ public class CheckIfUserHasAccessToEditRelatorioService {
     public void execute(UserTenantEntity currentUserTenant, StatusRelatorio statusRelatorio) {
         PermissionsRelatorio permissionsRelatorio = currentUserTenant.getAuthorities().getRelatorios();
 
-        if (permissionsRelatorio.getCanCreateAndEdit() && (!permissionsRelatorio.getCanViewOnlyAprovados() || !statusRelatorio.equals(StatusRelatorio.APROVADO))) return;
+        if (permissionsRelatorio.getCanCreateAndEdit() &&
+                (!permissionsRelatorio.getCanViewOnlyAprovados() || statusRelatorio.equals(StatusRelatorio.APROVADO))) {
+            return;
+        }
 
         throw new ForbiddenException();
     }

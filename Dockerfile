@@ -6,7 +6,7 @@ COPY pom.xml ./
 RUN mvn -B -DskipTests dependency:go-offline
 
 COPY src ./src
-RUN mvn -B -DskipTests package
+RUN mvn -B -Dmaven.test.skip package
 
 # Etapa de runtime: Playwright + Java 21 + Chromium
 FROM mcr.microsoft.com/playwright/java:v1.47.0-jammy AS runtime

@@ -97,7 +97,6 @@ public class GenerateRelatorioHtmlService {
 
         // Add signatures
         context.setVariable("assinaturas", assinaturas);
-
         // Render template
         return templateEngine.process("relatorio-obra", context);
     }

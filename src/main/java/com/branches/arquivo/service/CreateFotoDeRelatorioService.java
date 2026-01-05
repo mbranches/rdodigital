@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -56,7 +56,7 @@ public class CreateFotoDeRelatorioService {
 
         byte[] imageBytes = compressImage.execute(request.base64Image(), 800, 800, 0.8, ImageOutPutFormat.JPEG);
 
-        String filename = "%s-%s".formatted(Instant.now(), request.fileName());
+        String filename = "%s-%s.%s".formatted(request.fileName().replaceAll("\\.[^.]+$", ""), LocalDateTime.now(), FileContentType.JPEG.getExtension());
         String fotoUrl = s3UploadFile.execute(filename, "tenants/%s/obras/%s/relatorios/%s/fotos".formatted(tenantExternalId, relatorioWithObra.getObra().getIdExterno(), relatorioExternalId), imageBytes, FileContentType.JPEG);
 
         BigDecimal fileLengthInMb = BigDecimal.valueOf(imageBytes.length).divide(BigDecimal.valueOf(1024 * 1024), RoundingMode.HALF_UP);

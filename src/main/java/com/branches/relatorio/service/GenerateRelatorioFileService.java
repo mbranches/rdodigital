@@ -59,7 +59,7 @@ public class GenerateRelatorioFileService {
 
         byte[] pdfBytes = htmlToPdfConverter.execute(html);
 
-        String fileName = "relatorio_" + userTenant.getUser().getIdExterno() + "_" + LocalDateTime.now() + ".pdf";
+        String fileName = "relatorio-" + LocalDateTime.now() + ".pdf";
         String path = "tenants/%s/obras/%s/relatorios/%s".formatted(relatorioDetails.getTenantIdExterno(), relatorioDetails.getObraIdExterno(), relatorioDetails.getIdExterno());
 
         return s3UploadFile.execute(fileName, path, pdfBytes, FileContentType.PDF);

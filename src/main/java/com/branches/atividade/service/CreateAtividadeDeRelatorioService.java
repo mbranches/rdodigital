@@ -76,7 +76,7 @@ public class CreateAtividadeDeRelatorioService {
 
         AtividadeDeRelatorioEntity saved = atividadeDeRelatorioRepository.save(atividadeDeRelatorio);
 
-        List<MaoDeObraDeAtividadeDeRelatorioEntity> maoDeObra = saveMaoDeObraDeAtividade(saved, maoDeObraEntities);
+        List<MaoDeObraDeAtividadeDeRelatorioEntity> maoDeObra = saveMaoDeObraDeAtividade(saved, maoDeObraEntities, tenantId);
         saved.setMaoDeObra(maoDeObra);
 
         return CreateAtividadeDeRelatorioResponse.from(saved);
@@ -105,12 +105,13 @@ public class CreateAtividadeDeRelatorioService {
         return getMaoDeObraListByIdInAndTenantIdAndTypeService.execute(maoDeObraIds, tenantId, tipoMaoDeObra);
     }
 
-    private List<MaoDeObraDeAtividadeDeRelatorioEntity> saveMaoDeObraDeAtividade(AtividadeDeRelatorioEntity atividade, List<MaoDeObraEntity> maoDeObraEntities) {
+    private List<MaoDeObraDeAtividadeDeRelatorioEntity> saveMaoDeObraDeAtividade(AtividadeDeRelatorioEntity atividade, List<MaoDeObraEntity> maoDeObraEntities, Long tenantId) {
         List<MaoDeObraDeAtividadeDeRelatorioEntity> toSave = maoDeObraEntities.stream()
                 .map(m -> MaoDeObraDeAtividadeDeRelatorioEntity.builder()
                         .atividadeDeRelatorio(atividade)
                         .maoDeObra(m)
                         .funcao(m.getFuncao())
+                        .tenantId(tenantId)
                         .build())
                 .collect(Collectors.toList());
 

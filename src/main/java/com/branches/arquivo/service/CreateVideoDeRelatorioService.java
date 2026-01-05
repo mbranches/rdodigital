@@ -67,7 +67,7 @@ public class CreateVideoDeRelatorioService {
 
         FileContentType contentType = getContentTypeFromString(request.contentType());
 
-        String fileName = "%s-%s".formatted(request.fileName(), LocalDateTime.now());
+        String fileName = "%s-%s.%s".formatted(formatFileName(request.fileName()), LocalDateTime.now(), contentType.getExtension());
         String videoUrl = s3UploadFile.execute(
                 fileName,
                 "tenants/%s/obras/%s/relatorios/%s/videos".formatted(tenantExternalId, relatorioWithObra.getObra().getIdExterno(), relatorioExternalId),
@@ -88,6 +88,10 @@ public class CreateVideoDeRelatorioService {
         ArquivoEntity saved = arquivoRepository.save(arquivo);
 
         return CreateVideoDeRelatorioResponse.from(saved);
+    }
+
+    private String formatFileName(String requestFileName) {
+        return requestFileName.replaceAll("\\.[^.]+$", "").replaceAll("\\s+", "_");
     }
 
     private FileContentType getContentTypeFromString(String contentType) {

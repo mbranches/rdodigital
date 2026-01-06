@@ -7,7 +7,7 @@ import com.branches.auth.dto.request.RegisterRequest;
 import com.branches.configuradores.domain.ModeloDeRelatorioEntity;
 import com.branches.configuradores.domain.enums.RecorrenciaRelatorio;
 import com.branches.configuradores.repositorio.ModeloDeRelatorioRepository;
-import com.branches.plano.repositroy.PlanoRepository;
+import com.branches.plano.repository.PlanoRepository;
 import com.branches.tenant.domain.TenantEntity;
 import com.branches.tenant.repository.TenantRepository;
 import com.branches.tenant.service.CheckIfDoesntExistsTenantWithTheCnpjService;
@@ -85,12 +85,19 @@ public class RegisterService {
         userTenantToSave.setarId();
 
         planoRepository.findByNome("Plano Gratuito").ifPresent(plano -> {
+            LocalDate dataFim = switch (plano.getRecorrencia()) {
+                case DIARIO -> LocalDate.now().plusDays(1);
+                case SEMANAL -> LocalDate.now().plusWeeks(1);
+                case MENSAL -> LocalDate.now().plusMonths(1);
+                case ANUAL -> LocalDate.now().plusYears(1);
+            };
+
             AssinaturaEntity assinatura = AssinaturaEntity.builder()
                     .status(AssinaturaStatus.ATIVO)
                     .plano(plano)
                     .tenantId(savedTenant.getId())
                     .dataInicio(LocalDate.now())
-                    .dataFim(LocalDate.now().plusMonths(plano.getDuracaoMeses()))
+                    .dataFim(dataFim)
                     .build();
 
             assinaturaRepository.save(assinatura);

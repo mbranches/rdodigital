@@ -9,7 +9,7 @@ COPY src ./src
 RUN mvn -B -Dmaven.test.skip package
 
 # Etapa de runtime: Playwright + Java 21 + Chromium
-FROM mcr.microsoft.com/playwright/java:v1.56.1-jammy AS runtime
+FROM mcr.microsoft.com/playwright/java:v1.56.0-jammy AS runtime
 WORKDIR /app
 
 # Copia o JAR

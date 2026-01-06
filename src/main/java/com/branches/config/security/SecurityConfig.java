@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/exists-by-email").authenticated()
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/planos").hasRole("ADMIN")
+                        .requestMatchers("/webhook/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class)

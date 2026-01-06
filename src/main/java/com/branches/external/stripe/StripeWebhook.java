@@ -23,7 +23,7 @@ public class StripeWebhook {
     @Value("${stripe.secret-webhook}")
     private String secretWebhook;
 
-    @PostMapping("/stripe/webhook")
+    @PostMapping("/webhook/stripe")
     public ResponseEntity<String> execute(@RequestBody String payload,
                                          @RequestHeader("Stripe-Signature") String signature) {
 

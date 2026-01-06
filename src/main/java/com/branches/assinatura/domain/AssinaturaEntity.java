@@ -2,11 +2,13 @@ package com.branches.assinatura.domain;
 
 import com.branches.assinatura.domain.enums.AssinaturaStatus;
 import com.branches.config.envers.Auditable;
+import com.branches.plano.domain.IntencaoDePagamentoEntity;
 import com.branches.plano.domain.PlanoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -32,4 +34,17 @@ public class AssinaturaEntity extends Auditable {
 
     private LocalDate dataInicio;
     private LocalDate dataFim;
+
+    private LocalDateTime canceladoEm;
+
+    private String stripeSubscriptionId;
+
+    @OneToOne
+    @JoinColumn(name = "intencao_de_pagamento_id")
+    private IntencaoDePagamentoEntity intencaoDePagamento;
+
+    public void cancelar() {
+        this.status = AssinaturaStatus.CANCELADO;
+        this.canceladoEm = LocalDateTime.now();
+    }
 }

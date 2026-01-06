@@ -3,6 +3,7 @@ package com.branches.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/me/**").authenticated()
                         .requestMatchers("/api/users/exists-by-email").authenticated()
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/planos").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class)

@@ -29,7 +29,6 @@ public class IniciarPeriodoTesteService {
 
         PeriodoTesteEntity entity = PeriodoTesteEntity.builder()
                 .tenantId(tenantId)
-                .periodoDias(PERIODO_TESTE_DIAS)
                 .build();
         entity.iniciar(PERIODO_TESTE_DIAS);
 

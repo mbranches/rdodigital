@@ -4,7 +4,9 @@ import com.branches.config.envers.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Setter
 @Getter
@@ -39,7 +41,9 @@ public class PeriodoTesteEntity extends Auditable {
     public void iniciar(Long periodoDias) {
         this.periodoDias = periodoDias;
         this.dataInicio = LocalDateTime.now();
-        this.dataFim = this.dataInicio.plusDays(periodoDias).plusDays(1).minusSeconds(1);
+        LocalDate diaFim = this.dataInicio.toLocalDate().plusDays(periodoDias);
+        LocalTime horaFim = LocalTime.of(23, 59, 59);
+        this.dataFim = LocalDateTime.of(diaFim, horaFim);
     }
 
     public boolean isInProgress() {

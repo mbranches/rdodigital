@@ -6,6 +6,8 @@ import com.branches.exception.BadRequestException;
 import com.branches.exception.ForbiddenException;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObrasByTenantIdAndIdExternoIn;
+import com.branches.plano.domain.PeriodoTesteEntity;
+import com.branches.plano.service.FindTenantPeriodoTesteService;
 import com.branches.tenant.domain.TenantEntity;
 import com.branches.tenant.service.GetTenantByIdExternoService;
 import com.branches.user.domain.UserEntity;
@@ -49,6 +51,7 @@ public class AddUserToTenantService {
     private final ValidatePassword validatePassword;
     private final FullNameFormatter fullNameFormatter;
     private final ValidateFullName validateFullName;
+    private final FindTenantPeriodoTesteService findTenantPeriodoTesteService;
 
     public void execute(AddUserToTenantRequest request, String tenantExternalId, List<UserTenantEntity> userTenants) {
         TenantEntity tenant = getTenantByIdExternoService.execute(tenantExternalId);
@@ -175,7 +178,13 @@ public class AddUserToTenantService {
     private void checkIfAddUserIsAllowed(UserTenantEntity currentUserTenant) {
         if (!currentUserTenant.getPerfil().equals(ADMINISTRADOR)) throw new ForbiddenException();
 
-        long quantityOfUsers = userTenantRepository.countByTenantIdAndAtivoIsTrue(currentUserTenant.getTenantId());
+        Optional<PeriodoTesteEntity> optionalPeriodoTeste = findTenantPeriodoTesteService.execute(currentUserTenant.getTenantId());
+
+        if (optionalPeriodoTeste.isPresent() && optionalPeriodoTeste.get().isInProgress()) {
+            return;
+        }
+
+        long quantityOfUsers = userTenantRepository.countByTenantId(currentUserTenant.getTenantId());
 
         AssinaturaEntity activeAssinatura = getAssinaturaActiveByTenantIdService.execute(currentUserTenant.getTenantId());
 

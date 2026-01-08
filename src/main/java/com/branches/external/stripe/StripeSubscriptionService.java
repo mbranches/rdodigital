@@ -9,6 +9,7 @@ import com.branches.plano.domain.PlanoEntity;
 import com.branches.plano.domain.enums.RecorrenciaPlano;
 import com.branches.plano.repository.IntencaoDePagamentoRepository;
 import com.branches.plano.repository.PlanoRepository;
+import com.branches.plano.service.FinalizarPeriodoDeTesteIfToExistService;
 import com.stripe.model.Subscription;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class StripeSubscriptionService {
     private final IntencaoDePagamentoRepository intencaoDePagamentoRepository;
     private final PlanoRepository planoRepository;
     private final AssinaturaRepository assinaturaRepository;
+    private final FinalizarPeriodoDeTesteIfToExistService finalizarPeriodoDeTesteIfToExistService;
 
     public void register(String sessionId, Subscription subscription) {
         log.info("Criando assinatura para a sessão: {}", sessionId);
@@ -48,15 +50,22 @@ public class StripeSubscriptionService {
         LocalDate dataFim = recorrenciaPlano != RecorrenciaPlano.MENSAL_AVULSO ? Instant.ofEpochSecond(subscription.getBillingCycleAnchor())
                 .atZone(ZoneId.of("America/Sao_Paulo")).toLocalDate() : LocalDate.now().plusMonths(1);
 
+        Long tenantId = intencaoDePagamentoEntity.getTenantId();
         AssinaturaEntity assinatura = AssinaturaEntity.builder()
-                .status(recorrenciaPlano != RecorrenciaPlano.MENSAL_AVULSO ? AssinaturaStatus.PENDENTE : AssinaturaStatus.ATIVO)
+                .status(AssinaturaStatus.PENDENTE)
                 .stripeSubscriptionId(subscriptionId)
                 .plano(plano)
                 .dataInicio(LocalDate.now())
                 .dataFim(dataFim)
                 .intencaoDePagamento(intencaoDePagamentoEntity)
-                .tenantId(intencaoDePagamentoEntity.getTenantId())
+                .tenantId(tenantId)
                 .build();
+
+        if(recorrenciaPlano == RecorrenciaPlano.MENSAL_AVULSO) {
+            assinatura.ativar();
+
+            finalizarPeriodoDeTesteIfToExistService.execute(tenantId);
+        }
 
         assinaturaRepository.save(assinatura);
 
@@ -125,7 +134,8 @@ public class StripeSubscriptionService {
         AssinaturaEntity assinatura = assinaturaRepository.findByStripeSubscriptionId(subscriptionId)
                 .orElseThrow(() -> new NotFoundException("Assinatura não encontrada para o ID da assinatura do Stripe: " + subscriptionId));
 
-        assinatura.setStatus(AssinaturaStatus.ATIVO);
+        assinatura.ativar();
+        finalizarPeriodoDeTesteIfToExistService.execute(assinatura.getTenantId());
 
         assinaturaRepository.save(assinatura);
         log.info("Assinatura marcada como ATIVO para o ID do Stripe: {}", subscriptionId);

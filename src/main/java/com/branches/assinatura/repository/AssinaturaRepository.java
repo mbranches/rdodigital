@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface AssinaturaRepository extends JpaRepository<AssinaturaEntity, Long> {
-    Optional<AssinaturaEntity> findByStatusAndTenantId(AssinaturaStatus status, Long tenantId);
+    Optional<AssinaturaEntity> findByStatusInAndTenantId(List<AssinaturaStatus> statusList, Long tenantId);
 
     Optional<AssinaturaEntity> findByStripeSubscriptionId(String subscriptionId);
 

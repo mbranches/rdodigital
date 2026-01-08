@@ -47,4 +47,8 @@ public class AssinaturaEntity extends Auditable {
         this.status = AssinaturaStatus.CANCELADO;
         this.canceladoEm = LocalDateTime.now();
     }
+
+    public void ativar() {
+        this.status = AssinaturaStatus.ATIVO;
+    }
 }

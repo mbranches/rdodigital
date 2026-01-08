@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserTenantRepository extends JpaRepository<UserTenantEntity, UserTenantKey> {
-    long countByTenantIdAndAtivoIsTrue(Long tenantId);
+    long countByTenantId(Long tenantId);
 
     @Query("""
     SELECT ut

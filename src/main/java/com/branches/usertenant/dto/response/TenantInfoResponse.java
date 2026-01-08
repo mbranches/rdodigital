@@ -1,5 +1,6 @@
 package com.branches.usertenant.dto.response;
 
+import com.branches.plano.dto.response.PeriodoDeTesteResponse;
 import com.branches.tenant.repository.projection.TenantInfoProjection;
 
 public record TenantInfoResponse(
@@ -12,7 +13,10 @@ public record TenantInfoResponse(
         ResponsavelInfoResponse responsavel,
         AssinaturaInfoResponse assinaturaCorrente,
         Long quantidadeDeUsersCriados,
-        Long quantidadeDeObrasCriadas
+        Long quantidadeDeObrasCriadas,
+        PeriodoDeTesteResponse periodoDeTeste,
+        Boolean isPeriodoDeTesteDisponivel,
+        Boolean jaTeveAssinaturaAtiva
 ) {
     public static TenantInfoResponse from(TenantInfoProjection tenant) {
         AssinaturaInfoResponse assinatura = tenant.getAssinaturaCorrente() != null ? AssinaturaInfoResponse.from(tenant.getAssinaturaCorrente())
@@ -28,7 +32,10 @@ public record TenantInfoResponse(
                 ResponsavelInfoResponse.from(tenant.getResponsavel()),
                 assinatura,
                 tenant.getQuantidadeDeUsersCriados(),
-                tenant.getQuantidadeDeObrasCriadas()
+                tenant.getQuantidadeDeObrasCriadas(),
+                tenant.getPeriodoDeTeste() != null ? PeriodoDeTesteResponse.from(tenant.getPeriodoDeTeste()) : null,
+                tenant.getPeriodoDeTeste() == null || !tenant.getAlreadyHadSubscription(),
+                tenant.getAlreadyHadSubscription()
         );
     }
 }

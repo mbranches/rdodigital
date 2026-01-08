@@ -13,6 +13,8 @@ import com.branches.obra.dto.response.CreateObraResponse;
 import com.branches.obra.repository.ObraRepository;
 import com.branches.exception.BadRequestException;
 import com.branches.exception.ForbiddenException;
+import com.branches.plano.domain.PeriodoTesteEntity;
+import com.branches.plano.service.FindTenantPeriodoTesteService;
 import com.branches.tenant.domain.TenantEntity;
 import com.branches.tenant.service.GetTenantByIdExternoService;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class CreateObraService {
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetTenantByIdExternoService getTenantByIdExternoService;
     private final GetModeloDeRelatorioByIdAndTenantIdService getModeloDeRelatorioByIdAndTenantIdService;
+    private final FindTenantPeriodoTesteService findTenantPeriodoTesteService;
 
     public CreateObraResponse execute(CreateObraRequest request, String tenantDaObraExternalId, List<UserTenantEntity> userTenants) {
         TenantEntity tenant = getTenantByIdExternoService.execute(tenantDaObraExternalId);
@@ -89,6 +93,12 @@ public class CreateObraService {
     }
 
     private void verifyIfPlanoAllowsCreateObra(Long tenantId) {
+        Optional<PeriodoTesteEntity> optionalPeriodoTeste = findTenantPeriodoTesteService.execute(tenantId);
+
+        if (optionalPeriodoTeste.isPresent() && optionalPeriodoTeste.get().isInProgress()) {
+            return;
+        }
+
         Integer quantityObrasActive = obraRepository.countByTenantIdAndAtivoIsTrue(tenantId);
 
         AssinaturaEntity assinaturaAtiva = getAssinaturaActiveByTenantIdService.execute(tenantId);

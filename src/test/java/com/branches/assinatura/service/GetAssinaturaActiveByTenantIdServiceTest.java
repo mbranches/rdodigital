@@ -52,7 +52,7 @@ class GetAssinaturaActiveByTenantIdServiceTest {
 
     @Test
     void deveExecutarGetAssinaturaByTenantIdComSucesso() {
-        when(assinaturaRepository.findByStatusAndTenantId(AssinaturaStatus.ATIVO, tenantId))
+        when(assinaturaRepository.findByStatusInAndTenantId(AssinaturaStatus.ATIVO, tenantId))
             .thenReturn(Optional.of(assinatura));
 
         AssinaturaEntity response = service.execute(tenantId);
@@ -65,7 +65,7 @@ class GetAssinaturaActiveByTenantIdServiceTest {
 
     @Test
     void deveLancarNotFoundExceptionQuandoAssinaturaNaoExistir() {
-        when(assinaturaRepository.findByStatusAndTenantId(AssinaturaStatus.ATIVO, tenantId))
+        when(assinaturaRepository.findByStatusInAndTenantId(AssinaturaStatus.ATIVO, tenantId))
             .thenReturn(Optional.empty());
 
          NotFoundException exception = assertThrows(NotFoundException.class, () -> service.execute(tenantId));

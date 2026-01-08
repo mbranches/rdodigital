@@ -14,6 +14,7 @@ public record TenantInfoResponse(
         AssinaturaInfoResponse assinaturaCorrente,
         Long quantidadeDeUsersCriados,
         Long quantidadeDeObrasCriadas,
+        Long quantidadeDeRelatoriosCriados,
         PeriodoDeTesteResponse periodoDeTeste,
         Boolean isPeriodoDeTesteDisponivel,
         Boolean jaTeveAssinaturaAtiva
@@ -33,7 +34,8 @@ public record TenantInfoResponse(
                 assinatura,
                 tenant.getQuantidadeDeUsersCriados(),
                 tenant.getQuantidadeDeObrasCriadas(),
-                tenant.getPeriodoDeTeste() != null ? PeriodoDeTesteResponse.from(tenant.getPeriodoDeTeste()) : null,
+                tenant.getQuantidadeDeRelatoriosCriados(),
+                tenant.getPeriodoDeTeste() != null ? com.branches.plano.dto.response.PeriodoDeTesteResponse.from(tenant.getPeriodoDeTeste()) : null,
                 tenant.getPeriodoDeTeste() == null && !tenant.getAlreadyHadSubscription(),
                 tenant.getAlreadyHadSubscription()
         );

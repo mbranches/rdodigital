@@ -47,7 +47,13 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
             FROM ObraEntity o
             WHERE o.tenantId = t.id
                 AND o.ativo IS TRUE
-        ) AS quantidadeDeObrasCriadas
+        ) AS quantidadeDeObrasCriadas,
+        (
+            SELECT COUNT(1)
+            FROM RelatorioEntity r
+            WHERE r.tenantId = t.id
+                AND r.ativo IS TRUE
+        ) AS quantidadeDeRelatoriosCriados
     FROM TenantEntity t
     JOIN UserEntity u ON t.userResponsavelId = u.id
     LEFT JOIN AssinaturaEntity a ON (t.id = a.tenantId AND a.status NOT IN ('INCOMPLETO', 'PENDENTE', 'NAO_INICIADO', 'CANCELADO', 'ENCERRADO', 'SUSPENSO'))

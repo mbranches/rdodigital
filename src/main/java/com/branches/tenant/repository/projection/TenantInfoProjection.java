@@ -15,6 +15,7 @@ public interface TenantInfoProjection {
     AssinaturaEntity getAssinaturaCorrente();
     Long getQuantidadeDeUsersCriados();
     Long getQuantidadeDeObrasCriadas();
+    Long getQuantidadeDeRelatoriosCriados();
     PeriodoTesteEntity getPeriodoDeTeste();
     Boolean getAlreadyHadSubscription();
 }

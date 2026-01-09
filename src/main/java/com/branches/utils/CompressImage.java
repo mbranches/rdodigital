@@ -9,16 +9,29 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.Iterator;
 
 @Slf4j
 @Component
 public class CompressImage {
+
+    static {
+        // Registrar suporte para HEIC/HEIF
+        try {
+            Class.forName("com.github.gotson.nightmonkeys.heif.imageio.plugins.HeifImageReaderSpi");
+            log.info("HEIC/HEIF image reader registered successfully");
+        } catch (ClassNotFoundException e) {
+            log.warn("HEIC/HEIF image reader not available: {}", e.getMessage());
+        }
+    }
 
     public byte[] execute(String imageBase64, int maxWidth, int maxHeight, double percentageQuality, ImageOutPutFormat outputFormat) {
         try {
@@ -28,7 +41,7 @@ public class CompressImage {
 
             byte[] imageBytes = Base64.getDecoder().decode(formattedImage);
 
-            BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+            BufferedImage originalImage = readImage(imageBytes);
 
             if (originalImage == null) {
                 throw new InternalServerError("Não foi possível ler a imagem");
@@ -54,12 +67,47 @@ public class CompressImage {
         }
     }
 
+    private BufferedImage readImage(byte[] imageBytes) throws Exception {
+        ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+
+        // Tentar ler a imagem com ImageIO (suporta JPEG, PNG, HEIC via plugin)
+        BufferedImage image = ImageIO.read(bais);
+
+        if (image != null) {
+            return image;
+        }
+
+        // Se falhou, tentar com ImageInputStream e iterador de readers
+        bais.reset();
+        try (ImageInputStream iis = ImageIO.createImageInputStream(bais)) {
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+
+            if (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                try {
+                    reader.setInput(iis);
+                    image = reader.read(0);
+                    log.info("Imagem lida usando reader: {}", reader.getClass().getSimpleName());
+                    return image;
+                } finally {
+                    reader.dispose();
+                }
+            }
+        }
+
+        throw new InternalServerError("Formato de imagem não suportado");
+    }
+
     private BufferedImage correctImageOrientation(byte[] imageBytes, BufferedImage originalImage) {
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(imageBytes));
             ExifIFD0Directory exifIFD0Directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 
             if (exifIFD0Directory == null) {
+                return originalImage;
+            }
+
+            if (!exifIFD0Directory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
                 return originalImage;
             }
 
@@ -77,62 +125,68 @@ public class CompressImage {
     private BufferedImage rotateImageBasedOnOrientation(BufferedImage image, int orientation) {
         AffineTransform transform = new AffineTransform();
 
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        int newWidth = width;
+        int newHeight = height;
         switch (orientation) {
             case 1:
-                // Normal, sem rotação necessária
                 return image;
-            case 2:
-                // Flip horizontal
-                transform.scale(-1.0, 1.0);
-                transform.translate(-image.getWidth(), 0);
+
+            case 2: // Flip horizontal
+                transform.scale(-1, 1);
+                transform.translate(-width, 0);
                 break;
-            case 3:
-                // Rotação 180°
-                transform.translate(image.getWidth(), image.getHeight());
+
+            case 3: // Rotate 180
+                transform.translate(width, height);
                 transform.rotate(Math.PI);
                 break;
-            case 4:
-                // Flip vertical
-                transform.scale(1.0, -1.0);
-                transform.translate(0, -image.getHeight());
+
+            case 4: // Flip vertical
+                transform.scale(1, -1);
+                transform.translate(0, -height);
                 break;
-            case 5:
-                // Flip horizontal + rotação 270° CW
-                transform.rotate(-Math.PI / 2);
-                transform.scale(-1.0, 1.0);
-                break;
-            case 6:
-                // Rotação 90° CW
-                transform.translate(image.getHeight(), 0);
+
+            case 5: // Transpose
                 transform.rotate(Math.PI / 2);
+                transform.scale(1, -1);
+                newWidth = height;
+                newHeight = width;
                 break;
-            case 7:
-                // Flip horizontal + rotação 90° CW
-                transform.scale(-1.0, 1.0);
-                transform.translate(-image.getHeight(), 0);
-                transform.translate(0, image.getWidth());
+
+            case 6: // Rotate 90 CW
+                transform.translate(height, 0);
+                transform.rotate(Math.PI / 2);
+                newWidth = height;
+                newHeight = width;
+                break;
+
+            case 7: // Transverse
+                transform.rotate(-Math.PI / 2);
+                transform.scale(1, -1);
+                newWidth = height;
+                newHeight = width;
+                break;
+
+            case 8: // Rotate 270
+                transform.translate(0, width);
                 transform.rotate(3 * Math.PI / 2);
+                newWidth = height;
+                newHeight = width;
                 break;
-            case 8:
-                // Rotação 270° CW
-                transform.translate(0, image.getWidth());
-                transform.rotate(3 * Math.PI / 2);
-                break;
+
             default:
                 return image;
         }
 
+        int imageType = image.getType() == BufferedImage.TYPE_CUSTOM
+                ? BufferedImage.TYPE_INT_ARGB
+                : image.getType();
+
+        BufferedImage rotated = new BufferedImage(newWidth, newHeight, imageType);
         AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
-
-        // Para rotações de 90° ou 270°, precisamos trocar largura e altura
-        int newWidth = image.getWidth();
-        int newHeight = image.getHeight();
-        if (orientation >= 5) {
-            newWidth = image.getHeight();
-            newHeight = image.getWidth();
-        }
-
-        BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, image.getType());
-        return op.filter(image, rotatedImage);
+        return op.filter(image, rotated);
     }
 }

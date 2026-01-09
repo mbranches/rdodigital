@@ -32,7 +32,7 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
         pt AS periodoDeTeste,
         EXISTS (
             SELECT 1
-            FROM AssinaturaEntity a2
+            FROM AssinaturaDePlanoEntity a2
             WHERE a2.tenantId = t.id
                 AND a2.status NOT IN ('INCOMPLETO', 'PENDENTE', 'NAO_INICIADO')
         ) AS alreadyHadSubscription,
@@ -56,7 +56,7 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
         ) AS quantidadeDeRelatoriosCriados
     FROM TenantEntity t
     JOIN UserEntity u ON t.userResponsavelId = u.id
-    LEFT JOIN AssinaturaEntity a ON (t.id = a.tenantId AND a.status NOT IN ('INCOMPLETO', 'PENDENTE', 'NAO_INICIADO', 'CANCELADO', 'ENCERRADO', 'SUSPENSO'))
+    LEFT JOIN AssinaturaDePlanoEntity a ON (t.id = a.tenantId AND a.status NOT IN ('INCOMPLETO', 'PENDENTE', 'NAO_INICIADO', 'CANCELADO', 'ENCERRADO', 'SUSPENSO'))
     LEFT JOIN PeriodoTesteEntity pt ON t.id = pt.tenantId
     WHERE t.id = :tenantId
         AND t.ativo IS TRUE

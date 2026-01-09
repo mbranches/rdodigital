@@ -17,7 +17,7 @@ import java.util.List;
 public class IniciarPeriodoTesteService {
     private final GetTenantIdByIdExternoService getTenantIdByIdExternoService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
-    private final CheckIfTenantAlreadyHasTrialPeriodService checkIfTenantAlreadyHasTrialPeriodService;
+    private final CheckIfTenantAlreadyCanIniciarPeriodoTesteService checkIfTenantAlreadyCanIniciarPeriodoTesteService;
     private static final long PERIODO_TESTE_DIAS = 10;
     private final PeriodoTesteRepository periodoTesteRepository;
 
@@ -25,7 +25,7 @@ public class IniciarPeriodoTesteService {
         Long tenantId = getTenantIdByIdExternoService.execute(tenantExternalId);
         getCurrentUserTenantService.execute(userTenants, tenantId);
 
-        checkIfTenantAlreadyHasTrialPeriodService.execute(tenantId);
+        checkIfTenantAlreadyCanIniciarPeriodoTesteService.execute(tenantId);
 
         PeriodoTesteEntity entity = PeriodoTesteEntity.builder()
                 .tenantId(tenantId)

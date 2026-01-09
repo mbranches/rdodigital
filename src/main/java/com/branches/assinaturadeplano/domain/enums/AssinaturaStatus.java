@@ -1,5 +1,7 @@
 package com.branches.assinaturadeplano.domain.enums;
 
+import java.util.List;
+
 public enum AssinaturaStatus {
     ATIVO,
     VENCIDO,
@@ -21,5 +23,9 @@ public enum AssinaturaStatus {
             case "unpaid", "paused" -> SUSPENSO;
             default -> throw new IllegalArgumentException("Status de assinatura desconhecido: " + status);
         };
+    }
+
+    public static List<AssinaturaStatus> getStatusThatAlreadyHaveActivePlan(){
+        return List.of(ATIVO, VENCIDO, ENCERRADO, SUSPENSO, CANCELADO);
     }
 }

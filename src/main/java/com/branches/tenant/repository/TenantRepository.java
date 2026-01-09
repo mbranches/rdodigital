@@ -1,5 +1,6 @@
 package com.branches.tenant.repository;
 
+import com.branches.assinaturadeplano.domain.enums.AssinaturaStatus;
 import com.branches.tenant.domain.TenantEntity;
 import com.branches.tenant.repository.projection.TenantInfoProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,12 +57,12 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
         ) AS quantidadeDeRelatoriosCriados
     FROM TenantEntity t
     JOIN UserEntity u ON t.userResponsavelId = u.id
-    LEFT JOIN AssinaturaDePlanoEntity a ON (t.id = a.tenantId AND a.status NOT IN ('INCOMPLETO', 'PENDENTE', 'NAO_INICIADO', 'CANCELADO', 'ENCERRADO', 'SUSPENSO'))
+    LEFT JOIN AssinaturaDePlanoEntity a ON (t.id = a.tenantId AND a.status IN :statusList)
     LEFT JOIN PeriodoTesteEntity pt ON t.id = pt.tenantId
     WHERE t.id = :tenantId
         AND t.ativo IS TRUE
 """)
-    Optional<TenantInfoProjection> findTenantInfoById(Long tenantId);
+    Optional<TenantInfoProjection> findTenantInfoById(Long tenantId, List<AssinaturaStatus> statusList);
 
     List<TenantEntity> findAllByIdInAndAtivoIsTrue(Collection<Long> ids);
 

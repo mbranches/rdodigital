@@ -1,5 +1,6 @@
 package com.branches.usertenant.service;
 
+import com.branches.assinaturadeplano.domain.enums.AssinaturaStatus;
 import com.branches.exception.ForbiddenException;
 import com.branches.exception.NotFoundException;
 import com.branches.tenant.domain.TenantEntity;
@@ -31,7 +32,7 @@ public class GetUserTenantInfoService {
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado para o tenant informado"));
         List<TenantEntity> allTenantsByUser = tenantRepository.findAllByIdInAndAtivoIsTrue(tenantIds);
 
-        TenantInfoProjection tenant = tenantRepository.findTenantInfoById(tenantId)
+        TenantInfoProjection tenant = tenantRepository.findTenantInfoById(tenantId, AssinaturaStatus.getStatusThatAlreadyHaveActivePlan())
                 .orElseThrow(() -> new NotFoundException("Tenant não encontrado"));
 
         return UserTenantInfoResponse.from(user, allTenantsByUser, tenant);

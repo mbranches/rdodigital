@@ -53,8 +53,8 @@ public class UpdateMaoDeObraDeRelatorioService {
         if (request.presenca().equals(PresencaMaoDeObra.PRESENTE)) {
             entity.setHoraInicio(request.horaInicio());
             entity.setHoraFim(request.horaFim());
-            entity.setHorasIntervalo(request.horasIntervalo());
-            LocalTime horasTrabalhadas = calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), request.horasIntervalo());
+            entity.setMinutosIntervalo(request.minutosIntervalo());
+            LocalTime horasTrabalhadas = calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), request.minutosIntervalo());
             entity.setHorasTrabalhadas(horasTrabalhadas);
         }
 

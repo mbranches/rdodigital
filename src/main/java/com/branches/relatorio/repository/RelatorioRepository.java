@@ -61,7 +61,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
         r.indiciePluviometrico AS indicePluviometrico,
         r.horaInicioTrabalhos AS horaInicioTrabalhos,
         r.horaFimTrabalhos AS horaFimTrabalhos,
-        r.horasIntervalo AS horasIntervalo,
+        r.minutosIntervalo AS minutosIntervalo,
         r.horasTrabalhadas AS horasTrabalhadas,
         r.status AS status,
         r.tipoMaoDeObra AS tipoMaoDeObra,

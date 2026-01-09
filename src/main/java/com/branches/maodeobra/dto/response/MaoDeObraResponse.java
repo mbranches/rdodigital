@@ -13,7 +13,7 @@ public record MaoDeObraResponse(
     String nome,
     LocalTime horaInicio,
     LocalTime horaFim,
-    LocalTime horasIntervalo,
+    Integer minutosIntervalo,
     LocalTime horasTrabalhadas
 ) {
     public static MaoDeObraResponse from(MaoDeObraEntity saved) {
@@ -24,7 +24,7 @@ public record MaoDeObraResponse(
             saved.getNome(),
             saved.getHoraInicio(),
             saved.getHoraFim(),
-            saved.getHorasIntervalo(),
+            saved.getMinutosIntervalo(),
             saved.getHorasTrabalhadas()
         );
     }

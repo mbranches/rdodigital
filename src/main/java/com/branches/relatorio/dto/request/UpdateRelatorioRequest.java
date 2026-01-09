@@ -18,7 +18,7 @@ public record UpdateRelatorioRequest(
 
         LocalTime horaInicioTrabalhos,
         LocalTime horaFimTrabalhos,
-        LocalTime horasIntervalo,
+        Integer minutosIntervalo,
 
         @NotNull(message = "O campo 'prazoContratual' é obrigatório")
         Long prazoContratual,

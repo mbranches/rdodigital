@@ -46,7 +46,7 @@ public record GetRelatorioDetailsResponse(
         LocalDate dataFim,
         LocalTime horaInicioTrabalhos,
         LocalTime horaFimTrabalhos,
-        LocalTime horasIntervalo,
+        Integer minutosIntervalo,
         LocalTime horasTrabalhadas,
         String diaDaSemana,
         Long numeroRelatorio,
@@ -98,8 +98,8 @@ public record GetRelatorioDetailsResponse(
                 relatorioDetails.getHoraInicioTrabalhos() : null;
         var horarioFimTrabalhos = canViewHorarioDeTrabalho ?
                 relatorioDetails.getHoraFimTrabalhos() : null;
-        var horasIntervalo = canViewHorarioDeTrabalho ?
-                relatorioDetails.getHorasIntervalo() : null;
+        var minutosIntervalo = canViewHorarioDeTrabalho ?
+                relatorioDetails.getMinutosIntervalo() : null;
         var horasTrabalhadas = canViewHorarioDeTrabalho ?
                 relatorioDetails.getHorasTrabalhadas() : null;
 
@@ -142,7 +142,7 @@ public record GetRelatorioDetailsResponse(
                 relatorioDetails.getDataFim(),
                 horarioInicioTrabalhos,
                 horarioFimTrabalhos,
-                horasIntervalo,
+                minutosIntervalo,
                 horasTrabalhadas,
                 dayOfWeekResponse,
                 relatorioDetails.getNumero(),

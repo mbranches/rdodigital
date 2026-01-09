@@ -12,6 +12,6 @@ public record CreateMaoDeObraDeRelatorioRequest(
         PresencaMaoDeObra presenca,
         LocalTime horaInicio,
         LocalTime horaFim,
-        LocalTime horasIntervalo
+        Integer minutosIntervalo
 ) {
 }

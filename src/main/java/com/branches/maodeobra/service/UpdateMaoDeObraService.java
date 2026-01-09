@@ -50,13 +50,12 @@ public class UpdateMaoDeObraService {
         if (tipo.equals(TipoMaoDeObra.PERSONALIZADA)) {
             LocalTime horaInicio = request.horaInicio();
             LocalTime horaFim = request.horaFim();
-            LocalTime horasIntervalo = request.horasIntervalo();
 
             maoDeObraEntity.setNome(request.nome());
             maoDeObraEntity.setHoraInicio(horaInicio);
             maoDeObraEntity.setHoraFim(horaFim);
-            maoDeObraEntity.setHorasIntervalo(horasIntervalo);
-            maoDeObraEntity.setHorasTrabalhadas(calculateHorasTotais.execute(horaInicio, horaFim, horasIntervalo));
+            maoDeObraEntity.setMinutosIntervalo(request.minutosIntervalo());
+            maoDeObraEntity.setHorasTrabalhadas(calculateHorasTotais.execute(horaInicio, horaFim, request.minutosIntervalo()));
         }
 
         maoDeObraRepository.save(maoDeObraEntity);

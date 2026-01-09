@@ -11,5 +11,5 @@ public record UpdateMaoDeObraRequest (
     String nome,
     LocalTime horaInicio,
     LocalTime horaFim,
-    LocalTime horasIntervalo
+    Integer minutosIntervalo
 ) {}

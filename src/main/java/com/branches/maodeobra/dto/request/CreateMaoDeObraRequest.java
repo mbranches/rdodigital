@@ -12,6 +12,6 @@ public record CreateMaoDeObraRequest(
     String nome,
     LocalTime horaInicio,
     LocalTime horaFim,
-    LocalTime horasIntervalo,
+    Integer minutosIntervalo,
     @NotNull(message = "O campo 'tipo' é obrigatório") TipoMaoDeObra tipo
 ) {}

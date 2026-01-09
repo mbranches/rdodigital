@@ -56,16 +56,15 @@ public class CreateMaoDeObraService {
     private MaoDeObraEntity buildMaoDeObraEntityPersonalizada(CreateMaoDeObraRequest request, Long tenantId) {
         LocalTime horaInicio = request.horaInicio();
         LocalTime horaFim = request.horaFim();
-        LocalTime horasIntervalo = request.horasIntervalo();
 
         return MaoDeObraEntity.builder()
                 .tenantId(tenantId)
                 .nome(request.nome())
                 .tipo(request.tipo())
                 .horaInicio(horaInicio)
-                .horasIntervalo(horasIntervalo)
+                .minutosIntervalo(request.minutosIntervalo())
                 .horaFim(horaFim)
-                .horasTrabalhadas(calculateHorasTotais.execute(horaInicio, horaFim, horasIntervalo))
+                .horasTrabalhadas(calculateHorasTotais.execute(horaInicio, horaFim, request.minutosIntervalo()))
                 .horaFim(request.horaFim())
                 .funcao(request.funcao())
                 .build();

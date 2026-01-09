@@ -48,7 +48,7 @@ public interface RelatorioDetailsProjection {
 
     LocalTime getHoraInicioTrabalhos();
     LocalTime getHoraFimTrabalhos();
-    LocalTime getHorasIntervalo();
+    Integer getMinutosIntervalo();
     LocalTime getHorasTrabalhadas();
 
     Long getNumero();

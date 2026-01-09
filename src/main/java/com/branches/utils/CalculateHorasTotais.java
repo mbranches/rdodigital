@@ -3,24 +3,25 @@ package com.branches.utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Service
 public class CalculateHorasTotais {
-    private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFim;
+    private final ValidateHoraInicioAndHoraFim validateHoraInicioAndHoraFimAndIntervalo;
 
-    public LocalTime execute(LocalTime horaInicio, LocalTime horaFim, LocalTime horasIntervalo) {
-        validateHoraInicioAndHoraFim.execute(horaInicio, horaFim);
+    public LocalTime execute(LocalTime horaInicio, LocalTime horaFim, Integer minutosIntervalo) {
+        validateHoraInicioAndHoraFimAndIntervalo.execute(horaInicio, horaFim, minutosIntervalo);
 
         if (horaFim  == null || horaInicio == null) {
             return null;
         }
+        Duration durationIntervalo = minutosIntervalo != null ? Duration.ofMinutes(minutosIntervalo) : Duration.ZERO;
 
-        int horasDeIntervalo = horasIntervalo != null ? horasIntervalo.getHour() : 0;
-        int minutosDeIntervalo = horasIntervalo != null ? horasIntervalo.getMinute() : 0;
+        Duration duration = Duration.between(horaInicio, horaFim)
+                .minus(durationIntervalo);
 
-        return horaFim.minusHours(horaInicio.getHour()).minusMinutes(horaInicio.getMinute())
-                .minusHours(horasDeIntervalo).minusMinutes(minutosDeIntervalo);
+        return LocalTime.MIDNIGHT.plus(duration);
     }
 }

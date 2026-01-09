@@ -152,7 +152,7 @@ public class CreateRelatorioService {
     private void copyHorarioDeTrabalhoFromLastRelatorio(RelatorioEntity lastRelatorio, RelatorioEntity relatorio) {
         relatorio.setHoraInicioTrabalhos(lastRelatorio.getHoraInicioTrabalhos());
         relatorio.setHoraFimTrabalhos(lastRelatorio.getHoraFimTrabalhos());
-        relatorio.setHorasIntervalo(lastRelatorio.getHorasIntervalo());
+        relatorio.setMinutosIntervalo(lastRelatorio.getMinutosIntervalo());
         relatorio.setHorasTrabalhadas(lastRelatorio.getHorasTrabalhadas());
 
         relatorioRepository.save(relatorio);

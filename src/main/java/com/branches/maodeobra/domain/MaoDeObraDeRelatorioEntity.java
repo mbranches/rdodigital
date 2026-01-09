@@ -29,6 +29,6 @@ public class MaoDeObraDeRelatorioEntity {
     private PresencaMaoDeObra presenca;
     private LocalTime horaInicio;
     private LocalTime horaFim;
-    private LocalTime horasIntervalo;
+    private Integer minutosIntervalo;
     private LocalTime horasTrabalhadas;
 }

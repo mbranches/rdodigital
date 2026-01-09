@@ -63,8 +63,8 @@ public class CreateMaoDeObraDeRelatorioService {
         if (request.presenca().equals(PresencaMaoDeObra.PRESENTE)) {
             toSave.setHoraInicio(request.horaInicio());
             toSave.setHoraFim(request.horaFim());
-            toSave.setHorasIntervalo(request.horasIntervalo());
-            toSave.setHorasTrabalhadas(calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), request.horasIntervalo()));
+            toSave.setMinutosIntervalo(request.minutosIntervalo());
+            toSave.setHorasTrabalhadas(calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), request.minutosIntervalo()));
         }
 
         MaoDeObraDeRelatorioEntity saved = maoDeObraDeRelatorioRepository.save(toSave);

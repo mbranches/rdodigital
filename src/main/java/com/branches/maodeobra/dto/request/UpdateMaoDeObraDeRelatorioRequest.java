@@ -10,6 +10,6 @@ public record UpdateMaoDeObraDeRelatorioRequest(
     PresencaMaoDeObra presenca,
     LocalTime horaInicio,
     LocalTime horaFim,
-    LocalTime horasIntervalo
+    Integer minutosIntervalo
 ) {
 }

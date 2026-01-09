@@ -58,8 +58,8 @@ public class UpdateRelatorioService {
         if (configuracaoRelatorios.getShowHorarioDeTrabalho()) {
             relatorio.setHoraInicioTrabalhos(request.horaInicioTrabalhos());
             relatorio.setHoraFimTrabalhos(request.horaFimTrabalhos());
-            relatorio.setHorasIntervalo(request.horasIntervalo());
-            relatorio.setHorasTrabalhadas(calculateHorasTotais.execute(request.horaInicioTrabalhos(), request.horaFimTrabalhos(), request.horasIntervalo()));
+            relatorio.setMinutosIntervalo(request.minutosIntervalo());
+            relatorio.setHorasTrabalhadas(calculateHorasTotais.execute(request.horaInicioTrabalhos(), request.horaFimTrabalhos(), request.minutosIntervalo()));
         }
 
         relatorioRepository.save(relatorio);

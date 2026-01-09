@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByIdExterno(String idExterno);
+    Optional<UserEntity> findByIdExternoAndAtivoIsTrue(String idExterno);
 
     Optional<UserEntity> findByEmail(String email);
 
@@ -33,4 +33,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserInfoProjection> findUserInfoByIdAndTenantId(Long userId, Long tenantId);
 
     boolean existsByEmail(String email);
+
+    Optional<UserEntity> findByIdAndAtivoIsTrue(Long id);
 }

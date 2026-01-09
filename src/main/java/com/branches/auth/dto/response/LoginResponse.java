@@ -4,5 +4,7 @@ import com.branches.usertenant.dto.response.TenantByUserInfoResponse;
 
 import java.util.List;
 
-public record LoginResponse(String accessToken, List<TenantByUserInfoResponse> tenants) {
+public record LoginResponse(String accessToken,
+                            String refreshToken,
+                            List<TenantByUserInfoResponse> tenants) {
 }

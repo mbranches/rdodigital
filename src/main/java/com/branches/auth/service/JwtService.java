@@ -2,7 +2,7 @@ package com.branches.auth.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.branches.auth.model.UserDetailsImpl;
+import com.branches.user.domain.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +12,19 @@ import java.time.Instant;
 public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
+    @Value("${jwt.expiration}")
+    private Long expiration;
     private final String issuer = "meudiariodeobras-backend";
 
 
-    public String generateToken(UserDetailsImpl userDetails) {
+    public String generateToken(UserEntity user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
         return JWT.create()
                 .withIssuer(issuer)
                 .withIssuedAt(creationDate())
                 .withExpiresAt(expirationDate())
-                .withSubject(userDetails.getUser().getIdExterno())
+                .withSubject(user.getIdExterno())
                 .sign(algorithm);
     }
 
@@ -41,8 +43,7 @@ public class JwtService {
     }
 
     private Instant expirationDate() {
-        int hoursValid = 1;
-        return Instant.now().plusSeconds(hoursValid * 3600);
+        return Instant.now().plusSeconds(expiration);
     }
 }
 

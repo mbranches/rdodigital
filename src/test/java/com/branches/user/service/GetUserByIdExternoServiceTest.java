@@ -62,7 +62,7 @@ class GetUserByIdExternoServiceTest {
 
     @Test
     void deveRetornarUserDtoQuandoUsuarioEncontrado() {
-        when(userRepository.findByIdExterno(idExterno)).thenReturn(Optional.of(userEntity));
+        when(userRepository.findByIdExternoAndAtivoIsTrue(idExterno)).thenReturn(Optional.of(userEntity));
 
         UserEntity resultado = getUserByIdExternoService.execute(idExterno);
 
@@ -81,7 +81,7 @@ class GetUserByIdExternoServiceTest {
 
     @Test
     void deveLancarNotFoundExceptionQuandoUsuarioNaoEncontrado() {
-        when(userRepository.findByIdExterno(idExterno)).thenReturn(Optional.empty());
+        when(userRepository.findByIdExternoAndAtivoIsTrue(idExterno)).thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> getUserByIdExternoService.execute(idExterno));
 

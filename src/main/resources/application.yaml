@@ -13,8 +13,11 @@ spring:
       ddl-auto: update
     show-sql: true
 jwt:
-    secret: ${ENV_JWT_SECRET}
-    expiration: ${ENV_JWT_EXPIRATION}
+  secret: ${ENV_JWT_SECRET}
+  expiration: ${ENV_JWT_EXPIRATION}
+
+refresh-token:
+  expiration: ${ENV_REFRESH_TOKEN_EXPIRATION}
 
 aws:
   secretAccessKey: ${ENV_AWS_SECRET_KEY}

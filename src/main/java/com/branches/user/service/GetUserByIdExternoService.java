@@ -12,7 +12,7 @@ public class GetUserByIdExternoService {
     private final UserRepository userRepository;
 
     public UserEntity execute(String idExterno) {
-        return userRepository.findByIdExterno(idExterno)
+        return userRepository.findByIdExternoAndAtivoIsTrue(idExterno)
                 .orElseThrow(() -> new NotFoundException("User não encontrado com idExterno: " + idExterno));
     }
 }

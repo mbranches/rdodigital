@@ -7,14 +7,13 @@ import com.branches.auth.dto.request.RefreshTokenRequest;
 import com.branches.auth.dto.response.RefreshTokenResponse;
 import com.branches.auth.repository.RefreshTokenRepository;
 import com.branches.exception.NotFoundException;
+import com.branches.exception.UnauthorizedException;
 import com.branches.user.domain.UserEntity;
 import com.branches.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -48,7 +47,7 @@ public class RefreshTokenService {
 
     public RefreshTokenResponse refresh(RefreshTokenRequest request, ClientInfo clientInfo) {
         RefreshTokenEntity entity = refreshTokenRepository.findByTokenAndIsRevogadoIsFalse(request.refreshToken())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+                .orElseThrow(() -> new UnauthorizedException("Token de refresh inválido"));
 
         Long userId = entity.getUserId();
 

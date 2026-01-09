@@ -1,6 +1,5 @@
 package com.branches.config.security;
 
-import com.branches.exception.InvalidJwtException;
 import com.branches.auth.model.UserDetailsImpl;
 import com.branches.auth.service.JwtService;
 import com.branches.user.domain.UserEntity;
@@ -44,7 +43,11 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             } catch (Exception e) {
-                throw new InvalidJwtException("Invalid token: " + token);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"error\": 401, \"message\": \"Token JWT inválido\"}");
+                return;
             }
         }
 

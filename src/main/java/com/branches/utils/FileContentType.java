@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum FileContentType {
+    HEIC("image/heic", "heic"),
     JPEG("image/jpeg", "jpeg"),
     PNG("image/png", "png"),
     PDF("application/pdf", "pdf"),

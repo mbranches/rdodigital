@@ -54,10 +54,12 @@ public class CreateFotoDeRelatorioService {
         checkIfUserHasAccessToEditRelatorioService.execute(currentUserTenant, relatorio.getStatus());
         checkIfUserCanAddFotosToRelatorioService.execute(currentUserTenant);
 
-        byte[] imageBytes = compressImage.execute(request.base64Image(), 800, 800, 0.8, ImageOutPutFormat.JPEG);
+        String base64Image = request.base64Image();
+        byte[] imageBytes = compressImage.execute(base64Image, 800, 800, 0.8, ImageOutPutFormat.JPEG);
 
-        String filename = "%s-%s.%s".formatted(request.fileName().replaceAll("\\.[^.]+$", ""), LocalDateTime.now(), FileContentType.JPEG.getExtension());
-        String fotoUrl = s3UploadFile.execute(filename, "tenants/%s/obras/%s/relatorios/%s/fotos".formatted(tenantExternalId, relatorioWithObra.getObra().getIdExterno(), relatorioExternalId), imageBytes, FileContentType.JPEG);
+        FileContentType contentType = !base64Image.startsWith("data:image/heic") && !base64Image.startsWith("data:image/HEIC") ? FileContentType.JPEG : FileContentType.HEIC;
+        String filename = "%s-%s.%s".formatted(request.fileName().replaceAll("\\.[^.]+$", ""), LocalDateTime.now(), contentType.getExtension());
+        String fotoUrl = s3UploadFile.execute(filename, "tenants/%s/obras/%s/relatorios/%s/fotos".formatted(tenantExternalId, relatorioWithObra.getObra().getIdExterno(), relatorioExternalId), imageBytes, contentType);
 
         BigDecimal fileLengthInMb = BigDecimal.valueOf(imageBytes.length).divide(BigDecimal.valueOf(1024 * 1024), RoundingMode.HALF_UP);
         ArquivoEntity arquivo = ArquivoEntity.builder()

@@ -1,6 +1,8 @@
 spring:
   application:
     name: meudiariodeobras
+  profiles:
+    active: ${ENV_SPRING_PROFILE:default}
   config:
     import:  optional:classpath:.env[.properties]
   datasource:

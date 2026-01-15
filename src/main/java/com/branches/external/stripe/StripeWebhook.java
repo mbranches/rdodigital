@@ -4,6 +4,7 @@ import com.branches.exception.InternalServerError;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.Invoice;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.Subscription;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
@@ -108,7 +109,73 @@ public class StripeWebhook {
                     stripeSubscriptionService.handlePaymentSucceeded(subscription);
                 }
             }
-        }
+            case "payment_intent.succeeded" -> {
+                PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
+                        .getObject().orElseThrow(() -> new InternalServerError("Erro ao desserializar objeto do PaymentIntent do Stripe"));
+
+                log.info("Pagamento confirmado via PaymentIntent: {}", paymentIntent.getId());
+
+                // Verifica se há invoice associada
+                if (paymentIntent.getMetadata() != null && paymentIntent.getMetadata().containsKey("invoice_id")) {
+                    String invoiceId = paymentIntent.getMetadata().get("invoice_id");
+
+                    try {
+                        Invoice invoice = Invoice.retrieve(invoiceId);
+                        String subscriptionId = invoice.getParent().getSubscriptionDetails().getSubscription();
+
+                        if (subscriptionId != null) {
+                            Subscription subscription = Subscription.retrieve(subscriptionId);
+                            stripeSubscriptionService.handlePaymentSucceeded(subscription);
+                            log.info("Assinatura ativada após pagamento confirmado: {}", subscriptionId);
+                        }
+                    } catch (StripeException e) {
+                        log.error("Erro ao processar pagamento: {}", e.getMessage());
+                        throw new InternalServerError("Erro ao processar pagamento");
+                    }
+                }
+            }
+            case "checkout.session.async_payment_succeeded" -> {
+                Session session = (Session) event.getDataObjectDeserializer()
+                        .getObject().orElseThrow(() -> new InternalServerError("Erro ao desserializar objeto da sessão do Stripe"));
+
+                log.info("Pagamento assíncrono bem-sucedido para sessão: {}", session.getId());
+
+                String subscriptionId = session.getSubscription();
+
+                if (subscriptionId != null) {
+                    Subscription subscription;
+                    try {
+                        subscription = Subscription.retrieve(subscriptionId);
+                        stripeSubscriptionService.handlePaymentSucceeded(subscription);
+                        log.info("Assinatura ativada após pagamento assíncrono bem-sucedido: {}", subscriptionId);
+                    } catch (StripeException e) {
+                        log.error("Erro ao recuperar assinatura do Stripe: {}", e.getMessage());
+                        throw new InternalServerError("Erro ao recuperar assinatura do Stripe");
+                    }
+                }
+            }
+            case "checkout.session.async_payment_failed" -> {
+                Session session = (Session) event.getDataObjectDeserializer()
+                        .getObject().orElseThrow(() -> new InternalServerError("Erro ao desserializar objeto da sessão do Stripe"));
+
+                log.info("Pagamento assíncrono falhou para sessão: {}", session.getId());
+
+                String subscriptionId = session.getSubscription();
+
+                if (subscriptionId != null) {
+                    Subscription subscription;
+                    try {
+                        subscription = Subscription.retrieve(subscriptionId);
+                        stripeSubscriptionService.handlePaymentFailed(subscription);
+                        log.info("Assinatura marcada como falha após pagamento assíncrono falhar: {}", subscriptionId);
+                    } catch (StripeException e) {
+                        log.error("Erro ao recuperar assinatura do Stripe: {}", e.getMessage());
+                        throw new InternalServerError("Erro ao recuperar assinatura do Stripe");
+                    }
+                }
+            }
+
+    }
 
         log.info("webhook do Stripe processado com sucesso");
 

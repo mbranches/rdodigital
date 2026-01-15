@@ -61,12 +61,6 @@ public class StripeSubscriptionService {
                 .tenantId(tenantId)
                 .build();
 
-        if(recorrenciaPlano == RecorrenciaPlano.MENSAL_AVULSO) {
-            assinatura.ativar();
-
-            finalizarPeriodoDeTesteIfToExistService.execute(tenantId);
-        }
-
         assinaturaDePlanoRepository.save(assinatura);
 
         log.info("Assinatura criada com sucesso para a sessão: {}", sessionId);

@@ -1,0 +1,33 @@
+name: Deploy Meu Diario de Obras API
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Build project
+        run: mvn clean package -Dmaven.test.skip=true
+      - name: Login com Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build docker image
+        run: docker build -t mbranches12/meudiariodeobras-api:latest .
+      - name: Push docker image
+        run: docker push mbranches12/meudiariodeobras-api:latest
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull latest image
+        run: docker pull mbranches12/meudiariodeobras-api:latest
+      - name: Run container
+        run: docker run -d -p 8080:8080 --name meudiariodeobras-api mbranches12/meudiariodeobras-api:latest

@@ -29,7 +29,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: target/*.jar
           target: /opt/meudiariodeobras
-          strip_components: 1
 
       - name: Restart application on EC2
         uses: appleboy/ssh-action@v1.0.3

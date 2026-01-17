@@ -33,6 +33,7 @@ public class HtmlToPdfConverter {
             return pdfBytes;
 
         } catch (Exception e) {
+            log.error("Erro ao gerar PDF a partir do HTML: ", e);
             throw new InternalServerError("Erro ao gerar PDF");
         }
     }

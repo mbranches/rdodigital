@@ -13,21 +13,7 @@ public class HtmlToPdfConverter {
     public byte[] execute(String htmlContent) {
         try (Playwright playwright = Playwright.create()) {
 
-            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions()
-                    .setHeadless(true)
-                    .setArgs(java.util.Arrays.asList(
-                            "--disable-dev-shm-usage",
-                            "--disable-setuid-sandbox",
-                            "--no-sandbox",
-                            "--disable-gpu",
-                            "--disable-software-rasterizer",
-                            "--disable-extensions",
-                            "--no-first-run",
-                            "--no-zygote",
-                            "--single-process"
-                    ));
-
-            Browser browser = playwright.chromium().launch(launchOptions);
+            Browser browser = playwright.chromium().launch();
             BrowserContext context = browser.newContext();
             Page page = context.newPage();
 

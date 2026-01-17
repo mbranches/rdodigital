@@ -18,7 +18,6 @@ jobs:
           distribution: temurin
           java-version: 21
 
-
       - name: Build JAR
         run: mvn clean package -Dmaven.test.skip=true
 
@@ -28,7 +27,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: target/*.jar,pom.xml
+          source: target/*.jar
           target: /opt/meudiariodeobras
 
       - name: Restart application on EC2
@@ -40,11 +39,9 @@ jobs:
           script: |
             set -e
 
-            APP_DIR=/opt/meudiariodeobras/target
-            JAR_NAME=$(ls $APP_DIR/*.jar | head -n 1)
-
-            echo "Instalando dependências do sistema para Playwright..."
-            sudo apt-get update || true
+            # Instalar dependências do Playwright no EC2
+            echo "Instalando dependências do Playwright..."
+            sudo apt-get update
             sudo apt-get install -y \
               libatk1.0-0 \
               libatk-bridge2.0-0 \
@@ -55,39 +52,28 @@ jobs:
               libxrandr2 \
               libgbm1 \
               libxkbcommon0 \
-              libnss3 \
-              libnspr4 \
-              libasound2 \
-              libdbus-glib-1-2 \
-              libxshmfence1 \
-              libdrm2 \
-              libxcb1 \
-              libcups2 \
               libpango-1.0-0 \
               libcairo2 \
-              ffmpeg \
-              wget \
-              ca-certificates || true
+              libasound2 \
+              libcups2 \
+              libdbus-1-3 \
+              libdrm2 \
+              libexpat1 \
+              libnspr4 \
+              libnss3 \
+              libx11-6 \
+              libxcb1 \
+              libxext6 \
+              fonts-liberation \
+              libu2f-udev \
+              libvulkan1 \
+              xdg-utils
 
-            echo "Instalando Chromium para Playwright usando Java..."
-            if [ ! -d "$HOME/.cache/ms-playwright" ]; then
-              echo "Playwright não encontrado, instalando..."
-              cd /opt/meudiariodeobras
-              java -cp "$JAR_NAME" com.microsoft.playwright.CLI install chromium || {
-                echo "Falha ao instalar via JAR, tentando baixar manualmente..."
-                wget -O /tmp/playwright.jar https://repo1.maven.org/maven2/com/microsoft/playwright/playwright/1.56.0/playwright-1.56.0.jar
-                java -jar /tmp/playwright.jar install chromium
-              }
-            else
-              echo "Playwright já está instalado"
-            fi
+            APP_DIR=/opt/meudiariodeobras/target
+            JAR_NAME=$(ls $APP_DIR/*.jar | head -n 1)
 
             echo "Parando aplicação..."
             pkill -f "$JAR_NAME" || true
-            sleep 2
 
             echo "Iniciando aplicação..."
             nohup java -jar "$JAR_NAME" > $APP_DIR/app.log 2>&1 &
-
-            echo "Aplicação iniciada com sucesso!"
-

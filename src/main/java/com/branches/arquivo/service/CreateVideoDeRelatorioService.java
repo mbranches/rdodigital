@@ -17,6 +17,7 @@ import com.branches.usertenant.domain.UserTenantEntity;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import com.branches.utils.FileContentType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CreateVideoDeRelatorioService {
@@ -46,6 +48,7 @@ public class CreateVideoDeRelatorioService {
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
 
     public CreateVideoDeRelatorioResponse execute(MultipartFile video, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
+        log.info("Iniciando upload de vídeo para o relatório: {} do tenant: {}", relatorioExternalId, tenantExternalId);
         if (video == null || video.isEmpty()) {
             throw new BadRequestException("O vídeo é obrigatório");
         }
@@ -136,6 +139,7 @@ public class CreateVideoDeRelatorioService {
             return new BigDecimal(output);
 
         } catch (Exception e) {
+            log.error("Erro ao obter duração do vídeo: {}", e.getMessage());
             throw new InternalServerError("Erro ao obter duração do vídeo");
         }
     }

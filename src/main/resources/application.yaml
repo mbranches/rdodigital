@@ -14,6 +14,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 jwt:
   secret: ${ENV_JWT_SECRET}
   expiration: ${ENV_JWT_EXPIRATION}

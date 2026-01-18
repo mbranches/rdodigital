@@ -10,9 +10,7 @@ import com.branches.relatorio.dto.response.RelatorioResponse;
 import com.branches.relatorio.repository.projections.RelatorioProjection;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public record GetObraDetailsByIdExternoResponse(
@@ -23,6 +21,7 @@ public record GetObraDetailsByIdExternoResponse(
         TipoContratoDeObra tipoContrato,
         LocalDate dataInicio,
         LocalDate dataPrevistaFim,
+        LocalDate dataConclusao,
         Long prazoContratual,
         Long prazoPraVencer,
         Long prazoDecorrido,
@@ -42,22 +41,7 @@ public record GetObraDetailsByIdExternoResponse(
         List<RelatorioResponse> relatoriosRecentes,
         List<ArquivoResponse> fotosRecentes
 ) {
-    public static GetObraDetailsByIdExternoResponse from(ObraDetailsProjection obra, List<RelatorioProjection> relatoriosRecentesProjections, List<ArquivoEntity> fotosRecentes) {
-        long prazoContratual = ChronoUnit.DAYS.between(obra.getDataInicio(), obra.getDataPrevistaFim());
-
-        long diferencaEntreHojeEDataFim = ChronoUnit.DAYS.between(LocalDate.now(), obra.getDataPrevistaFim());
-
-        Long prazoPraVencer = diferencaEntreHojeEDataFim < 0 ? 0L : diferencaEntreHojeEDataFim;
-
-        LocalDate dataPraCompararDiasDecorrido = obra.getDataFimReal() != null ? obra.getDataFimReal() : LocalDate.now();
-        long prazoDecorrido = ChronoUnit.DAYS.between(obra.getDataInicio(), dataPraCompararDiasDecorrido);
-
-        BigDecimal porcentagemPrazoDecorrido = prazoContratual == 0 ? BigDecimal.valueOf(100) :
-                prazoDecorrido > prazoContratual ? BigDecimal.valueOf(100) :
-                BigDecimal.valueOf(prazoDecorrido)
-                        .multiply(BigDecimal.valueOf(100))
-                        .divide(BigDecimal.valueOf(prazoContratual), 2, RoundingMode.HALF_UP);
-
+    public static GetObraDetailsByIdExternoResponse from(ObraDetailsProjection obra, List<RelatorioProjection> relatoriosRecentesProjections, List<ArquivoEntity> fotosRecentes, long prazoContratual, Long prazoPraVencer, BigDecimal porcentagemPrazoDecorrido, long prazoDecorrido) {
         return new GetObraDetailsByIdExternoResponse(
             obra.getIdExterno(),
             obra.getNome(),
@@ -66,6 +50,7 @@ public record GetObraDetailsByIdExternoResponse(
             obra.getTipoContrato(),
             obra.getDataInicio(),
             obra.getDataPrevistaFim(),
+            obra.getDataFimReal(),
             prazoContratual,
             prazoPraVencer,
             prazoDecorrido,

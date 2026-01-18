@@ -81,7 +81,9 @@ public class CreateRelatorioService {
 
         relatorio.setAssinaturas(assinaturas);
         relatorio.setPrazoContratualObra(ChronoUnit.DAYS.between(obra.getDataInicio(), obra.getDataPrevistaFim()));
-        relatorio.setPrazoDecorridoObra(ChronoUnit.DAYS.between(obra.getDataInicio(), request.dataInicio()));
+        long diasDecorridos = ChronoUnit.DAYS.between(obra.getDataInicio(), request.dataInicio());
+        long prazoDecorridoObra = diasDecorridos < 0 ? 0 : diasDecorridos;
+        relatorio.setPrazoDecorridoObra(prazoDecorridoObra);
         relatorio.setPrazoPraVencerObra(diferencaEntreDataRelatorioEDataPrevistaFim < 0 ? 0L : diferencaEntreDataRelatorioEDataPrevistaFim);
         relatorio.setCaracteristicasManha(buildCaracteristicaDefault(tenantId));
         relatorio.setCaracteristicasTarde(buildCaracteristicaDefault(tenantId));

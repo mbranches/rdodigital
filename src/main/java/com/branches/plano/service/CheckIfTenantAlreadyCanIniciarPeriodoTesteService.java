@@ -20,7 +20,7 @@ public class CheckIfTenantAlreadyCanIniciarPeriodoTesteService {
             throw new BadRequestException("O tenant já iniciou um período de teste anteriormente");
         }
 
-        boolean alreadyHasActiveSubscription = assinaturaDePlanoRepository.existsByStatusIn(AssinaturaStatus.getStatusThatAlreadyHaveActivePlan());
+        boolean alreadyHasActiveSubscription = assinaturaDePlanoRepository.existsByStatusIn(AssinaturaStatus.getStatusListThatAlreadyHaveActivePlan());
 
         if (alreadyHasActiveSubscription) {
             throw new BadRequestException("O tenant já possuiu uma assinatura ativa");

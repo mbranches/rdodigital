@@ -32,7 +32,7 @@ public class GetUserTenantInfoService {
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado para o tenant informado"));
         List<TenantEntity> allTenantsByUser = tenantRepository.findAllByIdInAndAtivoIsTrue(tenantIds);
 
-        TenantInfoProjection tenant = tenantRepository.findTenantInfoById(tenantId, AssinaturaStatus.getStatusThatAlreadyHaveActivePlan())
+        TenantInfoProjection tenant = tenantRepository.findTenantInfoById(tenantId, AssinaturaStatus.getStatusListOfAssinaturaCorrente())
                 .orElseThrow(() -> new NotFoundException("Tenant não encontrado"));
 
         return UserTenantInfoResponse.from(user, allTenantsByUser, tenant);

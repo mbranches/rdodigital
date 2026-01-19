@@ -8,6 +8,8 @@ import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObrasByTenantIdAndIdExternoIn;
 import com.branches.plano.domain.PeriodoTesteEntity;
 import com.branches.plano.service.FindTenantPeriodoTesteService;
+import com.branches.shared.email.EmailSender;
+import com.branches.shared.email.SendEmailRequest;
 import com.branches.tenant.domain.TenantEntity;
 import com.branches.tenant.service.GetTenantByIdExternoService;
 import com.branches.user.domain.UserEntity;
@@ -28,8 +30,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,6 +57,9 @@ public class AddUserToTenantService {
     private final FullNameFormatter fullNameFormatter;
     private final ValidateFullName validateFullName;
     private final FindTenantPeriodoTesteService findTenantPeriodoTesteService;
+    private final EmailSender emailSender;
+    private final SpringTemplateEngine templateEngine;
+    private static final String LINK_SISTEMA = "https://app.rdodigital.com.br";
 
     public void execute(AddUserToTenantRequest request, String tenantExternalId, List<UserTenantEntity> userTenants) {
         TenantEntity tenant = getTenantByIdExternoService.execute(tenantExternalId);
@@ -104,11 +112,48 @@ public class AddUserToTenantService {
     }
 
     private void sendEmailToNewUserAddedToTenant(String email, TenantEntity tenant, String password) {
-        //todo: implementar envio de email
+        String subject = "Bem-vindo ao sistema RDO Digital";
+
+        Map<String, Object> variables = Map.ofEntries(
+                Map.entry("tenantNome", tenant.getNome()),
+                Map.entry("email", email),
+                Map.entry("password", password),
+                Map.entry("linkToAccess", LINK_SISTEMA)
+        );
+
+        String html = buildHtml("email-new-user-added.html", variables);
+
+        enviarEmail(email, subject, html);
+    }
+
+    private String buildHtml(String templateName, Map<String, Object> variables) {
+        Context context = new Context();
+        context.setVariables(variables);
+
+        return templateEngine.process(templateName, context);
     }
 
     private void sendEmailToExistingUserAddedToTenant(String email, TenantEntity tenant) {
-        //todo: implementar envio de email
+        String subject = "Você foi adicionado a uma nova empresa no sistema RDO Digital";
+
+        Map<String, Object> variables = Map.ofEntries(
+                Map.entry("tenantNome", tenant.getNome()),
+                Map.entry("linkToAccess", LINK_SISTEMA)
+        );
+
+        String html = buildHtml("email-existing-user-added.html", variables);
+
+        enviarEmail(email, subject, html);
+    }
+
+    private void enviarEmail(String email, String subject, String html) {
+        SendEmailRequest emailRequest = SendEmailRequest.builder()
+                .to(email)
+                .subject(subject)
+                .body(html)
+                .build();
+
+        emailSender.sendEmail(emailRequest, true);
     }
 
     private UserEntity saveNewUser(AddUserToTenantRequest request) {

@@ -1,20 +1,22 @@
 package com.branches.comentarios.model;
 
+import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.user.domain.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ComentarioDeRelatorioEntity {
+public class ComentarioDeRelatorioEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

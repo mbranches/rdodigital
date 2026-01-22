@@ -46,6 +46,7 @@ public class CreateComentarioDeRelatorioService {
                 .relatorio(relatorio)
                 .descricao(request.descricao())
                 .autor(userTenant.getUser())
+                .tenantId(tenantId)
                 .build();
 
         ComentarioDeRelatorioEntity saved = comentarioDeRelatorioRepository.save(toSave);

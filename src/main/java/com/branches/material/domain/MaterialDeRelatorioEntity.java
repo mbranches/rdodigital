@@ -1,17 +1,18 @@
 package com.branches.material.domain;
 
+import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.material.domain.enums.TipoMaterial;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Setter
 @Getter
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
 @Entity
-public class MaterialDeRelatorioEntity {
+public class MaterialDeRelatorioEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

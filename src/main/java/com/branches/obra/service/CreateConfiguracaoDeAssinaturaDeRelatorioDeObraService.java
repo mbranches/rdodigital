@@ -48,6 +48,7 @@ public class CreateConfiguracaoDeAssinaturaDeRelatorioDeObraService {
         var newConfig = ConfiguracaoDeAssinaturaDeRelatorioEntity.builder()
                 .nomeAssinante(request.nomeAssinante())
                 .configuracaoRelatorios(configuracaoRelatorios)
+                .tenantId(tenantId)
                 .build();
 
         ConfiguracaoDeAssinaturaDeRelatorioEntity saved = configuracaoDeAssinaturaDeRelatorioRepository.save(newConfig);
@@ -63,11 +64,15 @@ public class CreateConfiguracaoDeAssinaturaDeRelatorioDeObraService {
         List<RelatorioEntity> relatorios = relatorioRepository.findAllByObraId(obraId);
 
         List<AssinaturaDeRelatorioEntity> newAssinaturas = relatorios.stream()
-                .map(r -> AssinaturaDeRelatorioEntity.builder()
-                        .relatorio(r)
-                        .configuracao(saved)
-                        .build()
-                ).toList();
+                .map(r -> {
+                    AssinaturaDeRelatorioEntity assinatura = AssinaturaDeRelatorioEntity.builder()
+                                    .relatorio(r)
+                                    .configuracao(saved)
+                                    .tenantId(r.getTenantId())
+                                    .build();
+
+                    return assinatura;
+                }).toList();
 
         assinaturaDeRelatorioRepository.saveAll(newAssinaturas);
     }

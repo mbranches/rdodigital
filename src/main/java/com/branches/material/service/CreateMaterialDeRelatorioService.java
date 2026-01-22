@@ -49,6 +49,7 @@ public class CreateMaterialDeRelatorioService {
                 .material(material)
                 .quantidade(request.quantidade())
                 .tipoMaterial(request.tipoMaterial())
+                .tenantId(tenantId)
                 .build();
 
         MaterialDeRelatorioEntity saved = materialDeRelatorioRepository.save(toSave);

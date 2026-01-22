@@ -93,11 +93,13 @@ public class ConfiguracaoRelatoriosEntity extends AuditableTenantOwned {
         ConfiguracaoDeAssinaturaDeRelatorioEntity assinaturaTenantDefault = ConfiguracaoDeAssinaturaDeRelatorioEntity.builder()
                 .nomeAssinante(clienteNameIsNotEmpty ? nome : "Assinatura")
                 .configuracaoRelatorios(config)
+                .tenantId(tenantId)
                 .build();
 
         ConfiguracaoDeAssinaturaDeRelatorioEntity assinaturaClienteDefault = ConfiguracaoDeAssinaturaDeRelatorioEntity.builder()
                 .nomeAssinante(clienteNameIsNotEmpty ? nomeClienteObra : "Assinatura")
                 .configuracaoRelatorios(config)
+                .tenantId(tenantId)
                 .build();
 
 

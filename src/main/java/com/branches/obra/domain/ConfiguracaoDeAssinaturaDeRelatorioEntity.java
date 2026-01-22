@@ -1,18 +1,20 @@
 package com.branches.obra.domain;
 
+import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.relatorio.domain.AssinaturaDeRelatorioEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ConfiguracaoDeAssinaturaDeRelatorioEntity {
+public class ConfiguracaoDeAssinaturaDeRelatorioEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -55,6 +55,7 @@ public class CreateEquipamentoDeRelatorioService {
                 .relatorio(relatorio)
                 .equipamento(equipamento)
                 .quantidade(request.quantidade())
+                .tenantId(tenantId)
                 .build();
 
         EquipamentoDeRelatorioEntity saved = equipamentoDeRelatorioRepository.save(toSave);

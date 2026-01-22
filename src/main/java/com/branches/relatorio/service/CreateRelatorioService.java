@@ -102,12 +102,16 @@ public class CreateRelatorioService {
 
     private List<AssinaturaDeRelatorioEntity> getNewAssinaturas(List<ConfiguracaoDeAssinaturaDeRelatorioEntity> configuracoesDeAssinaturaDeRelatorio, RelatorioEntity relatorio) {
         return configuracoesDeAssinaturaDeRelatorio.stream()
-                .map(config -> AssinaturaDeRelatorioEntity
-                        .builder()
-                        .configuracao(config)
-                        .relatorio(relatorio)
-                        .build()
-                ).toList();
+                .map(config -> {
+                    AssinaturaDeRelatorioEntity assinatura = AssinaturaDeRelatorioEntity
+                            .builder()
+                            .configuracao(config)
+                            .relatorio(relatorio)
+                            .tenantId(relatorio.getTenantId())
+                            .build();
+
+                    return assinatura;
+                }).toList();
     }
 
     private CondicaoClimaticaEntity buildCaracteristicaDefault(Long tenantId) {

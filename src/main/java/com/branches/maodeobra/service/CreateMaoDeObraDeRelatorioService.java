@@ -59,6 +59,7 @@ public class CreateMaoDeObraDeRelatorioService {
         toSave.setMaoDeObra(maoDeObra);
         toSave.setFuncao(maoDeObra.getFuncao());
         toSave.setPresenca(request.presenca());
+        toSave.setTenantId(tenantId);
 
         if (request.presenca().equals(PresencaMaoDeObra.PRESENTE)) {
             toSave.setHoraInicio(request.horaInicio());

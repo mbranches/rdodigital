@@ -1,7 +1,8 @@
-package com.branches.arquivo.service;
+package com.branches.arquivo.controller;
 
 import com.branches.arquivo.domain.enums.TipoArquivo;
 import com.branches.arquivo.dto.response.ArquivosDeObraPorRelatorioResponse;
+import com.branches.arquivo.service.ListArquivosDeObraPorRelatorioService;
 import com.branches.config.security.UserTenantsContext;
 import com.branches.shared.pagination.PageResponse;
 import com.branches.usertenant.domain.UserTenantEntity;
@@ -45,6 +46,6 @@ public class ListArquivosDeObraPorRelatorioController {
 
         PageResponse<ArquivosDeObraPorRelatorioResponse> response = listArquivosDeObraPorRelatorioService.execute(tenantExternalId, obraExternalId, tipo, userTenants, pageRequest);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
     }
 }

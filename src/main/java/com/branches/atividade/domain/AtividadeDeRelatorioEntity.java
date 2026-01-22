@@ -1,11 +1,13 @@
 package com.branches.atividade.domain;
 
+import com.branches.config.envers.AuditableTenantOwned;
 import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.atividade.domain.enums.StatusAtividade;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -13,11 +15,11 @@ import java.util.List;
 
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class AtividadeDeRelatorioEntity {
+public class AtividadeDeRelatorioEntity extends AuditableTenantOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

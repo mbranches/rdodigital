@@ -69,6 +69,7 @@ public class CreateAtividadeDeRelatorioService {
                 .horaFim(request.horaFim())
                 .totalHoras(calculateHorasTotais.execute(request.horaInicio(), request.horaFim(), null))
                 .status(request.status())
+                .tenantId(tenantId)
                 .build();
 
         List<AtividadeDeRelatorioCampoPersonalizadoEntity> camposPersonalizados = getCamposPersonalizadosToSave(request.camposPersonalizados(), atividadeDeRelatorio, tenantId);

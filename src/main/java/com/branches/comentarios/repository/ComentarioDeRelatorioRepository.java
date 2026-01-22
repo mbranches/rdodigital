@@ -1,10 +1,12 @@
 package com.branches.comentarios.repository;
 
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,5 +16,12 @@ public interface ComentarioDeRelatorioRepository extends JpaRepository<Comentari
 
     Optional<ComentarioDeRelatorioEntity> findByIdAndRelatorioId(Long id, Long relatorioId);
 
-    List<ComentarioDeRelatorioEntity> findAllByRelatorioIdIn(Collection<Long> relatorioIds);
+    @Query("""
+        SELECT c
+        FROM ComentarioDeRelatorioEntity c
+        WHERE c.tenantId = :tenantId
+        AND c.relatorio.obraId = :obraId
+        AND (:canViewOnlyAprovados = false OR c.relatorio.status = 'APROVADO')
+""")
+    Page<ComentarioDeRelatorioEntity> findAllByObraIdAndTenantId(Long obraId, Long tenantId, Boolean canViewOnlyAprovados, Pageable pageRequest);
 }

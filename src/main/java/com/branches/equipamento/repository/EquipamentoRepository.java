@@ -21,19 +21,19 @@ public interface EquipamentoRepository extends JpaRepository<EquipamentoEntity, 
 
     @Query("""
     SELECT e.id AS id,
-    e.descricao AS descricao,
-    COALESCE(SUM(
-        COALESCE(er.quantidade, 1)
-    ), 0) AS quantidadeUso
+        e.descricao AS descricao,
+        COALESCE(SUM(
+            COALESCE(er.quantidade, 1)
+        ), 0) AS quantidadeUso
     FROM EquipamentoEntity e
-    JOIN EquipamentoDeRelatorioEntity er ON er.equipamento.id = e.id
-    JOIN er.relatorio r
-    JOIN ObraEntity o ON r.obraId = o.id
+        JOIN EquipamentoDeRelatorioEntity er ON er.equipamento.id = e.id
+        JOIN er.relatorio r
+        JOIN ObraEntity o ON r.obraId = o.id
     WHERE r.ativo = true
-    AND e.tenantId = :tenantId
-    AND e.ativo = true
-    AND o.ativo = true
-    AND (:obraExternalId IS NULL OR o.idExterno = :obraExternalId)
+        AND e.tenantId = :tenantId
+        AND e.ativo = true
+        AND o.ativo = true
+        AND (:obraExternalId IS NULL OR o.idExterno = :obraExternalId)
     GROUP BY e.id, e.descricao
 """)
     Page<ItemTopEquipamentosProjection> findTopEquipamentos(Long tenantId, String obraExternalId, Pageable pageRequest);
@@ -45,9 +45,9 @@ public interface EquipamentoRepository extends JpaRepository<EquipamentoEntity, 
             COALESCE(er.quantidade, 1)
         ) AS quantidade
     FROM EquipamentoDeRelatorioEntity er
-    JOIN er.relatorio r
-    JOIN ObraEntity o ON r.obraId = o.id
-    JOIN er.equipamento e
+        JOIN er.relatorio r
+        JOIN ObraEntity o ON r.obraId = o.id
+        JOIN er.equipamento e
     WHERE e.tenantId = :tenantId
       AND r.ativo = true
       AND e.ativo = true

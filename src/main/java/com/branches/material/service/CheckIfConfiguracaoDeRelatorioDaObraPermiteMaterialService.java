@@ -18,4 +18,10 @@ public class CheckIfConfiguracaoDeRelatorioDaObraPermiteMaterialService {
 
         throw new ForbiddenException();
     }
+
+    public void execute(ObraEntity obra) {
+        if (obra.getConfiguracaoRelatorios().getShowMateriais()) return;
+
+        throw new ForbiddenException();
+    }
 }

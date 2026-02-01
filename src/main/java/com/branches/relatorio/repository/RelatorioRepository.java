@@ -165,9 +165,9 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     @Query("""
     SELECT
         COUNT(1) AS total,
-        SUM(CASE WHEN r.status = 'ANDAMENTO' THEN 1 ELSE 0 END) AS totalEmAndamento,
-        SUM(CASE WHEN r.status = 'REVISAO' THEN 1 ELSE 0 END) AS totalEmRevisao,
-        SUM(CASE WHEN r.status = 'APROVADO' THEN 1 ELSE 0 END) AS totalAprovados
+        COALESCE(SUM(CASE WHEN r.status = 'ANDAMENTO' THEN 1 ELSE 0 END), 0) AS totalEmAndamento,
+        COALESCE(SUM(CASE WHEN r.status = 'REVISAO' THEN 1 ELSE 0 END), 0) AS totalEmRevisao,
+        COALESCE(SUM(CASE WHEN r.status = 'APROVADO' THEN 1 ELSE 0 END), 0) AS totalAprovados
     FROM RelatorioEntity r
     JOIN ObraEntity o ON o.id = r.obraId AND o.tenantId = r.tenantId
     WHERE r.tenantId = :tenantId

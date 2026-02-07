@@ -70,6 +70,7 @@ public class CreateRelatorioService {
         ConfiguracaoRelatoriosEntity configuracaoRelatorios = obra.getConfiguracaoRelatorios();
 
         RelatorioEntity relatorio = new RelatorioEntity();
+        relatorio.setTenantId(tenantId);
         relatorio.setObraId(obra.getId());
         relatorio.setNumero(quantityOfRelatoriosOfObra + 1);
         relatorio.setDataInicio(request.dataInicio());
@@ -89,7 +90,6 @@ public class CreateRelatorioService {
         relatorio.setCaracteristicasTarde(buildCaracteristicaDefault(tenantId));
         relatorio.setCaracteristicasNoite(buildCaracteristicaDefault(tenantId));
         relatorio.setStatus(StatusRelatorio.ANDAMENTO);
-        relatorio.setTenantId(tenantId);
 
         RelatorioEntity savedRelatorio = relatorioRepository.save(relatorio);
 

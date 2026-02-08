@@ -30,6 +30,7 @@ public class UpdateMaterialService {
 
         MaterialEntity materialEntity = getMaterialByIdAndTenantIdService.execute(id, tenantId);
         materialEntity.setDescricao(request.descricao());
+        materialEntity.setUnidadeMedida(request.unidadeMedida());
 
         materialRepository.save(materialEntity);
     }

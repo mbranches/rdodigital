@@ -42,6 +42,7 @@ public class UpdateMaterialDeRelatorioService {
         checkIfUserCanViewMateriaisDeRelatorioService.execute(userTenant);
 
         MaterialDeRelatorioEntity entity = getMaterialDeRelatorioByIdAndRelatorioIdService.execute(id, relatorio.getId());
+        entity.setUnidadeMedida(request.unidadeMedida());
         entity.setQuantidade(request.quantidade());
 
         materialDeRelatorioRepository.save(entity);

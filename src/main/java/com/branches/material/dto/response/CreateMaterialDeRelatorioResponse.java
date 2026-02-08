@@ -7,7 +7,8 @@ public record CreateMaterialDeRelatorioResponse(
         Long id,
         Long materialId,
         String descricao,
-        String quantidade,
+        String unidadeMedida,
+        Integer quantidade,
         TipoMaterial tipoMaterial
 ) {
     public static CreateMaterialDeRelatorioResponse from(MaterialDeRelatorioEntity entity) {
@@ -15,6 +16,7 @@ public record CreateMaterialDeRelatorioResponse(
                 entity.getId(),
                 entity.getMaterial().getId(),
                 entity.getMaterial().getDescricao(),
+                entity.getUnidadeMedida(),
                 entity.getQuantidade(),
                 entity.getTipoMaterial()
         );

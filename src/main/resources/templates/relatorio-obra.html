@@ -20,6 +20,13 @@
             body {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+            * {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                backface-visibility: hidden;
             }
         }
 
@@ -949,17 +956,18 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th style="width: 55%;">Descrição</th>
-                    <th style="width: 20%; text-align: center;">Quantidade</th>
-                    <th style="width: 10%; text-align: center;">%</th>
-                    <th style="width: 15%; text-align: center;">Status</th>
+                    <th style="width: 65%;">Descrição</th>
+                    <th style="width: 10%; text-align: center;">UND</th>
+                    <th style="width: 8%; text-align: center;">Quantidade</th>
+                    <th style="width: 7%; text-align: center;">%</th>
+                    <th style="width: 10%; text-align: center;">Status</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item : ${atividades}">
                     <td style="vertical-align: top;">
                         <div style="font-weight: 600; margin-bottom: 4px;">
-                            <span th:text="${item.descricao != null ? item.descricao : '-'}" style="font-size: 10pt">Descrição da atividade</span>
+                            <span th:text="${item.descricao != null ? item.descricao : '-'}">Descrição da atividade</span>
                             <span th:if="${item.horaInicio != null and item.horaFim != null}"
                                   style="font-size: 8pt; color: #888; font-weight: 400; margin-left: 8px;"
                                   th:text="${#temporals.format(item.horaInicio, 'HH:mm') + ' - ' + #temporals.format(item.horaFim, 'HH:mm') + (item.minutosTotais != null ? ' (' + T(java.lang.String).format('%02d:%02d', item.minutosTotais / 60, item.minutosTotais % 60) + ')' : '')}"></span>
@@ -979,7 +987,10 @@
                         </div>
                     </td>
                     <td style="text-align: center; vertical-align: center;"
-                        th:text="${item.quantidadeRealizada != null ? item.quantidadeRealizada + (item.unidadeMedida != null ? ' ' + item.unidadeMedida : '') : '-'}">-</td>
+                        th:text="${item.unidadeMedida != null ? item.unidadeMedida : '-'}">-
+                    </td>
+                    <td style="text-align: center; vertical-align: center;"
+                        th:text="${item.quantidadeRealizada != null ? item.quantidadeRealizada : '-'}">-</td>
                     <td style="text-align: center; vertical-align: center;"
                         th:text="${item.porcentagemConcluida != null ? item.porcentagemConcluida + '%' : '-'}">-%</td>
                     <td style="text-align: center; vertical-align: center;">
@@ -1019,14 +1030,16 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th style="width: 75%;">Descrição</th>
-                    <th>Quantidade</th>
+                    <th style="width: 70%;">Descrição</th>
+                    <th style="width: 15%; text-align: center;">Unidade</th>
+                    <th style="width: 15%">Quantidade</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item : ${materiaisRecebidos}">
                     <td th:text="${item.getMaterial().getDescricao()}">Descrição</td>
-                    <td style="font-weight: 600;" th:text="${item.quantidade}">-</td>
+                    <td style="text-align: center;" th:text="${item.unidadeMedida != null ? item.unidadeMedida : '-'}">-</td>
+                    <td th:text="${item.quantidade != null ? item.quantidade : '-'}">-</td>
                 </tr>
                 </tbody>
             </table>
@@ -1038,14 +1051,16 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th style="width: 75%;">Descrição</th>
-                    <th>Quantidade</th>
+                    <th style="width: 70%;">Descrição</th>
+                    <th style="width: 15%; text-align: center;">Unidade</th>
+                    <th style="width: 15%">Quantidade</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item : ${materiaisUtilizados}">
                     <td th:text="${item.getMaterial().getDescricao()}">Descrição</td>
-                    <td style="font-weight: 600;" th:text="${item.quantidade != null ? item.quantidade : '-'}">-</td>
+                    <td style="text-align: center;" th:text="${item.unidadeMedida != null ? item.unidadeMedida : '-'}">-</td>
+                    <td style="text-align: center;" th:text="${item.quantidade != null ? item.quantidade : '-'}">-</td>
                 </tr>
                 </tbody>
             </table>

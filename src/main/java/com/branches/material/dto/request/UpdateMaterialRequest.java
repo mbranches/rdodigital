@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record UpdateMaterialRequest(
         @NotBlank(message = "O campo 'descricao' é obrigatório")
-        String descricao
+        String descricao,
+        String unidadeMedida
 ) {
 }

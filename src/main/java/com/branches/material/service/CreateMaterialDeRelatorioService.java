@@ -47,6 +47,7 @@ public class CreateMaterialDeRelatorioService {
         MaterialDeRelatorioEntity toSave = MaterialDeRelatorioEntity.builder()
                 .relatorio(relatorio)
                 .material(material)
+                .unidadeMedida(request.unidadeMedida())
                 .quantidade(request.quantidade())
                 .tipoMaterial(request.tipoMaterial())
                 .tenantId(tenantId)

@@ -19,6 +19,8 @@ public class MaterialEntity extends AuditableTenantOwned {
     @Column(nullable = false, length = 100)
     private String descricao;
 
+    private String unidadeMedida;
+
     @Builder.Default
     @Column(nullable = false)
     private Boolean ativo = true;

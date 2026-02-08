@@ -21,7 +21,9 @@ public class MaterialDeRelatorioEntity extends AuditableTenantOwned {
     @JoinColumn(name = "material_id", nullable = false)
     private MaterialEntity material;
 
-    private String quantidade;
+    private String unidadeMedida;
+
+    private Integer quantidade;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

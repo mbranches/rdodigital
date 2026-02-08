@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
 public record CreateMaterialDeRelatorioRequest(
         @NotNull(message = "O campo 'materialId' é obrigatório")
         Long materialId,
-        String quantidade,
+        String unidadeMedida,
+        Integer quantidade,
         @NotNull(message = "O campo 'tipoMaterial' é obrigatório")
         TipoMaterial tipoMaterial
 ) {

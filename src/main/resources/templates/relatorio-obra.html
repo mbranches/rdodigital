@@ -804,8 +804,8 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td th:text="${details.horaInicioTrabalhos != null ? #temporals.format(details.horaInicioTrabalhos, 'HH:mm') : '-'}">-</td>
-                    <td th:text="${details.horaFimTrabalhos != null ? #temporals.format(details.horaFimTrabalhos, 'HH:mm') : '-'}">-</td>
+                    <td th:text="${details.horaInicioTrabalhos != null ? #temporals.format(details.horaInicioTrabalhos, &quot;HH'h'mm&quot;) : '-'}">-</td>
+                    <td th:text="${details.horaFimTrabalhos != null ? #temporals.format(details.horaFimTrabalhos, &quot;HH'h'mm&quot;) : '-'}">-</td>
                     <td>
                         <span th:if="${details.minutosIntervalo != null}">
                             <span th:text="${details.minutosIntervalo / 60}">0</span>h
@@ -813,7 +813,7 @@
                         </span>
                         <span th:if="${details.minutosIntervalo == null}">-</span>
                     </td>
-                    <td th:text="${details.minutosTrabalhados != null ? (T(java.lang.String).format('%02d:%02d', details.minutosTrabalhados / 60, details.minutosTrabalhados % 60)) : '-'}">-</td>
+                    <td th:text="${details.minutosTrabalhados != null ? (T(java.lang.String).format('%02dh%02d', details.minutosTrabalhados / 60, details.minutosTrabalhados % 60)) : '-'}">-</td>
                 </tr>
                 </tbody>
             </table>
@@ -922,10 +922,10 @@
                     <td th:text="${item.getMaoDeObra().getNome() != null ? item.getMaoDeObra().getNome() : '-'}" style="font-weight: 600;">-</td>
                     <td th:text="${item.funcao != null ? item.funcao : '-'}">-</td>
                     <td th:text="${item.presenca != null ? item.presenca.descricao : '-'}">-</td>
-                    <td th:text="${item.horaInicio != null ? #temporals.format(item.horaInicio, 'HH:mm') : '-'}">-</td>
-                    <td th:text="${item.horaFim != null ? #temporals.format(item.horaFim, 'HH:mm') : '-'}">-</td>
-                    <td th:text="${item.getHorasIntervalo() != null ? #temporals.format(item.getHorasIntervalo(), 'HH:mm') : '-'}">-</td>
-                    <td class="" th:text="${item.minutosTrabalhados != null ? (T(java.lang.String).format('%02d:%02d', item.minutosTrabalhados / 60, item.minutosTrabalhados % 60)) : '-'}">-</td>
+                    <td th:text="${item.horaInicio != null ? #temporals.format(item.horaInicio, &quot;HH'h'mm&quot;) : '-'}">-</td>
+                    <td th:text="${item.horaFim != null ? #temporals.format(item.horaFim, &quot;HH'h'mm&quot;) : '-'}">-</td>
+                    <td th:text="${item.getHorasIntervalo() != null ? #temporals.format(item.getHorasIntervalo(), &quot;HH'h'mm&quot;) : '-'}">-</td>
+                    <td class="" th:text="${item.minutosTrabalhados != null ? (T(java.lang.String).format('%02dh%02d', item.minutosTrabalhados / 60, item.minutosTrabalhados % 60)) : '-'}">-</td>
                 </tr>
                 </tbody>
             </table>
@@ -970,7 +970,7 @@
                             <span th:text="${item.descricao != null ? item.descricao : '-'}">Descrição da atividade</span>
                             <span th:if="${item.horaInicio != null and item.horaFim != null}"
                                   style="font-size: 8pt; color: #888; font-weight: 400; margin-left: 8px;"
-                                  th:text="${#temporals.format(item.horaInicio, 'HH:mm') + ' - ' + #temporals.format(item.horaFim, 'HH:mm') + (item.minutosTotais != null ? ' (' + T(java.lang.String).format('%02d:%02d', item.minutosTotais / 60, item.minutosTotais % 60) + ')' : '')}"></span>
+                                  th:text="${#temporals.format(item.horaInicio, &quot;HH'h'mm&quot;) + ' - ' + #temporals.format(item.horaFim, &quot;HH'h'mm&quot;) + (item.minutosTotais != null ? ' (' + T(java.lang.String).format('%02dh%02d', item.minutosTotais / 60, item.minutosTotais % 60) + ')' : '')}"></span>
                         </div>
 
                         <div th:if="${item.maoDeObra != null and !item.maoDeObra.isEmpty()}" style="margin-top: 6px; font-size: 9pt;">
@@ -1008,7 +1008,7 @@
                 <div class="item-title">
                     <span th:text="${item.descricao != null ? item.descricao : '-'}">Descrição</span>
                     <span th:if="${item.horaInicio != null and item.horaFim != null}" class="item-time"
-                          th:text="${#temporals.format(item.horaInicio, 'HH:mm') + ' - ' + #temporals.format(item.horaFim, 'HH:mm') + (item.minutosTotais != null ? ' (' + T(java.lang.String).format('%02d:%02d', item.minutosTotais / 60, item.minutosTotais % 60) + ')' : '')}"></span>
+                          th:text="${#temporals.format(item.horaInicio, &quot;HH'h'mm&quot;) + ' - ' + #temporals.format(item.horaFim, &quot;HH'h'mm&quot;) + (item.minutosTotais != null ? ' (' + T(java.lang.String).format('%02dh%02d', item.minutosTotais / 60, item.minutosTotais % 60) + ')' : '')}"></span>
                 </div>
                 <div style="margin-top: 8px;">
                     <div th:if="${item.tiposDeOcorrencia != null and !item.tiposDeOcorrencia.isEmpty()}" style="display: flex; gap: 4px; flex-wrap: wrap;">
@@ -1073,7 +1073,7 @@
                 <div class="comment-content">
                     <div class="comment-header">
                         <span class="comment-author" th:text="${item.autor != null and item.autor.nome != null ? item.autor.nome : 'Autor desconhecido'}">Autor</span>
-                        <span class="comment-date" th:text="${item.dataCriacao != null ? #temporals.format(item.dataCriacao, 'dd/MM/yyyy') + ' às ' + #temporals.format(item.dataCriacao, 'HH:mm') : '-'}">00/00/0000 às 00:00</span>
+                        <span class="comment-date" th:text="${item.dataCriacao != null ? #temporals.format(item.dataCriacao, 'dd/MM/yyyy') + ' às ' + #temporals.format(item.dataCriacao, &quot;HH'h'mm&quot;) : '-'}">00/00/0000 às 00h00</span>
                     </div>
                     <p class="comment-text" th:text="${item.descricao != null ? item.descricao : ''}">Texto do comentário</p>
                 </div>

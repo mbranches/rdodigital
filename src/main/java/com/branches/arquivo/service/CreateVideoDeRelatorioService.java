@@ -47,7 +47,7 @@ public class CreateVideoDeRelatorioService {
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
 
-    public CreateVideoDeRelatorioResponse execute(MultipartFile video, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
+    public CreateVideoDeRelatorioResponse execute(MultipartFile video, String descricao, String tenantExternalId, String relatorioExternalId, List<UserTenantEntity> userTenants) {
         log.info("Iniciando upload de vídeo para o relatório: {} do tenant: {}", relatorioExternalId, tenantExternalId);
         if (video == null || video.isEmpty()) {
             throw new BadRequestException("O vídeo é obrigatório");
@@ -104,6 +104,7 @@ public class CreateVideoDeRelatorioService {
         ArquivoEntity arquivo = ArquivoEntity.builder()
                 .nomeArquivo(fileName)
                 .url(videoUrl)
+                .descricao(descricao)
                 .tipoArquivo(TipoArquivo.VIDEO)
                 .relatorio(relatorio)
                 .tamanhoEmMb(fileLengthInMb)

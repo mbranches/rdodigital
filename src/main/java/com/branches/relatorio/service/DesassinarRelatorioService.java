@@ -41,10 +41,6 @@ public class DesassinarRelatorioService {
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("Assinatura de relatório não encontrado com id: " + id));
 
-        String assinaturaUrl = assinaturaDeRelatorioEntity.getAssinaturaUrl();
-
-        s3DeleteFile.execute(assinaturaUrl);
-
         assinaturaDeRelatorioEntity.setAssinaturaUrl(null);
 
         assinaturaDeRelatorioRepository.save(assinaturaDeRelatorioEntity);

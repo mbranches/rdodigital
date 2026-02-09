@@ -80,7 +80,7 @@ public class GetRelatorioDetailsService {
         List<MaoDeObraDeRelatorioEntity> maoDeObra = canViewMaoDeObra ? maoDeObraDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
         List<ComentarioDeRelatorioEntity> comentarios = canViewComentarios ? comentarioDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
         List<MaterialDeRelatorioEntity> materiais = canViewMateriais ? materialDeRelatorioRepository.findAllByRelatorioId(relatorioId) : null;
-        List<AssinaturaDeRelatorioEntity> assinaturas = assinaturaDeRelatorioRepository.findAllByRelatorioId(relatorioId);
+        List<AssinaturaDeRelatorioEntity> assinaturas = assinaturaDeRelatorioRepository.findAllByRelatorioIdOrderByEnversCreatedDate(relatorioId);
 
         List<ArquivoEntity> arquivos = arquivoRepository.findAllByRelatorioIdOrderByEnversCreatedDateDesc(relatorioId);
         List<ArquivoEntity> fotos = canViewFotos ? arquivos.stream().filter(ArquivoEntity::getIsFoto).toList() : null;

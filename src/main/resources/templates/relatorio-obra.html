@@ -1112,7 +1112,7 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th>Nome do Vídeo</th>
+                    <th>Descrição</th>
                     <th style="text-align: right; width: 150px;">Duração</th>
                 </tr>
                 </thead>
@@ -1120,7 +1120,7 @@
                 <tr th:each="video : ${videos}">
                     <td>
                         <a th:if="${video.url != null}" th:href="${video.url}" target="_blank" style="color: #2563eb; text-decoration: none; cursor: pointer;">
-                            <span th:text="${video.nomeArquivo != null ? video.nomeArquivo : 'video.mp4'}">video.mp4</span>
+                            <span th:text="${video.descricao != null ? video.descricao : video.nomeArquivo}">video.mp4</span>
                         </a>
                         <span th:if="${video.url == null}" th:text="${video.nomeArquivo != null ? video.nomeArquivo : 'video.mp4'}">video.mp4</span>
                     </td>

@@ -38,6 +38,7 @@ public class CreateVideoDeRelatorioController {
     })
     public ResponseEntity<CreateVideoDeRelatorioResponse> execute(
             @RequestParam("video") MultipartFile video,
+            @RequestParam(value = "descricao", required = false) String descricao,
             @PathVariable String tenantExternalId,
             @PathVariable String relatorioExternalId
     ) {
@@ -45,6 +46,7 @@ public class CreateVideoDeRelatorioController {
 
         CreateVideoDeRelatorioResponse response = createVideoDeRelatorioService.execute(
                 video,
+                descricao,
                 tenantExternalId,
                 relatorioExternalId,
                 userTenants

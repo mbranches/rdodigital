@@ -77,7 +77,7 @@ public class ImprimirRelatorioService {
         List<ArquivoEntity> arquivosDoRelatorio = fetchArquivos(relatorioDetails);
         List<ArquivoEntity> fotosDoRelatorio = userCanViewFotos ? arquivosDoRelatorio.stream().filter(ArquivoEntity::getIsFoto).toList() : Collections.emptyList();
         List<ArquivoEntity> videosDoRelatorio = userCanViewVideos ? arquivosDoRelatorio.stream().filter(ArquivoEntity::getIsVideo).toList() : Collections.emptyList();
-        List<AssinaturaDeRelatorioEntity> assinaturasDoRelatorio = assinaturaDeRelatorioRepository.findAllByRelatorioId(relatorioDetails.getId());
+        List<AssinaturaDeRelatorioEntity> assinaturasDoRelatorio = assinaturaDeRelatorioRepository.findAllByRelatorioIdOrderByEnversCreatedDate(relatorioDetails.getId());
 
         String url = generateRelatorioFileService.execute(
                 relatorioDetails,

@@ -310,7 +310,7 @@
         .badge {
             display: inline-block;
             padding: 2px 6px;
-            font-size: 8pt;
+            font-size: 7pt;
             font-weight: 500;
         }
 
@@ -321,7 +321,7 @@
             gap: 6px;
             padding: 2px 6px;
             border-radius: 999px;
-            font-size: 8pt;
+            font-size: 7pt;
             font-weight: 600;
             color: #333;
             border: 1px solid rgba(0,0,0,0.06);
@@ -351,7 +351,7 @@
 
         /* Activity/Occurrence Items */
         .item-card {
-            padding: 12px;
+            padding: 8px;
             border-bottom: 1px solid rgba(50, 50, 50, 1);
         }
 
@@ -367,8 +367,9 @@
         }
 
         .item-title {
+            font-size: 8pt;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .item-time {
@@ -412,8 +413,8 @@
         }
 
         .custom-fields {
-            margin-top: 8px;
-            font-size: 9pt;
+            margin-top: 4px;
+            font-size: 8pt;
             color: #666;
         }
 
@@ -969,11 +970,11 @@
                         <div style="font-weight: 600; margin-bottom: 4px;">
                             <span th:text="${item.descricao != null ? item.descricao : '-'}">Descrição da atividade</span>
                             <span th:if="${item.horaInicio != null and item.horaFim != null}"
-                                  style="font-size: 8pt; color: #888; font-weight: 400; margin-left: 8px;"
+                                  style="color: #888; font-weight: 400; margin-left: 6px;"
                                   th:text="${#temporals.format(item.horaInicio, &quot;HH'h'mm&quot;) + ' - ' + #temporals.format(item.horaFim, &quot;HH'h'mm&quot;) + (item.minutosTotais != null ? ' (' + T(java.lang.String).format('%02dh%02d', item.minutosTotais / 60, item.minutosTotais % 60) + ')' : '')}"></span>
                         </div>
 
-                        <div th:if="${item.maoDeObra != null and !item.maoDeObra.isEmpty()}" style="margin-top: 6px; font-size: 9pt;">
+                        <div th:if="${item.maoDeObra != null and !item.maoDeObra.isEmpty()}" style="margin-top: 6px;">
                             <span style="color: #888;">Mão de Obra:</span>
                             <span style="font-weight: 500; color: #1a1a1a;">
                                 <span th:each="mdo, stat : ${item.maoDeObra}" th:text="${mdo.getMaoDeObra().getNome() + (!stat.last ? ', ' : '')}">Nome</span>
@@ -981,7 +982,7 @@
                         </div>
 
                         <div th:if="${item.camposPersonalizados != null and !item.camposPersonalizados.isEmpty()}"
-                             style="margin-top: 6px; font-size: 9pt; color: #666;">
+                             style="margin-top: 4px; color: #666;">
                             <div th:each="campo : ${item.camposPersonalizados}" style="margin-left: 12px;"
                                  th:text="'- ' + ${campo.getCampoPersonalizado().campo} + ': ' + ${campo.getCampoPersonalizado().descricao}">- Campo: Valor</div>
                         </div>
@@ -1010,15 +1011,15 @@
                     <span th:if="${item.horaInicio != null and item.horaFim != null}" class="item-time"
                           th:text="${#temporals.format(item.horaInicio, &quot;HH'h'mm&quot;) + ' - ' + #temporals.format(item.horaFim, &quot;HH'h'mm&quot;) + (item.minutosTotais != null ? ' (' + T(java.lang.String).format('%02dh%02d', item.minutosTotais / 60, item.minutosTotais % 60) + ')' : '')}"></span>
                 </div>
-                <div style="margin-top: 8px;">
-                    <div th:if="${item.tiposDeOcorrencia != null and !item.tiposDeOcorrencia.isEmpty()}" style="display: flex; gap: 4px; flex-wrap: wrap;">
+                <div style="margin-top: 4px;">
+                    <div th:if="${item.tiposDeOcorrencia != null and !item.tiposDeOcorrencia.isEmpty()}" style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 3px;">
                         <span th:each="tipo : ${item.tiposDeOcorrencia}" class="badge badge-type" th:text="${tipo.descricao}">Tipo</span>
                     </div>
-                    <div th:if="${item.atividadeVinculada != null}" style="margin-top: 4px; font-size: 9pt; color: #666;">
-                        Atividade vinculada: <span style="font-weight: 600;" th:text="${item.atividadeVinculada.descricao}">Atividade</span>
+                    <div th:if="${item.atividadeVinculada != null}" style="margin-top: 3px; font-size: 8pt; color: #666;">
+                        Atividade vinculada: <span style="font-weight: 600; color: #1a1a1a;" th:text="${item.atividadeVinculada.descricao}">Atividade</span>
                     </div>
                     <div th:if="${item.camposPersonalizados != null and !item.camposPersonalizados.isEmpty()}" class="custom-fields">
-                        <div th:each="campo : ${item.camposPersonalizados}" th:text="${campo.getCampoPersonalizado().getCampo()} + ': ' + ${campo.getCampoPersonalizado().getDescricao()}" style="font-size: 9pt;">Campo: Valor</div>
+                        <div th:each="campo : ${item.camposPersonalizados}" th:text="${campo.getCampoPersonalizado().getCampo()} + ': ' + ${campo.getCampoPersonalizado().getDescricao()}">Campo: Valor</div>
                     </div>
                 </div>
             </div>
@@ -1039,7 +1040,7 @@
                 <tr th:each="item : ${materiaisRecebidos}">
                     <td th:text="${item.getMaterial().getDescricao()}">Descrição</td>
                     <td style="text-align: center;" th:text="${item.unidadeMedida != null ? item.unidadeMedida : '-'}">-</td>
-                    <td style="text-align: center;" th:text="${item.quantidade != null ? item.quantidade : '-'}">-</td>
+                    <td style="text-align: center;" th:text="${item.quantidade != null ? #numbers.formatDecimal(item.quantidade, 1, 'POINT', 4, 'COMMA') : '-'}">-</td>
                 </tr>
                 </tbody>
             </table>
@@ -1060,7 +1061,7 @@
                 <tr th:each="item : ${materiaisUtilizados}">
                     <td th:text="${item.getMaterial().getDescricao()}">Descrição</td>
                     <td style="text-align: center;" th:text="${item.unidadeMedida != null ? item.unidadeMedida : '-'}">-</td>
-                    <td style="text-align: center;" th:text="${item.quantidade != null ? item.quantidade : '-'}">-</td>
+                    <td style="text-align: center;" th:text="${item.quantidade != null ? #numbers.formatDecimal(item.quantidade, 1, 'POINT', 4, 'COMMA') : '-'}">-</td>
                 </tr>
                 </tbody>
             </table>

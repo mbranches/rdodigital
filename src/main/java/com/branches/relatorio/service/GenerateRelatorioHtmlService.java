@@ -2,6 +2,7 @@ package com.branches.relatorio.service;
 
 import com.branches.arquivo.domain.ArquivoEntity;
 import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
+import com.branches.atividade.domain.FotoDeAtividadeEntity;
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
 import com.branches.equipamento.domain.EquipamentoDeRelatorioEntity;
 import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
@@ -15,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -91,13 +94,40 @@ public class GenerateRelatorioHtmlService {
         context.setVariable("materiaisUtilizados", materiaisUtilizados);
         context.setVariable("materiaisRecebidos", materiaisRecebidos);
 
+        List<FotoRelatorio> fotos = new ArrayList<>();
+        if(atividadesDoRelatorio != null) {
+            atividadesDoRelatorio.stream()
+                    .filter(a -> a.getFotos() != null)
+                    .flatMap(a -> a.getFotos().stream())
+                    .map(FotoRelatorio::from)
+                    .forEach(fotos::add);
+        }
+
+        if (fotosDoRelatorio != null) {
+            fotosDoRelatorio.stream()
+                    .map(FotoRelatorio::from)
+                    .forEach(fotos::add);
+        }
+
+        List<FotoRelatorio> orderedFotos = fotos.stream().sorted(Comparator.comparing(FotoRelatorio::dataCriacao).reversed()).toList();
+
         // Add photos and videos
-        context.setVariable("fotos", fotosDoRelatorio);
+        context.setVariable("fotos", orderedFotos);
         context.setVariable("videos", videosDoRelatorio);
 
         // Add signatures
         context.setVariable("assinaturas", assinaturas);
         // Render template
         return templateEngine.process("relatorio-obra", context);
+    }
+
+    private record FotoRelatorio(String url, String descricao, LocalDateTime dataCriacao) {
+        public static FotoRelatorio from(ArquivoEntity arquivo) {
+            return new FotoRelatorio(arquivo.getUrl(), arquivo.getDescricao(), arquivo.getEnversCreatedDate());
+        }
+
+        public static FotoRelatorio from(FotoDeAtividadeEntity foto) {
+            return new FotoRelatorio(foto.getUrl(), foto.getAtividade().getDescricao(), foto.getEnversCreatedDate());
+        }
     }
 }

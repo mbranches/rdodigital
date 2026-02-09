@@ -140,7 +140,7 @@ public class ImprimirRelatorioService {
 
     private List<ArquivoEntity> fetchArquivos(RelatorioDetailsProjection relatorioDetails) {
         if (relatorioDetails.getShowFotos() || relatorioDetails.getShowVideos()) {
-            return arquivoRepository.findAllByRelatorioId(relatorioDetails.getId());
+            return arquivoRepository.findAllByRelatorioIdOrderByEnversCreatedDateDesc(relatorioDetails.getId());
         }
         return Collections.emptyList();
     }

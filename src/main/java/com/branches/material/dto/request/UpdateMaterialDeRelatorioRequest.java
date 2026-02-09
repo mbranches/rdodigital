@@ -1,7 +1,9 @@
 package com.branches.material.dto.request;
 
+import java.math.BigDecimal;
+
 public record UpdateMaterialDeRelatorioRequest(
-        Integer quantidade,
+        BigDecimal quantidade,
         String unidadeMedida
 ) {
 }

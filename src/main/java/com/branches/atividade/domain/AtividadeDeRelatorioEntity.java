@@ -46,4 +46,7 @@ public class AtividadeDeRelatorioEntity extends AuditableTenantOwned {
 
     @OneToMany(mappedBy = "atividadeVinculada", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OcorrenciaDeRelatorioEntity> ocorrencias; //Usado somente pro delete em cascata
+
+    @OneToMany(mappedBy = "atividade", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<FotoDeAtividadeEntity> fotos;
 }

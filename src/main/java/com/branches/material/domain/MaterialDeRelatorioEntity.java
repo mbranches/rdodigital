@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @SuperBuilder
@@ -23,7 +25,8 @@ public class MaterialDeRelatorioEntity extends AuditableTenantOwned {
 
     private String unidadeMedida;
 
-    private Integer quantidade;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal quantidade;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

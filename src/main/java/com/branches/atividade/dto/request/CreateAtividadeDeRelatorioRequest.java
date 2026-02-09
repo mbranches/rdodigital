@@ -27,6 +27,8 @@ public record CreateAtividadeDeRelatorioRequest(
         @Valid
         List<Long> maoDeObraIds,
         @Valid
-        List<CampoPersonalizadoRequest> camposPersonalizados
+        List<CampoPersonalizadoRequest> camposPersonalizados,
+        @Valid
+        List<CreateFotoDeAtividadeRequest> fotos
 ) {
 }

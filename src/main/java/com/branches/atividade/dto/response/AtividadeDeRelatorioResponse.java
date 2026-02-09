@@ -21,6 +21,7 @@ public record AtividadeDeRelatorioResponse(
         LocalTime horaFim,
         Integer minutosTotais,
         List<MaoDeObraDeAtividadeResponse> maoDeObra,
+        List<FotoDeAtividadeResponse> fotos,
         List<CampoPersonalizadoResponse> camposPersonalizados
 ) {
     public static AtividadeDeRelatorioResponse from(AtividadeDeRelatorioEntity atividadeDeRelatorioEntity) {
@@ -36,6 +37,9 @@ public record AtividadeDeRelatorioResponse(
                 atividadeDeRelatorioEntity.getMinutosTotais(),
                 atividadeDeRelatorioEntity.getMaoDeObra().stream()
                         .map(MaoDeObraDeAtividadeResponse::from)
+                        .toList(),
+                atividadeDeRelatorioEntity.getFotos().stream()
+                        .map(FotoDeAtividadeResponse::from)
                         .toList(),
                 atividadeDeRelatorioEntity.getCamposPersonalizados().stream()
                         .map(AtividadeDeRelatorioCampoPersonalizadoEntity::getCampoPersonalizado)

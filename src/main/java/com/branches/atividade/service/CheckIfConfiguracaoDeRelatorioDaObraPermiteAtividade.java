@@ -19,4 +19,10 @@ public class CheckIfConfiguracaoDeRelatorioDaObraPermiteAtividade {
 
         throw new ForbiddenException();
     }
+
+    public void execute(ObraEntity obra) {
+        if (obra.getConfiguracaoRelatorios().getShowAtividades()) return;
+
+        throw new ForbiddenException();
+    }
 }

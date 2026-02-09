@@ -17,7 +17,7 @@ public interface ArquivoRepository extends JpaRepository<ArquivoEntity, Long> {
 
     Optional<ArquivoEntity> findByIdAndRelatorioId(Long arquivoId, Long id);
 
-    List<ArquivoEntity> findAllByRelatorioId(Long relatorioId);
+    List<ArquivoEntity> findAllByRelatorioIdOrderByEnversCreatedDateDesc(Long relatorioId);
 
     @Query("""
     SELECT a

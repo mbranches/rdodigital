@@ -3,12 +3,14 @@ package com.branches.material.dto.response;
 import com.branches.material.domain.MaterialDeRelatorioEntity;
 import com.branches.material.domain.enums.TipoMaterial;
 
+import java.math.BigDecimal;
+
 public record CreateMaterialDeRelatorioResponse(
         Long id,
         Long materialId,
         String descricao,
         String unidadeMedida,
-        Integer quantidade,
+        BigDecimal quantidade,
         TipoMaterial tipoMaterial
 ) {
     public static CreateMaterialDeRelatorioResponse from(MaterialDeRelatorioEntity entity) {

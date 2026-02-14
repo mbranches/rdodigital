@@ -17,7 +17,9 @@ import com.branches.plano.domain.PeriodoTesteEntity;
 import com.branches.plano.service.FindTenantPeriodoTesteService;
 import com.branches.tenant.domain.TenantEntity;
 import com.branches.tenant.service.GetTenantByIdExternoService;
+import com.branches.usertenant.domain.UserObraPermitidaEntity;
 import com.branches.usertenant.domain.UserTenantEntity;
+import com.branches.usertenant.repository.UserObraPermitidaRepository;
 import com.branches.usertenant.service.GetCurrentUserTenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class CreateObraService {
     private final GetTenantByIdExternoService getTenantByIdExternoService;
     private final GetModeloDeRelatorioByIdAndTenantIdService getModeloDeRelatorioByIdAndTenantIdService;
     private final FindTenantPeriodoTesteService findTenantPeriodoTesteService;
+    private final UserObraPermitidaRepository userObraPermitidaRepository;
 
     public CreateObraResponse execute(CreateObraRequest request, String tenantDaObraExternalId, List<UserTenantEntity> userTenants) {
         TenantEntity tenant = getTenantByIdExternoService.execute(tenantDaObraExternalId);
@@ -80,6 +83,16 @@ public class CreateObraService {
         }
 
         ObraEntity savedObra = obraRepository.save(obraToSave);
+
+        if (!currentUserTenant.isAdministrador()) {
+            UserObraPermitidaEntity obraPermitidaEntity = UserObraPermitidaEntity.builder()
+                    .userTenant(currentUserTenant)
+                    .obraId(savedObra.getId())
+                    .build();
+            obraPermitidaEntity.setarId();
+
+            userObraPermitidaRepository.save(obraPermitidaEntity);
+        }
 
         return CreateObraResponse.from(savedObra);
     }

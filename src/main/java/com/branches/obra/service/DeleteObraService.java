@@ -34,7 +34,7 @@ public class DeleteObraService {
     }
 
     private void checkIfUserCanDeleteObra(Long id, UserTenantEntity userTenant) {
-        if (!userTenant.getAuthorities().getObras().getCanDelete() || !userTenant.getObrasPermitidasIds().contains(id)) {
+        if (!(userTenant.getAuthorities().getObras().getCanDelete() && (userTenant.isAdministrador() || userTenant.getObrasPermitidasIds().contains(id)))) {
             throw new ForbiddenException();
         }
     }

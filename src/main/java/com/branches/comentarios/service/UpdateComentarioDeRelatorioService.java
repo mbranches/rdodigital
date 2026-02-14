@@ -2,7 +2,7 @@ package com.branches.comentarios.service;
 
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
 import com.branches.exception.ForbiddenException;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.comentarios.dto.request.UpdateComentarioDeRelatorioRequest;
 import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;

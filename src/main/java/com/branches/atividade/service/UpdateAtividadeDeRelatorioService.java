@@ -3,7 +3,7 @@ package com.branches.atividade.service;
 import com.branches.atividade.domain.AtividadeDeRelatorioCampoPersonalizadoEntity;
 import com.branches.maodeobra.domain.MaoDeObraEntity;
 import com.branches.maodeobra.service.GetMaoDeObraListByIdInAndTenantIdAndTypeService;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;

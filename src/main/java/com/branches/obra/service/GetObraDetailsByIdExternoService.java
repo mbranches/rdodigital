@@ -3,7 +3,6 @@ package com.branches.obra.service;
 import com.branches.arquivo.domain.ArquivoEntity;
 import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.exception.NotFoundException;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.enums.StatusObra;
 import com.branches.obra.dto.response.GetObraDetailsByIdExternoResponse;
 import com.branches.obra.repository.ObraRepository;

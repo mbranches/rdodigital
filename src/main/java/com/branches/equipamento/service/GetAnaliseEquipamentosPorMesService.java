@@ -5,7 +5,7 @@ import com.branches.equipamento.dto.response.QuantidadeEquipamentoPorMesResponse
 import com.branches.equipamento.repository.EquipamentoRepository;
 import com.branches.equipamento.repository.projections.QuantidadeEquipamentoPorMesProjection;
 import com.branches.equipamento.repository.projections.TotalDeEquipamentoPorMesProjection;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.shared.dto.response.TotalPorMesResponse;

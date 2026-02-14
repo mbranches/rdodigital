@@ -2,7 +2,7 @@ package com.branches.relatorio.service;
 
 import com.branches.exception.BadRequestException;
 import com.branches.exception.NotFoundException;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.AssinaturaDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.repository.AssinaturaDeRelatorioRepository;

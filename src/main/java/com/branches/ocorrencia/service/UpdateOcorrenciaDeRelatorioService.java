@@ -2,7 +2,7 @@ package com.branches.ocorrencia.service;
 
 import com.branches.atividade.domain.AtividadeDeRelatorioEntity;
 import com.branches.atividade.service.GetAtividadeDeRelatorioByIdAndRelatorioIdService;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioCampoPersonalizadoEntity;
 import com.branches.relatorio.dto.request.CampoPersonalizadoRequest;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;

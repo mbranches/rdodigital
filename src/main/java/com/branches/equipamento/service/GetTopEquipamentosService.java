@@ -3,7 +3,7 @@ package com.branches.equipamento.service;
 import com.branches.equipamento.dto.response.GetItemTopEquipamentosResponse;
 import com.branches.equipamento.repository.EquipamentoRepository;
 import com.branches.equipamento.repository.projections.ItemTopEquipamentosProjection;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.shared.pagination.PageResponse;

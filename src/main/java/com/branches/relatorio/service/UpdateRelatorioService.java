@@ -1,7 +1,7 @@
 package com.branches.relatorio.service;
 
 import com.branches.exception.NotFoundException;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.repository.ObraRepository;

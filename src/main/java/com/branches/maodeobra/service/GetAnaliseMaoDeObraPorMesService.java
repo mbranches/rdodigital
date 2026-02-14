@@ -5,7 +5,7 @@ import com.branches.maodeobra.dto.response.AnaliseMaoDeObraPorMesResponse;
 import com.branches.maodeobra.repository.MaoDeObraRepository;
 import com.branches.maodeobra.repository.projections.AnaliseMaoDeObraPorMesProjection;
 import com.branches.maodeobra.repository.projections.TotalHoraDeMaoDeObraPorMesProjection;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.shared.dto.response.TotalDecimalPorMesResponse;

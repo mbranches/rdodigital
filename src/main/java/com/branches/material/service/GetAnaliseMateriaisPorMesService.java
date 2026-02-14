@@ -5,7 +5,7 @@ import com.branches.material.dto.response.QuantidadeMaterialPorMesResponse;
 import com.branches.material.repository.MaterialRepository;
 import com.branches.material.repository.projections.QuantidadeMaterialPorMesProjection;
 import com.branches.material.repository.projections.TotalDeMaterialPorMesProjection;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.shared.dto.response.TotalPorMesResponse;

@@ -44,6 +44,7 @@ public class ListarRelatoriosService {
                 tenantId,
                 currentUserTenant.getObrasPermitidasIds(),
                 currentUserTenant.isAdministrador(),
+                currentUserTenant.getAuthorities().getRelatorios().getCanViewOnlyAprovados(),
                 params.status(),
                 params.obraId(),
                 params.numero(),

@@ -12,7 +12,7 @@ import com.branches.exception.ForbiddenException;
 import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
 import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.maodeobra.repository.MaoDeObraDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ConfiguracaoDeAssinaturaDeRelatorioEntity;
 import com.branches.obra.domain.ConfiguracaoRelatoriosEntity;
 import com.branches.obra.domain.ObraEntity;

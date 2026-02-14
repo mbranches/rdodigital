@@ -69,8 +69,9 @@ public record GetRelatorioDetailsResponse(
         StatusRelatorio status,
         ModifyerByRelatorioResponse criadoPor,
         ModifyerByRelatorioResponse ultimaModificacao,
-        String linkPdf
-
+        String linkPdf,
+        String nextRelatorioId,
+        String previousRelatorioId
 ) {
     public static GetRelatorioDetailsResponse from(RelatorioDetailsProjection relatorioDetails,
                                                    List<OcorrenciaDeRelatorioEntity> ocorrencias,
@@ -84,7 +85,9 @@ public record GetRelatorioDetailsResponse(
                                                    List<ArquivoEntity> videos,
                                                    Boolean canViewCondicaoDoClima,
                                                    Boolean canViewHorarioDeTrabalho,
-                                                   String link) {
+                                                   String link,
+                                                   String nextRelatorioId,
+                                                   String previousRelatorioId) {
         ObraByRelatorioResponse obra = new ObraByRelatorioResponse(relatorioDetails.getObraIdExterno(), relatorioDetails.getObraNome(), relatorioDetails.getObraEndereco(), relatorioDetails.getObraContratante(), relatorioDetails.getObraResponsavel(), relatorioDetails.getObraNumeroContrato());
 
         String dayOfWeekResponse = relatorioDetails.getDataInicio().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"));
@@ -167,7 +170,9 @@ public record GetRelatorioDetailsResponse(
                 relatorioDetails.getStatus(),
                 new ModifyerByRelatorioResponse(relatorioDetails.getCriadoPor(), relatorioDetails.getCriadoEm()),
                 new ModifyerByRelatorioResponse(relatorioDetails.getUltimaModificacaoPor(), relatorioDetails.getUltimaModificacaoEm()),
-                link
+                link,
+                nextRelatorioId,
+                previousRelatorioId
         );
     }
 }

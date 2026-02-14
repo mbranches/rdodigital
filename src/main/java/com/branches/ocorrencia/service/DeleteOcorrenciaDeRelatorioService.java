@@ -1,6 +1,6 @@
 package com.branches.ocorrencia.service;
 
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.ocorrencia.repository.OcorrenciaDeRelatorioRepository;
 import com.branches.relatorio.domain.RelatorioEntity;

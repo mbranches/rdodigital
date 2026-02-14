@@ -6,7 +6,7 @@ import com.branches.arquivo.dto.response.ArquivoResponse;
 import com.branches.relatorio.dto.response.ItemPorRelatorioResponse;
 import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.exception.InternalServerError;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.relatorio.domain.RelatorioEntity;

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,6 +146,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
     WHERE r.tenantId = :tenantId
         AND (:perfilIsAdministrador = true OR o.id IN :obrasIdAllowed)
         AND r.ativo IS TRUE
+        AND (:canViewOnlyAprovados = false OR r.status = 'APROVADO')
         AND (:status IS NULL OR r.status = :status)
         AND (:obraExternalId IS NULL OR o.idExterno = :obraExternalId)
         AND (:numero IS NULL OR CAST(r.numero AS string) LIKE CONCAT(CAST(:numero AS string), '%'))
@@ -154,6 +156,7 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
             Long tenantId,
             List<Long> obrasIdAllowed,
             boolean perfilIsAdministrador,
+            boolean canViewOnlyAprovados,
             StatusRelatorio status,
             String obraExternalId,
             Long numero,
@@ -196,4 +199,37 @@ public interface RelatorioRepository extends JpaRepository<RelatorioEntity, Long
       AND o.ativo IS TRUE
 """)
     CondicaoClimaticaAnalysisProjection findCondicaoClimaticaAnalysis(Long tenantId, String obraExternalId);
+
+    @Query("""
+    SELECT r.idExterno
+    FROM RelatorioEntity r
+        WHERE r.tenantId = :tenantId
+        AND r.obraId = :obraId
+        AND r.ativo IS TRUE
+        AND (:userCanViewOnlyAprovados = false OR r.status = 'APROVADO')
+        AND (
+            r.dataInicio > :dataInicioRelatorio
+            OR (r.dataInicio = :dataInicioRelatorio AND r.enversCreatedDate > :dataCriacaoRelatorio)
+        )
+    ORDER BY r.dataInicio ASC, r.enversCreatedDate ASC
+    LIMIT 1
+""")
+    Optional<String> findNextRelatorioExternalIdByObraIdAndDataRelatorio(Long tenantId, Long obraId, LocalDate dataInicioRelatorio, LocalDateTime dataCriacaoRelatorio, boolean userCanViewOnlyAprovados);
+
+    @Query("""
+    SELECT r.idExterno
+    FROM RelatorioEntity r
+        WHERE r.tenantId = :tenantId
+        AND r.obraId = :obraId
+        AND r.ativo IS TRUE
+        AND (:userCanViewOnlyAprovados = false OR r.status = 'APROVADO')
+        AND (
+            r.dataInicio < :dataInicioRelatorio
+            OR (r.dataInicio = :dataInicioRelatorio AND r.enversCreatedDate < :dataCriacaoRelatorio)
+        )
+    ORDER BY r.dataInicio DESC, r.enversCreatedDate DESC
+    LIMIT 1
+""")
+    Optional<String> findPreviousRelatorioExternalIdByObraIdAndDataRelatorio(Long tenantId, Long obraId, LocalDate dataInicioRelatorio, LocalDateTime dataCriacaoRelatorio, boolean userCanViewOnlyAprovados);
+
 }

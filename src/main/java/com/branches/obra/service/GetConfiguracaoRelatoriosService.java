@@ -1,6 +1,5 @@
 package com.branches.obra.service;
 
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.dto.response.ConfiguracaoRelatoriosResponse;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;

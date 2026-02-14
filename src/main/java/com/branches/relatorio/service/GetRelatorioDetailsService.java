@@ -14,7 +14,7 @@ import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.maodeobra.repository.MaoDeObraDeRelatorioRepository;
 import com.branches.material.domain.MaterialDeRelatorioEntity;
 import com.branches.material.repository.MaterialDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.ocorrencia.repository.OcorrenciaDeRelatorioRepository;
 import com.branches.relatorio.domain.AssinaturaDeRelatorioEntity;
@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -102,6 +103,8 @@ public class GetRelatorioDetailsService {
                 assinaturas
         ) : null;
 
+        Optional<String> nextRelatorioId = relatorioRepository.findNextRelatorioExternalIdByObraIdAndDataRelatorio(tenantId, relatorioDetails.getObraId(), relatorioDetails.getDataInicio(), relatorioDetails.getCriadoEm(), currentUserTenant.getAuthorities().getRelatorios().getCanViewOnlyAprovados());
+        Optional<String> previousRelatorioId = relatorioRepository.findPreviousRelatorioExternalIdByObraIdAndDataRelatorio(tenantId, relatorioDetails.getObraId(), relatorioDetails.getDataInicio(), relatorioDetails.getCriadoEm(), currentUserTenant.getAuthorities().getRelatorios().getCanViewOnlyAprovados());
 
         return GetRelatorioDetailsResponse.from(
                 relatorioDetails,
@@ -116,7 +119,9 @@ public class GetRelatorioDetailsService {
                 videos,
                 canViewCondicaoDoClima,
                 canViewHorarioDeTrabalho,
-                relatorioLink
+                relatorioLink,
+                nextRelatorioId.orElse(null),
+                previousRelatorioId.orElse(null)
         );
     }
 

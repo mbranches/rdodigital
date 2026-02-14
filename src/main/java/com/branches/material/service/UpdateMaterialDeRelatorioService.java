@@ -1,7 +1,7 @@
 package com.branches.material.service;
 
 import com.branches.material.domain.MaterialDeRelatorioEntity;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.material.dto.request.UpdateMaterialDeRelatorioRequest;
 import com.branches.material.repository.MaterialDeRelatorioRepository;

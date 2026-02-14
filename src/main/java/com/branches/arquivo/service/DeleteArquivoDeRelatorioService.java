@@ -5,7 +5,7 @@ import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.exception.InternalServerError;
 import com.branches.exception.NotFoundException;
 import com.branches.external.aws.S3DeleteFile;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;

@@ -1,6 +1,6 @@
 package com.branches.maodeobra.service;
 
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.maodeobra.domain.enums.PresencaMaoDeObra;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;

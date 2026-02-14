@@ -4,7 +4,7 @@ import com.branches.condicaoclimatica.domain.CondicaoClimaticaEntity;
 import com.branches.condicaoclimatica.dto.request.CondicaoClimaticaRequest;
 import com.branches.condicaoclimatica.dto.request.UpdateCondicaoClimaticaDeRelatorioRequest;
 import com.branches.exception.ForbiddenException;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdAndTenantIdService;
 import com.branches.relatorio.domain.RelatorioEntity;

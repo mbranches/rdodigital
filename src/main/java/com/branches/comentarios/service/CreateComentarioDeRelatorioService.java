@@ -4,7 +4,7 @@ import com.branches.comentarios.dto.request.CreateComentarioDeRelatorioRequest;
 import com.branches.comentarios.dto.response.CreateComentarioDeRelatorioResponse;
 import com.branches.comentarios.model.ComentarioDeRelatorioEntity;
 import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;

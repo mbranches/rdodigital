@@ -6,7 +6,7 @@ import com.branches.arquivo.dto.request.CreateFotoDeRelatorioRequest;
 import com.branches.arquivo.dto.response.FotoDeRelatorioResponse;
 import com.branches.arquivo.repository.ArquivoRepository;
 import com.branches.external.aws.S3UploadFile;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.repository.projections.RelatorioWithObraProjection;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;

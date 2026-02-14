@@ -12,7 +12,7 @@ import com.branches.maodeobra.domain.MaoDeObraDeAtividadeDeRelatorioEntity;
 import com.branches.maodeobra.domain.MaoDeObraEntity;
 import com.branches.maodeobra.repository.MaoDeObraDeAtividadeDeRelatorioRepository;
 import com.branches.maodeobra.service.GetMaoDeObraListByIdInAndTenantIdAndTypeService;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.domain.enums.TipoMaoDeObra;
 import com.branches.obra.service.GetObraByIdAndTenantIdService;

@@ -2,7 +2,7 @@ package com.branches.comentarios.service;
 
 import com.branches.comentarios.dto.response.ComentarioDeRelatorioResponse;
 import com.branches.comentarios.repository.ComentarioDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;

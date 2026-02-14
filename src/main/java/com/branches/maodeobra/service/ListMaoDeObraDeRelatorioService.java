@@ -2,7 +2,7 @@ package com.branches.maodeobra.service;
 
 import com.branches.maodeobra.dto.response.MaoDeObraDeRelatorioResponse;
 import com.branches.maodeobra.repository.MaoDeObraDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;
 import com.branches.tenant.service.GetTenantIdByIdExternoService;

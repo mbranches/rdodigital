@@ -1,8 +1,7 @@
 package com.branches.relatorio.service;
 
 import com.branches.exception.NotFoundException;
-import com.branches.external.aws.S3DeleteFile;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.AssinaturaDeRelatorioEntity;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.repository.AssinaturaDeRelatorioRepository;
@@ -23,7 +22,6 @@ public class DesassinarRelatorioService {
     private final CheckIfUserHasAccessToEditRelatorioService checkIfUserHasAccessToEditRelatorioService;
     private final GetRelatorioByIdExternoAndTenantIdService getRelatorioByIdExternoAndTenantIdService;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
-    private final S3DeleteFile s3DeleteFile;
     private final AssinaturaDeRelatorioRepository assinaturaDeRelatorioRepository;
     private final CheckIfUserHasAccessToObraService checkIfUserHasAccessToObraService;
 

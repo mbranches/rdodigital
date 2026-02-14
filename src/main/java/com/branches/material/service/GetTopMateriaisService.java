@@ -3,7 +3,7 @@ package com.branches.material.service;
 import com.branches.material.dto.response.GetItemTopMateriaisResponse;
 import com.branches.material.repository.MaterialRepository;
 import com.branches.material.repository.projections.ItemTopMateriaisProjection;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.obra.domain.ObraEntity;
 import com.branches.obra.service.GetObraByIdExternoAndTenantIdService;
 import com.branches.shared.pagination.PageResponse;

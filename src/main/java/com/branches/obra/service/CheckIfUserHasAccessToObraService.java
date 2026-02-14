@@ -1,4 +1,4 @@
-package com.branches.obra.controller;
+package com.branches.obra.service;
 
 import com.branches.exception.ForbiddenException;
 import com.branches.usertenant.domain.UserTenantEntity;

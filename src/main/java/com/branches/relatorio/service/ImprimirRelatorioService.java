@@ -13,7 +13,7 @@ import com.branches.maodeobra.domain.MaoDeObraDeRelatorioEntity;
 import com.branches.maodeobra.repository.MaoDeObraDeRelatorioRepository;
 import com.branches.material.domain.MaterialDeRelatorioEntity;
 import com.branches.material.repository.MaterialDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.ocorrencia.domain.OcorrenciaDeRelatorioEntity;
 import com.branches.ocorrencia.repository.OcorrenciaDeRelatorioRepository;
 import com.branches.relatorio.domain.AssinaturaDeRelatorioEntity;

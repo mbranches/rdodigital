@@ -5,7 +5,7 @@ import com.branches.material.domain.MaterialEntity;
 import com.branches.material.dto.request.CreateMaterialDeRelatorioRequest;
 import com.branches.material.dto.response.CreateMaterialDeRelatorioResponse;
 import com.branches.material.repository.MaterialDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;

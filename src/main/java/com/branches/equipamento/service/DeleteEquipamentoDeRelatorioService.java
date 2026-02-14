@@ -2,7 +2,7 @@ package com.branches.equipamento.service;
 
 import com.branches.equipamento.domain.EquipamentoDeRelatorioEntity;
 import com.branches.equipamento.repository.EquipamentoDeRelatorioRepository;
-import com.branches.obra.controller.CheckIfUserHasAccessToObraService;
+import com.branches.obra.service.CheckIfUserHasAccessToObraService;
 import com.branches.relatorio.domain.RelatorioEntity;
 import com.branches.relatorio.service.CheckIfUserHasAccessToEditRelatorioService;
 import com.branches.relatorio.service.GetRelatorioByIdExternoAndTenantIdService;

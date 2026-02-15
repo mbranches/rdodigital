@@ -68,11 +68,11 @@ public class GenerateRelatorioFileService {
 
     private String buildFileName(LocalDate dataInicio, LocalDate dataFim, long numero) {
 
-        String formattedDataInicio = dataInicio.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        String formattedDataFim = dataFim != null ? dataFim.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
+        String formattedDataInicio = dataInicio.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String formattedDataFim = dataFim != null ? dataFim.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) : null;
 
         if (formattedDataFim == null) return "Relatório Diário de Obra (RDO) N° " + numero + " - " + formattedDataInicio + ".pdf";
 
-        return "Relatório Diário de Obra (RDO) N°" + numero + " - " + formattedDataInicio + " a " + formattedDataFim + ".pdf";
+        return "Relatório Diário de Obra (RDO) N° " + numero + " - " + formattedDataInicio + " a " + formattedDataFim + ".pdf";
     }
 }

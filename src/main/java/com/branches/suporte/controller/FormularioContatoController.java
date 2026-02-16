@@ -1,5 +1,6 @@
 package com.branches.suporte.controller;
 
+import com.branches.shared.email.SendEmailResponse;
 import com.branches.suporte.dto.request.FormularioContatoRequest;
 import com.branches.suporte.entity.IntencaoDeContatoEntity;
 import com.branches.suporte.repository.IntencaoDeContatoRepository;
@@ -32,8 +33,6 @@ public class FormularioContatoController {
                 .mensagem(request.mensagem())
                 .build();
 
-        intencaoDeContatoRepository.save(contato);
-
         SendEmailRequest emailRequest = SendEmailRequest.builder()
                 .to(EMAIL_DESTINO)
                 .subject("Nova Intenção de Contato: " + request.nome())
@@ -45,7 +44,10 @@ public class FormularioContatoController {
                         "Mensagem: " + request.mensagem())
                 .build();
 
-        emailSender.sendEmail(emailRequest, false);
+        SendEmailResponse emailSent = emailSender.sendEmail(emailRequest, false);
+
+        contato.setEnviado(emailSent.wasSentSuccessfully());
+        intencaoDeContatoRepository.save(contato);
 
         return ResponseEntity.noContent().build();
     }

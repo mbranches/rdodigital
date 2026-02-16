@@ -17,7 +17,13 @@ public class IntencaoDeContatoEntity {
     private String nome;
     @Column(nullable = false)
     private String email;
+
     private String telefone;
+
     private String empresa;
+
     private String mensagem;
+
+    @Column(nullable = false)
+    private Boolean enviado;
 }

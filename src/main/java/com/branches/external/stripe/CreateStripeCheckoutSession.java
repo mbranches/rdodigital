@@ -48,6 +48,7 @@ public class CreateStripeCheckoutSession {
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
                                     .setPrice(stripePriceId)
+                                    .setQuantity(1L)
                                     .build()
                     )
                     .setCustomer(customerId)

@@ -124,7 +124,9 @@ public class StripeEventsHandlerService {
 
         log.info("Invoice paga: {}", invoice.getId());
 
+        log.info("Buscando cobrança associada à invoice: {}", invoice.getId());
         CobrancaEntity cobranca = getCobrancaByStripeIdService.execute(invoice.getId());
+        log.info("Cobrança encontrada para a invoice: {}. Status atual da cobrança: {}", invoice.getId(), cobranca.getStatus());
 
         if (cobranca.isPaga()) {
             log.info("Cobrança já paga para a invoice: {}", invoice.getId());
@@ -142,6 +144,9 @@ public class StripeEventsHandlerService {
         AssinaturaDePlanoEntity assinatura = getAssinaturaByStripeIdService.execute(subscriptionId);
 
         assinatura.ativar(dataPagamento);
+        assinaturaDePlanoRepository.save(assinatura);
+
+        log.info("Cobrança marcada como paga para a invoice: {}. Assinatura ativada: {}", invoice.getId(), assinatura.getId());
     }
 
     private void handleInvoicePaymentFailed(Event event) {

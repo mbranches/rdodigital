@@ -159,10 +159,13 @@ public class StripeEventsHandlerService {
     }
 
     private void handleCheckoutSessionCompleted(Event event) {
-
-        Session session = (Session) event.getDataObjectDeserializer()
-                .getObject()
-                .orElseThrow();
+        Session session;
+        try {
+            session = (Session) event.getDataObjectDeserializer().deserializeUnsafe();
+        } catch (Exception e) {
+            log.error("Erro ao desserializar checkout.session.completed: {}", e.getMessage(), e);
+            throw new NotFoundException("Erro ao processar evento de checkout session completed");
+        }
 
         log.info("Checkout session completed: {}", session.getId());
 

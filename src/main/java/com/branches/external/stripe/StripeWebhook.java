@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class StripeWebhook {
-    @Value("${stripe.webhook-secret}")
+    @Value("${stripe.secret-webhook}")
     private String webhookSecret;
     private final StripeEventsHandlerService hubStripeEventsHandlerService;
 

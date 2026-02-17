@@ -2,7 +2,6 @@ package com.branches.assinaturadeplano.domain;
 
 import com.branches.assinaturadeplano.domain.enums.AssinaturaStatus;
 import com.branches.config.envers.AuditableTenantOwned;
-import com.branches.plano.domain.IntencaoDePagamentoEntity;
 import com.branches.plano.domain.PlanoEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,16 +36,40 @@ public class AssinaturaDePlanoEntity extends AuditableTenantOwned {
 
     private String stripeSubscriptionId;
 
-    @OneToOne
-    @JoinColumn(name = "intencao_de_pagamento_id")
-    private IntencaoDePagamentoEntity intencaoDePagamento;
+    @Builder.Default
+    private Boolean processandoAtualizacaoPlano = false;
 
     public void cancelar() {
         this.status = AssinaturaStatus.CANCELADO;
         this.canceladoEm = LocalDateTime.now();
     }
 
-    public void ativar() {
+    public void ativar(LocalDate dataFim) {
         this.status = AssinaturaStatus.ATIVO;
+        this.dataFim = dataFim;
+    }
+
+    public void desmarcarProcessamentoAtualizacaoPlano() {
+        processandoAtualizacaoPlano = false;
+    }
+
+    public void marcarProcessamentoAtualizacaoPlano() {
+        processandoAtualizacaoPlano = true;
+    }
+
+    public void atualizarPlano(PlanoEntity novoPlano) {
+        this.plano = novoPlano;
+    }
+
+    public void definirVencido() {
+        this.status = AssinaturaStatus.VENCIDO;
+    }
+
+    public void definirSuspensa() {
+        this.status = AssinaturaStatus.SUSPENSO;
+    }
+
+    public boolean isCancelada() {
+        return this.status == AssinaturaStatus.CANCELADO;
     }
 }

@@ -5,12 +5,11 @@ import com.branches.exception.BadRequestException;
 import com.branches.external.stripe.CreateStripeCheckoutSession;
 import com.branches.external.stripe.CreateStripeCheckoutSessionResponse;
 import com.branches.external.stripe.CreateStripeCustomer;
-import com.branches.plano.domain.IntencaoDePagamentoEntity;
 import com.branches.plano.domain.PlanoEntity;
 import com.branches.plano.dto.request.CreatePlanoCheckoutRequest;
 import com.branches.plano.dto.response.PlanoCheckoutResponse;
-import com.branches.plano.repository.IntencaoDePagamentoRepository;
 import com.branches.tenant.domain.TenantEntity;
+import com.branches.tenant.repository.TenantRepository;
 import com.branches.tenant.service.GetTenantByIdExternoService;
 import com.branches.user.domain.UserEntity;
 import com.branches.user.service.GetUserByIdService;
@@ -28,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class CreatePlanoCheckoutService {
-    private final IntencaoDePagamentoRepository intencaoDePagamentoRepository;
+    private final TenantRepository tenantRepository;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetPlanoByIdService getPlanoByIdService;
     private final CreateStripeCheckoutSession createStripeCheckoutSession;
@@ -48,29 +47,32 @@ public class CreatePlanoCheckoutService {
 
         PlanoEntity plano = getPlanoByIdService.execute(request.planoId());
 
-        UserEntity user = getUserByIdService.execute(tenant.getUserResponsavelId());
+        UserEntity userResponsavel = getUserByIdService.execute(tenant.getUserResponsavelId());
 
         boolean tenantHasNotStripeId = tenant.getStripeCustomerId() == null;
-        String stripeCustomerId = tenantHasNotStripeId ? createStripeCustomer.execute(tenant.getRazaoSocial(), user.getEmail())
+        String stripeCustomerId = tenantHasNotStripeId ? createCustomerForTenant(tenant, userResponsavel)
                 : tenant.getStripeCustomerId();
 
         CreateStripeCheckoutSessionResponse stripeResponse = createStripeCheckoutSession.execute(
                 plano.getStripePriceId(),
-                plano.getRecorrencia(),
-                stripeCustomerId
+                stripeCustomerId,
+                tenantId
         );
-
-        IntencaoDePagamentoEntity intencao = IntencaoDePagamentoEntity.builder()
-                .tenantId(tenantId)
-                .planoId(plano.getId())
-                .stripeSessionId(stripeResponse.sessionId())
-                .build();
-
-        intencaoDePagamentoRepository.save(intencao);
 
         log.info("Checkout criado com sucesso para o tenant: {} e plano: {}", tenantId, plano.getNome());
 
         return new PlanoCheckoutResponse(stripeResponse.checkoutUrl());
+    }
+
+    private String createCustomerForTenant(TenantEntity tenant, UserEntity userResponsavel) {
+        String stripeCustomerId = createStripeCustomer.execute(tenant.getRazaoSocial(), userResponsavel.getEmail());
+
+        tenant.setStripeCustomerId(stripeCustomerId);
+
+        tenantRepository.save(tenant);
+
+        log.info("Cliente Stripe criado com sucesso para o tenant: {}. Stripe Customer ID: {}", tenant.getId(), stripeCustomerId);
+        return stripeCustomerId;
     }
 
     private void checkIfTenantCanCreateCheckout(Long tenantId) {

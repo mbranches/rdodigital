@@ -29,4 +29,6 @@ public interface AssinaturaDePlanoRepository extends JpaRepository<AssinaturaDeP
     boolean existsByStatusInAndTenantId(Collection<AssinaturaStatus> status, Long tenantId);
 
     boolean existsByTenantIdInAndStatusIn(Collection<Long> tenantIds, Collection<AssinaturaStatus> status);
+
+    boolean existsByStripeSubscriptionId(String stripeSubscriptionId);
 }

@@ -1,10 +1,11 @@
 package com.branches.external.stripe;
 
 import com.branches.exception.InternalServerError;
-import com.branches.plano.domain.enums.RecorrenciaPlano;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.param.checkout.SessionCreateParams.PaymentMethodOptions;
+import com.stripe.param.checkout.SessionCreateParams.PaymentMethodType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,26 +24,22 @@ public class CreateStripeCheckoutSession {
     @Value("${stripe.cancel-url:http://localhost:3000/checkout/cancelado}")
     private String cancelUrl;
 
-    public CreateStripeCheckoutSessionResponse execute(String stripePriceId, RecorrenciaPlano recorrencia, String customerId) {
+    public CreateStripeCheckoutSessionResponse execute(String stripePriceId, String customerId, Long tenantId) {
         try {
-            log.info("Criando sessão de checkout no Stripe para o tenant com recorrência: {}", recorrencia);
-
-            SessionCreateParams.Mode mode = recorrencia == RecorrenciaPlano.MENSAL_AVULSO
-                    ? SessionCreateParams.Mode.PAYMENT
-                    : SessionCreateParams.Mode.SUBSCRIPTION;
+            log.info("Criando sessão de checkout no Stripe para o tenant: {}", tenantId);
 
             SessionCreateParams params = SessionCreateParams.builder()
-                    .setMode(mode)
+                    .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                     .setSuccessUrl(successUrl)
                     .setCancelUrl(cancelUrl)
                     .addAllPaymentMethodType(
-                            List.of(SessionCreateParams.PaymentMethodType.CARD,
-                                    SessionCreateParams.PaymentMethodType.BOLETO)
+                            List.of(PaymentMethodType.CARD,
+                                    PaymentMethodType.BOLETO)
                     )
                     .setPaymentMethodOptions(
-                            SessionCreateParams.PaymentMethodOptions.builder()
+                            PaymentMethodOptions.builder()
                                     .setBoleto(
-                                            SessionCreateParams.PaymentMethodOptions.Boleto.builder()
+                                            PaymentMethodOptions.Boleto.builder()
                                                     .setExpiresAfterDays(3L)
                                                     .build()
                                     )
@@ -51,14 +48,14 @@ public class CreateStripeCheckoutSession {
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
                                     .setPrice(stripePriceId)
-                                    .setQuantity(1L)
                                     .build()
                     )
                     .setCustomer(customerId)
+                    .putMetadata("tenantId", tenantId.toString())
                     .build();
 
             Session session = Session.create(params);
-            log.info("Sessão de checkout criada com sucesso: {} no modo: {}", session.getId(), mode);
+            log.info("Sessão de checkout criada com sucesso: {}", session.getId());
 
             return new CreateStripeCheckoutSessionResponse(session.getId(), session.getUrl());
         } catch (StripeException e) {

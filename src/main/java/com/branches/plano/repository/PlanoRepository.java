@@ -26,4 +26,6 @@ public interface PlanoRepository extends JpaRepository<PlanoEntity, Long> {
     List<PlanoEntity> findAllByAtivoIsTrueOrderByValorPorMesAsc();
 
     boolean existsByNome(String nome);
+
+    Optional<PlanoEntity> findByStripePriceId(String stripeId);
 }

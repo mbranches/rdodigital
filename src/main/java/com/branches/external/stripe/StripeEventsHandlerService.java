@@ -139,7 +139,7 @@ public class StripeEventsHandlerService {
         PlanoEntity plano = getPlanoByStripeIdService.execute(priceId);
 
         LocalDate dataInicio = epochToLocalDate(subscription.getStartDate());
-        return AssinaturaDePlanoEntity.builder()
+        AssinaturaDePlanoEntity assinaturaDePlano = AssinaturaDePlanoEntity.builder()
                 .tenantId(tenant.getId())
                 .plano(plano)
                 .stripeSubscriptionId(subscriptionId)
@@ -147,6 +147,12 @@ public class StripeEventsHandlerService {
                 .dataFim(plano.calcularDataFim(dataInicio))
                 .status(AssinaturaStatus.PENDENTE)
                 .build();
+
+        String subscriptionStatus = subscription.getStatus();
+
+        processSubscriptionForStatus(assinaturaDePlano, subscriptionStatus);
+
+        return assinaturaDePlano;
     }
 
     private String getPriceIdOfSubscription(Subscription subscription) {
@@ -422,6 +428,12 @@ public class StripeEventsHandlerService {
 
         String stripeStatus = subscription.getStatus();
 
+        processSubscriptionForStatus(assinatura, stripeStatus);
+
+        assinaturaDePlanoRepository.save(assinatura);
+    }
+
+    private void processSubscriptionForStatus(AssinaturaDePlanoEntity assinatura, String stripeStatus) {
         switch (stripeStatus) {
             case "active" -> {
                 LocalDate dataFimCicloAtual = assinatura.getPlano().calcularDataFim(now());
@@ -434,17 +446,12 @@ public class StripeEventsHandlerService {
             case "unpaid" -> assinatura.definirSuspensa();
 
             case "canceled" -> {
-                log.info("Cancelando assinatura Stripe: {}", subscription.getId());
                 assinatura.cancelar();
-
-                log.info("Registrando evento de cancelamento para a assinatura Stripe: {}", subscription.getId());
                 registrarEventoAssinatura(assinatura, EventoHistoricoAssinatura.CANCELAMENTO);
             }
 
             default -> log.info("Status Stripe não tratado: {}", stripeStatus);
         }
-
-        assinaturaDePlanoRepository.save(assinatura);
     }
 
     private void handleSubscriptionDeleted(Event event) {

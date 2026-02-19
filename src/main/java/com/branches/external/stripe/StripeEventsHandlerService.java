@@ -45,7 +45,7 @@ public class StripeEventsHandlerService {
 
             case "invoice.payment_failed" -> handleInvoicePaymentFailed(event);
 
-            case "invoice.finalized" -> handleInvoiceFinalized(event);
+//            case "invoice.finalized" -> handleInvoiceFinalized(event);
 
             case "checkout.session.completed" -> handleCheckoutSessionCompleted(event);
 
@@ -110,8 +110,6 @@ public class StripeEventsHandlerService {
     }
 
     private void handleInvoicePaid(Event event) {
-        sleep3seconds();
-        log.info("Processando evento de invoice.paid do Stripe");
         Invoice invoice = (Invoice) event.getDataObjectDeserializer()
                 .getObject()
                 .orElseThrow(() -> {
@@ -120,26 +118,26 @@ public class StripeEventsHandlerService {
                 });
 
         log.info("Invoice paga: {}", invoice.getId());
+//
+//        log.info("Buscando cobrança associada à invoice: {}", invoice.getId());
+//        CobrancaEntity cobranca = cobrancaRepository.findByStripeInvoiceId(invoice.getId())
+//                .orElse(createCobrancaFromInvoice(invoice));
+//        log.info("Cobrança encontrada para a invoice: {}. Status atual da cobrança: {}", invoice.getId(), cobranca.getStatus());
+//
+//        if (cobranca.isPaga() && cobranca.getDataPagamento() != null) {
+//            log.info("Cobrança já paga para a invoice: {}", invoice.getId());
+//
+//            cobrancaRepository.save(cobranca);
+//
+//            return;
+//        }
+//        LocalDate dataPagamento = epochToLocalDate(
+//                invoice.getStatusTransitions().getPaidAt()
+//        );
+//        cobranca.pagar(dataPagamento);
 
-        log.info("Buscando cobrança associada à invoice: {}", invoice.getId());
-        CobrancaEntity cobranca = cobrancaRepository.findByStripeInvoiceId(invoice.getId())
-                .orElse(createCobrancaFromInvoice(invoice));
-        log.info("Cobrança encontrada para a invoice: {}. Status atual da cobrança: {}", invoice.getId(), cobranca.getStatus());
-
-        if (cobranca.isPaga() && cobranca.getDataPagamento() != null) {
-            log.info("Cobrança já paga para a invoice: {}", invoice.getId());
-
-            cobrancaRepository.save(cobranca);
-
-            return;
-        }
-        LocalDate dataPagamento = epochToLocalDate(
-                invoice.getStatusTransitions().getPaidAt()
-        );
-        cobranca.pagar(dataPagamento);
-
-        cobrancaRepository.save(cobranca);
-
+//        cobrancaRepository.save(cobranca);
+//
         String subscriptionId = invoice.getParent().getSubscriptionDetails().getSubscription();
 
         AssinaturaDePlanoEntity assinatura = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscriptionId)
@@ -223,19 +221,19 @@ public class StripeEventsHandlerService {
 
         log.info("Pagamento falhou para a invoice: {}", invoice.getId());
 
-        CobrancaEntity cobranca = cobrancaRepository.findByStripeInvoiceId(invoice.getId())
-                .orElse(createCobrancaFromInvoice(invoice));
-
-        if(cobranca.isFalhaPagamento()) {
-            log.info("Cobrança já marcada como falha de pagamento para a invoice: {}", invoice.getId());
-            cobrancaRepository.save(cobranca);
-            return;
-        }
-
-        cobranca.definirFalhaPagamento();
-
-        cobrancaRepository.save(cobranca);
-
+//        CobrancaEntity cobranca = cobrancaRepository.findByStripeInvoiceId(invoice.getId())
+//                .orElse(createCobrancaFromInvoice(invoice));
+//
+//        if(cobranca.isFalhaPagamento()) {
+//            log.info("Cobrança já marcada como falha de pagamento para a invoice: {}", invoice.getId());
+//            cobrancaRepository.save(cobranca);
+//            return;
+//        }
+//
+//        cobranca.definirFalhaPagamento();
+//
+//        cobrancaRepository.save(cobranca);
+//
         String subscriptionId = invoice.getParent().getSubscriptionDetails().getSubscription();
 
         AssinaturaDePlanoEntity assinaturaDePlanoEntity = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscriptionId)
@@ -248,33 +246,22 @@ public class StripeEventsHandlerService {
         }
     }
 
-    private void handleInvoiceFinalized(Event event) {
-        sleep3seconds();
-
-        log.info("Processando evento de invoice.finalized do Stripe");
-        Invoice invoice = (Invoice) event.getDataObjectDeserializer()
-                .getObject()
-                .orElseThrow(() -> {
-                    log.error("Invoice não encontrada no evento de invoice.finalized");
-                    return new NotFoundException("Invoice não encontrada no evento finalizado");
-                });
-
-        CobrancaEntity cobranca = cobrancaRepository.findByStripeInvoiceId(invoice.getId())
-                .orElse(createCobrancaFromInvoice(invoice));
-
-        cobranca.updateLinks(invoice.getHostedInvoiceUrl(), invoice.getInvoicePdf());
-
-        cobrancaRepository.save(cobranca);
-    }
-
-    private void sleep3seconds() {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            log.error("Thread interrompida durante sleep", e);
-        }
-    }
+//    private void handleInvoiceFinalized(Event event) {
+//        log.info("Processando evento de invoice.finalized do Stripe");
+//        Invoice invoice = (Invoice) event.getDataObjectDeserializer()
+//                .getObject()
+//                .orElseThrow(() -> {
+//                    log.error("Invoice não encontrada no evento de invoice.finalized");
+//                    return new NotFoundException("Invoice não encontrada no evento finalizado");
+//                });
+//
+//        CobrancaEntity cobranca = cobrancaRepository.findByStripeInvoiceId(invoice.getId())
+//                .orElse(createCobrancaFromInvoice(invoice));
+//
+//        cobranca.updateLinks(invoice.getHostedInvoiceUrl(), invoice.getInvoicePdf());
+//
+//        cobrancaRepository.save(cobranca);
+//    }
 
     private void registrarEventoAssinatura(AssinaturaDePlanoEntity assinatura, EventoHistoricoAssinatura evento) {
         AssinaturaHistoricoEntity historico = new AssinaturaHistoricoEntity(assinatura.getTenantId());

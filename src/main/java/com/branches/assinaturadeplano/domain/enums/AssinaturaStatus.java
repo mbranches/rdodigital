@@ -8,7 +8,8 @@ public enum AssinaturaStatus {
     ENCERRADO,
     SUSPENSO,
     CANCELADO,
-    PENDENTE;
+    PENDENTE,
+    NAO_FINALIZADO;
 
     /**
      * Lista de status que indicam que a assinatura já teve um plano ativo em algum momento
@@ -24,7 +25,7 @@ public enum AssinaturaStatus {
      * @return Lista de status
      */
     public static List<AssinaturaStatus> getStatusListOfAssinaturaCorrente() {
-        return List.of(ATIVO, VENCIDO, SUSPENSO);
+        return List.of(ATIVO, VENCIDO, SUSPENSO, PENDENTE);
     }
 
     /**

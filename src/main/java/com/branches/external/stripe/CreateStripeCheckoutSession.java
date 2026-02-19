@@ -58,7 +58,7 @@ public class CreateStripeCheckoutSession {
             Session session = Session.create(params);
             log.info("Sessão de checkout criada com sucesso: {}", session.getId());
 
-            return new CreateStripeCheckoutSessionResponse(session.getId(), session.getUrl());
+            return new CreateStripeCheckoutSessionResponse(session.getId(), session.getUrl(), session.getSubscription());
         } catch (StripeException e) {
             log.error("Erro ao criar sessão de checkout no Stripe: {}", e.getMessage(), e);
             throw new InternalServerError("Erro ao criar sessão de checkout: " + e.getMessage());

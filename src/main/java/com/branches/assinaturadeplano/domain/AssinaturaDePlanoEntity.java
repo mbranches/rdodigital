@@ -72,4 +72,12 @@ public class AssinaturaDePlanoEntity extends AuditableTenantOwned {
     public boolean isCancelada() {
         return this.status == AssinaturaStatus.CANCELADO;
     }
+
+    public boolean isPendente() {
+        return this.status == AssinaturaStatus.PENDENTE;
+    }
+
+    public void definirNaoFinalizada() {
+        this.status = AssinaturaStatus.NAO_FINALIZADO;
+    }
 }

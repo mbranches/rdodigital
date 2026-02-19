@@ -3,7 +3,6 @@ package com.branches.external.stripe;
 import com.branches.assinaturadeplano.domain.AssinaturaDePlanoEntity;
 import com.branches.assinaturadeplano.domain.AssinaturaHistoricoEntity;
 import com.branches.assinaturadeplano.domain.CobrancaEntity;
-import com.branches.assinaturadeplano.domain.enums.AssinaturaStatus;
 import com.branches.assinaturadeplano.domain.enums.EventoHistoricoAssinatura;
 import com.branches.assinaturadeplano.domain.enums.StatusCobranca;
 import com.branches.assinaturadeplano.repository.AssinaturaDePlanoRepository;
@@ -12,11 +11,7 @@ import com.branches.assinaturadeplano.repository.CobrancaRepository;
 import com.branches.exception.NotFoundException;
 import com.branches.plano.domain.PlanoEntity;
 import com.branches.plano.service.GetPlanoByStripeIdService;
-import com.branches.tenant.domain.TenantEntity;
-import com.branches.tenant.repository.TenantRepository;
-import com.branches.tenant.service.GetTenantByIdService;
 import com.stripe.model.*;
-import com.stripe.model.checkout.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -37,8 +32,6 @@ public class StripeEventsHandlerService {
     private final GetPlanoByStripeIdService getPlanoByStripeIdService;
     private final AssinaturaHistoricoRepository assinaturaHistoricoRepository;
     private final AssinaturaDePlanoRepository assinaturaDePlanoRepository;
-    private final GetTenantByIdService getTenantByIdService;
-    private final TenantRepository tenantRepository;
     private static final ZoneId TIMEZONE_SP = ZoneId.of("America/Sao_Paulo");
 
     public void handle(Event event) {
@@ -49,44 +42,12 @@ public class StripeEventsHandlerService {
 
             case "invoice.finalized" -> handleInvoiceFinalized(event);
 
-            case "checkout.session.completed" -> handleCheckoutSessionCompleted(event);
-
             case "customer.subscription.updated" -> handleSubscriptionUpdated(event);
 
             case "customer.subscription.deleted" -> handleSubscriptionDeleted(event);
 
             default -> log.info("Evento Stripe não implementado: {}", event.getType());
         }
-    }
-
-    private AssinaturaDePlanoEntity createSubscription(Subscription subscription) {
-        String subscriptionId = subscription.getId();
-        String priceId = getPriceIdOfSubscription(subscription);
-        String customerId = subscription.getCustomer();
-
-        TenantEntity tenant = tenantRepository.findByStripeCustomerId(customerId)
-                .orElseThrow(() -> {
-                    log.error("Tenant não encontrado para customerId={}", customerId);
-                    return new NotFoundException("Tenant não encontrado para customerId=" + customerId);
-                });
-
-        PlanoEntity plano = getPlanoByStripeIdService.execute(priceId);
-
-        LocalDate dataInicio = epochToLocalDate(subscription.getStartDate());
-        AssinaturaDePlanoEntity assinaturaDePlano = AssinaturaDePlanoEntity.builder()
-                .tenantId(tenant.getId())
-                .plano(plano)
-                .stripeSubscriptionId(subscriptionId)
-                .dataInicio(dataInicio)
-                .dataFim(plano.calcularDataFim(dataInicio))
-                .status(AssinaturaStatus.PENDENTE)
-                .build();
-
-        String subscriptionStatus = subscription.getStatus();
-
-        processSubscriptionForStatus(assinaturaDePlano, subscriptionStatus);
-
-        return assinaturaDePlano;
     }
 
     private String getPriceIdOfSubscription(Subscription subscription) {
@@ -157,17 +118,7 @@ public class StripeEventsHandlerService {
 
         String subscriptionId = invoice.getParent().getSubscriptionDetails().getSubscription();
         AssinaturaDePlanoEntity assinatura = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscriptionId)
-                .orElseGet(() -> {
-                    Subscription subscription;
-                    try {
-                        subscription = Subscription.retrieve(subscriptionId);
-                    } catch (Exception e) {
-                        log.error("Erro ao buscar subscription no Stripe. SubscriptionId={}. Erro: {}", subscriptionId, e.getMessage(), e);
-                        throw new NotFoundException("Erro ao buscar subscription no Stripe. SubscriptionId=" + subscriptionId);
-                    }
-                    AssinaturaDePlanoEntity newAssinatura = createSubscription(subscription);
-                    return assinaturaDePlanoRepository.save(newAssinatura);
-                });
+                .orElseThrow(() -> new NotFoundException("Assinatura não encontrada para subscriptionId=" + subscriptionId));
 
 
         CobrancaEntity cobranca = CobrancaEntity.builder()
@@ -231,6 +182,17 @@ public class StripeEventsHandlerService {
         cobranca.definirFalhaPagamento();
 
         cobrancaRepository.save(cobranca);
+
+        String subscriptionId = invoice.getParent().getSubscriptionDetails().getSubscription();
+
+        AssinaturaDePlanoEntity assinaturaDePlanoEntity = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscriptionId)
+                .orElseThrow(() -> new NotFoundException("Assinatura não encontrada para subscriptionId=" + subscriptionId));
+
+        if (assinaturaDePlanoEntity.isPendente()) {
+            assinaturaDePlanoEntity.definirNaoFinalizada();
+
+            assinaturaDePlanoRepository.save(assinaturaDePlanoEntity);
+        }
     }
 
     private void handleInvoiceFinalized(Event event) {
@@ -250,76 +212,6 @@ public class StripeEventsHandlerService {
         cobrancaRepository.save(cobranca);
     }
 
-    private void handleCheckoutSessionCompleted(Event event) {
-        log.info("Processando evento de checkout.session.completed do Stripe");
-        Session session;
-        try {
-            log.info("Desserializando sessão de checkout do evento");
-            session = (Session) event.getDataObjectDeserializer().deserializeUnsafe();
-            log.info("Sessão de checkout desserializada com sucesso: {}", session.getId());
-        } catch (Exception e) {
-            log.error("Erro ao desserializar checkout.session.completed: {}", e.getMessage(), e);
-            throw new NotFoundException("Erro ao processar evento de checkout session completed");
-        }
-
-        log.info("Checkout session completed: {}", session.getId());
-
-        String tenantIdStr = session.getMetadata() != null ? session.getMetadata().get("tenantId") : null;
-
-        if (tenantIdStr == null) {
-            log.warn("Checkout session não contém tenantId no metadata. SessionId={}", session.getId());
-            return;
-        }
-
-        String subscriptionId = session.getSubscription();
-
-        if (subscriptionId == null) {
-            log.warn("Checkout session não contém subscription. SessionId={}", session.getId());
-            return;
-        }
-
-        TenantEntity tenant = getTenantByIdService.execute(Long.valueOf(tenantIdStr));
-
-        boolean assinaturaExiste = assinaturaDePlanoRepository
-                .existsByStripeSubscriptionId(subscriptionId);
-
-        if (assinaturaExiste) {
-            log.info("Assinatura já existe para subscriptionId={}", subscriptionId);
-            return;
-        }
-
-        Subscription subscription;
-        try {
-            subscription = Subscription.retrieve(subscriptionId);
-        } catch (Exception e) {
-            log.error("Erro ao buscar subscription no Stripe. SubscriptionId={}. Erro: {}", subscriptionId, e.getMessage());
-            throw new NotFoundException("Erro ao buscar subscription no Stripe. SubscriptionId=" + subscriptionId);
-        }
-
-        String priceId = getPriceIdOfSubscription(subscription);
-
-        PlanoEntity plano = getPlanoByStripeIdService.execute(priceId);
-
-        LocalDate dataInicio = epochToLocalDate(subscription.getStartDate());
-
-        LocalDate dataFim = plano.calcularDataFim(dataInicio);
-
-        AssinaturaDePlanoEntity assinatura = AssinaturaDePlanoEntity.builder()
-                .tenantId(tenant.getId())
-                .plano(plano)
-                .stripeSubscriptionId(subscriptionId)
-                .dataInicio(dataInicio)
-                .dataFim(dataFim)
-                .status(AssinaturaStatus.PENDENTE)
-                .build();
-
-        AssinaturaDePlanoEntity savedAssinatura = assinaturaDePlanoRepository.save(assinatura);
-
-        registrarEventoAssinatura(savedAssinatura, EventoHistoricoAssinatura.CRIACAO);
-
-        log.info("Assinatura criada com sucesso via checkout.session.completed. SubscriptionId={}", subscriptionId);
-    }
-
     private void registrarEventoAssinatura(AssinaturaDePlanoEntity assinatura, EventoHistoricoAssinatura evento) {
         AssinaturaHistoricoEntity historico = new AssinaturaHistoricoEntity(assinatura.getTenantId());
         historico.registrarEvento(assinatura, evento);
@@ -335,10 +227,11 @@ public class StripeEventsHandlerService {
                     return new NotFoundException("Subscription não encontrada no evento atualizado");
                 });
 
-        log.info("Atualizando assinatura Stripe: {}", subscription.getId());
+        String subscriptionId = subscription.getId();
+        log.info("Atualizando assinatura Stripe: {}", subscriptionId);
 
-        AssinaturaDePlanoEntity assinatura = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscription.getId())
-                .orElse(createSubscription(subscription));
+        AssinaturaDePlanoEntity assinatura = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscriptionId)
+                .orElseThrow(() -> new NotFoundException("Assinatura não encontrada para subscriptionId=" + subscriptionId));
 
         String planoPriceId = getPriceIdOfSubscription(subscription);
 
@@ -347,7 +240,7 @@ public class StripeEventsHandlerService {
 
         if (!stripeCurrentPlano.getId().equals(assinaturaCurrentPlano.getId())) {
             log.info("Plano da assinatura Stripe mudou. Atualizando plano da assinatura local. Assinatura Stripe: {}, Plano Stripe: {}, Plano Local: {}",
-                    subscription.getId(), stripeCurrentPlano.getNome(), assinaturaCurrentPlano.getNome());
+                    subscriptionId, stripeCurrentPlano.getNome(), assinaturaCurrentPlano.getNome());
 
             assinatura.desmarcarProcessamentoAtualizacaoPlano();
 
@@ -397,10 +290,11 @@ public class StripeEventsHandlerService {
                     return new NotFoundException("Subscription não encontrada no evento deletado");
                 });
 
-        log.info("Recebido evento de encerramento definitivo (deleted) para Assinatura Stripe: {}", subscription.getId());
+        String subscriptionId = subscription.getId();
+        log.info("Recebido evento de encerramento definitivo (deleted) para Assinatura Stripe: {}", subscriptionId);
 
-        AssinaturaDePlanoEntity assinatura = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscription.getId())
-                .orElse(createSubscription(subscription));
+        AssinaturaDePlanoEntity assinatura = assinaturaDePlanoRepository.findByStripeSubscriptionId(subscriptionId)
+                .orElseThrow(() -> new NotFoundException("Assinatura não encontrada para subscriptionId=" + subscriptionId));
 
         if (!assinatura.isCancelada()) {
             log.info("Encerrando assinatura localmente após término do ciclo no Stripe.");

@@ -1,5 +1,11 @@
 package com.branches.plano.service;
 
+import com.branches.assinaturadeplano.domain.AssinaturaDePlanoEntity;
+import com.branches.assinaturadeplano.domain.AssinaturaHistoricoEntity;
+import com.branches.assinaturadeplano.domain.enums.AssinaturaStatus;
+import com.branches.assinaturadeplano.domain.enums.EventoHistoricoAssinatura;
+import com.branches.assinaturadeplano.repository.AssinaturaDePlanoRepository;
+import com.branches.assinaturadeplano.repository.AssinaturaHistoricoRepository;
 import com.branches.assinaturadeplano.service.FindAssinaturaCorrenteByTenantIdService;
 import com.branches.exception.BadRequestException;
 import com.branches.external.stripe.CreateStripeCheckoutSession;
@@ -21,12 +27,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-//adicionar agnosticidade a ordem de eventos com find or create
+
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class CreatePlanoCheckoutService {
+    private final AssinaturaDePlanoRepository assinaturaDePlanoRepository;
     private final TenantRepository tenantRepository;
     private final GetCurrentUserTenantService getCurrentUserTenantService;
     private final GetPlanoByIdService getPlanoByIdService;
@@ -35,6 +42,7 @@ public class CreatePlanoCheckoutService {
     private final GetTenantByIdExternoService getTenantByIdExternoService;
     private final CreateStripeCustomer createStripeCustomer;
     private final GetUserByIdService getUserByIdService;
+    private final AssinaturaHistoricoRepository assinaturaHistoricoRepository;
 
     public PlanoCheckoutResponse execute(CreatePlanoCheckoutRequest request, String tenantExternalId, List<UserTenantEntity> userTenants) {
         log.info("Iniciando criação de checkout para o plano: {} e tenant: {}", request.planoId(), tenantExternalId);
@@ -59,9 +67,28 @@ public class CreatePlanoCheckoutService {
                 tenantId
         );
 
+        AssinaturaDePlanoEntity assinaturaDePlano = AssinaturaDePlanoEntity.builder()
+                .tenantId(tenantId)
+                .plano(plano)
+                .status(AssinaturaStatus.PENDENTE)
+                .tenantId(tenantId)
+                .stripeSubscriptionId(stripeResponse.subscriptionId())
+                .build();
+
+        assinaturaDePlanoRepository.save(assinaturaDePlano);
+        
+        createHistorico(assinaturaDePlano);
+        
         log.info("Checkout criado com sucesso para o tenant: {} e plano: {}", tenantId, plano.getNome());
 
         return new PlanoCheckoutResponse(stripeResponse.checkoutUrl());
+    }
+
+    private void createHistorico(AssinaturaDePlanoEntity assinaturaDePlano) {
+        AssinaturaHistoricoEntity historico = new AssinaturaHistoricoEntity(assinaturaDePlano.getTenantId());
+        historico.registrarEvento(assinaturaDePlano, EventoHistoricoAssinatura.CRIACAO);
+
+        assinaturaHistoricoRepository.save(historico);
     }
 
     private String createCustomerForTenant(TenantEntity tenant, UserEntity userResponsavel) {
@@ -77,7 +104,7 @@ public class CreatePlanoCheckoutService {
 
     private void checkIfTenantCanCreateCheckout(Long tenantId) {
         findAssinaturaCorrenteByTenantIdService.execute(tenantId).ifPresent(assinatura -> {
-            throw new BadRequestException("Tenant já possui uma assinatura ativa e não pode criar um novo checkout, ainda não é possível alterar planos antes do término da assinatura atual.");
+            throw new BadRequestException("Tenant possui assinatura ativa ou em processamento.");
         });
     }
 }

@@ -1,6 +1,7 @@
 package com.branches.plano.dto.response;
 
 public record PlanoCheckoutResponse(
-        String checkoutUrl
+        String checkoutUrl,
+        Long assinaturaId
 ) {
 }

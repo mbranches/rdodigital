@@ -75,13 +75,13 @@ public class CreatePlanoCheckoutService {
                 .stripeSubscriptionId(stripeResponse.subscriptionId())
                 .build();
 
-        assinaturaDePlanoRepository.save(assinaturaDePlano);
-        
-        createHistorico(assinaturaDePlano);
+        AssinaturaDePlanoEntity savedAssinatura = assinaturaDePlanoRepository.save(assinaturaDePlano);
+
+        createHistorico(savedAssinatura);
         
         log.info("Checkout criado com sucesso para o tenant: {} e plano: {}", tenantId, plano.getNome());
 
-        return new PlanoCheckoutResponse(stripeResponse.checkoutUrl());
+        return new PlanoCheckoutResponse(stripeResponse.checkoutUrl(), savedAssinatura.getId());
     }
 
     private void createHistorico(AssinaturaDePlanoEntity assinaturaDePlano) {

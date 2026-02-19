@@ -5,11 +5,13 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.PaymentMethodOptions;
+import com.stripe.param.checkout.SessionCreateParams.PaymentMethodType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,6 +32,10 @@ public class CreateStripeCheckoutSession {
                     .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                     .setSuccessUrl(successUrl)
                     .setCancelUrl(cancelUrl)
+                    .addAllPaymentMethodType(
+                            List.of(PaymentMethodType.CARD,
+                                    PaymentMethodType.BOLETO)
+                    )
                     .setPaymentMethodOptions(
                             PaymentMethodOptions.builder()
                                     .setBoleto(

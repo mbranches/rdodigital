@@ -110,6 +110,7 @@ public class StripeEventsHandlerService {
     }
 
     private void handleInvoicePaid(Event event) {
+        sleep3seconds();
         log.info("Processando evento de invoice.paid do Stripe");
         Invoice invoice = (Invoice) event.getDataObjectDeserializer()
                 .getObject()
@@ -248,6 +249,8 @@ public class StripeEventsHandlerService {
     }
 
     private void handleInvoiceFinalized(Event event) {
+        sleep3seconds();
+
         log.info("Processando evento de invoice.finalized do Stripe");
         Invoice invoice = (Invoice) event.getDataObjectDeserializer()
                 .getObject()
@@ -262,6 +265,15 @@ public class StripeEventsHandlerService {
         cobranca.updateLinks(invoice.getHostedInvoiceUrl(), invoice.getInvoicePdf());
 
         cobrancaRepository.save(cobranca);
+    }
+
+    private void sleep3seconds() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Thread interrompida durante sleep", e);
+        }
     }
 
     private void registrarEventoAssinatura(AssinaturaDePlanoEntity assinatura, EventoHistoricoAssinatura evento) {

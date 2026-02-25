@@ -1,13 +1,9 @@
 package com.branches.auth.service;
 
-import com.branches.assinaturadeplano.domain.AssinaturaDePlanoEntity;
-import com.branches.assinaturadeplano.domain.enums.AssinaturaStatus;
-import com.branches.assinaturadeplano.repository.AssinaturaDePlanoRepository;
 import com.branches.auth.dto.request.RegisterRequest;
 import com.branches.configuradores.domain.ModeloDeRelatorioEntity;
 import com.branches.configuradores.domain.enums.RecorrenciaRelatorio;
 import com.branches.configuradores.repositorio.ModeloDeRelatorioRepository;
-import com.branches.plano.repository.PlanoRepository;
 import com.branches.shared.email.EmailSender;
 import com.branches.shared.email.SendEmailRequest;
 import com.branches.tenant.domain.TenantEntity;
@@ -30,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -51,8 +46,6 @@ public class RegisterService {
     private final UserTenantRepository userTenantRepository;
     private final ValidateCnpj validateCnpj;
     private final ModeloDeRelatorioRepository modeloDeRelatorioRepository;
-    private final PlanoRepository planoRepository;
-    private final AssinaturaDePlanoRepository assinaturaDePlanoRepository;
     private final EmailSender emailSender;
     private final TemplateEngine templateEngine;
 
@@ -92,26 +85,6 @@ public class RegisterService {
                 .perfil(PerfilUserTenant.ADMINISTRADOR)
                 .build();
         userTenantToSave.setarId();
-
-        planoRepository.findByNome("Plano Gratuito").ifPresent(plano -> {
-            LocalDate dataFim = switch (plano.getRecorrencia()) {
-                case DIARIO -> LocalDate.now().plusDays(1);
-                case SEMANAL -> LocalDate.now().plusWeeks(1);
-                case MENSAL -> LocalDate.now().plusMonths(1);
-                case ANUAL -> LocalDate.now().plusYears(1);
-                case MENSAL_AVULSO -> LocalDate.now().plusMonths(1); // Pagamento único com duração de 1 mês
-            };
-
-            AssinaturaDePlanoEntity assinatura = AssinaturaDePlanoEntity.builder()
-                    .status(AssinaturaStatus.ATIVO)
-                    .plano(plano)
-                    .tenantId(savedTenant.getId())
-                    .dataInicio(LocalDate.now())
-                    .dataFim(dataFim)
-                    .build();
-
-            assinaturaDePlanoRepository.save(assinatura);
-        });
 
         userTenantRepository.save(userTenantToSave);
 

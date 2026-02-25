@@ -48,6 +48,7 @@ public class PlanoEntity extends Auditable {
     public LocalDate calcularDataFim(LocalDate dataInicio) {
         return switch (recorrencia) {
             case MENSAL -> dataInicio.plusMonths(1);
+            case ANUAL -> dataInicio.plusYears(1);
         };
 
     }
